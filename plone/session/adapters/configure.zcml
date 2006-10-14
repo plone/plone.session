@@ -6,4 +6,10 @@
        provides="plone.session.interfaces.ISessionSource"
        factory=".adapters.userid.UserIdSession"
        />
+
+   <adapter
+       for ="plone.session.interfaces.ISessionPlugin"
+       provides="plone.session.interfaces.ISessionSource"
+       factory=".adapters.hash.HashSession"
+       />
 </configure>

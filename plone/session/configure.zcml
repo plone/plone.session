@@ -4,4 +4,11 @@
 
     <include package=".adapters" />
 
+    <include package="zope.annotation" />
+
+    <implements
+        class=".plugins.session.SessionPlugin"
+	interface="zope.annotation.interfaces.IAttributeAnnotatable
+	/>
+
 </configure>
