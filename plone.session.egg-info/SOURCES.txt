@@ -1,0 +1,12 @@
+README.txt
+setup.cfg
+setup.py
+plone/__init__.py
+plone.session.egg-info/PKG-INFO
+plone.session.egg-info/SOURCES.txt
+plone.session.egg-info/dependency_links.txt
+plone.session.egg-info/entry_points.txt
+plone.session.egg-info/namespace_packages.txt
+plone.session.egg-info/not-zip-safe
+plone.session.egg-info/top_level.txt
+plone/session/__init__.py

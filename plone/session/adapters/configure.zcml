@@ -1,0 +1,9 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope">
+
+   <adapter
+       for ="plone.session.interfaces.ISessionPlugin"
+       provides="plone.session.interfaces.ISessionSource"
+       factory=".adapters.userid.UserIdSession"
+       />
+</configure>
