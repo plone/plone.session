@@ -1,8 +1,8 @@
 from Products.PluggableAuthService.plugins.BasePlugin import BasePlugin
 from Products.PluggableAuthService.utils import classImplements
 from Products.PluggableAuthService.interfaces.plugins \
-        import ICredentialsResetPlugin, IAuthenticationPlugin, \
-                ICredentialsResetPlugin)
+        import IExtractionPlugin, IAuthenticationPlugin, \
+                ICredentialsResetPlugin
 from AccessControl.SecurityInfo import ClassSecurityInfo
 from plone.session.interfaces import ISessionPlugin, ISessionSource
 
@@ -65,7 +65,7 @@ class SessionPlugin(BasePlugin):
     # IAuthenticationPlugin implementation
     def authenticateCredentials(self, credentials):
         if not creds.get("source", None)=="plone.sesion":
-            return
+            return None
 
         source=self.getSource()
         identifier=creds["cookie"].decode("base64")
@@ -74,6 +74,8 @@ class SessionPlugin(BasePlugin):
 
         if userid:
             return (userid, userid)
+
+    	return None
 
 
     # ICredentialsResetPlugin implementation

@@ -6,9 +6,9 @@
 
     <include package="zope.annotation" />
 
-    <implements
+    <five:implements
         class=".plugins.session.SessionPlugin"
-	interface="zope.annotation.interfaces.IAttributeAnnotatable
+	interface="zope.annotation.interfaces.IAttributeAnnotatable"
 	/>
 
 </configure>

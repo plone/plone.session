@@ -3,4 +3,6 @@ from Products.PluggableAuthService.PluggableAuthService import registerMultiPlug
 
 
 def initialize(context):
+    pass
+
 
