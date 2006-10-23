@@ -64,11 +64,11 @@ class SessionPlugin(BasePlugin):
 
     # IAuthenticationPlugin implementation
     def authenticateCredentials(self, credentials):
-        if not creds.get("source", None)=="plone.sesion":
+        if not credentials.get("source", None)=="plone.sesion":
             return None
 
         source=self.getSource()
-        identifier=creds["cookie"].decode("base64")
+        identifier=credentials["cookie"].decode("base64")
         # TODO: decode the cookie
         userid=source.verifyIdentifier(identifier)
 
