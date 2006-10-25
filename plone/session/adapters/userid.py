@@ -12,7 +12,7 @@ class UserIdSession(object):
         return userid
 
 
-    def verifyIdentitier(self, identifier):
+    def verifyIdentifier(self, identifier):
         return True
 
 

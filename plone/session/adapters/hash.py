@@ -1,7 +1,7 @@
 from zope.interface import implements
 from zope.annotation.interfaces import IAnnotations
 from plone.session.interfaces import ISessionSource
-import hmac, sha
+import random, hmac, sha
 
 def GenerateSecret(length=16):
     letters ="ABCDEFGHIJKLMNOPQRSTUVWXYZ"
@@ -40,7 +40,7 @@ class HashSession(object):
         return "%s %s" % (signature, userid)
 
 
-    def verifyIdentitier(self, identifier):
+    def verifyIdentifier(self, identifier):
         (signature, userid)=identifier.split()
         return signature==self.signUserid(userid)
 

@@ -30,9 +30,10 @@ class SessionPlugin(BasePlugin):
             },
             )
 
-    def __init__(self, id, title=None):
+    def __init__(self, id, title=None, path="/"):
         self._setId(id)
         self.title=title
+        self.path=path
 
 
     def getSource(self):
@@ -56,7 +57,7 @@ class SessionPlugin(BasePlugin):
         if not self.cookie_name in request:
             return creds
 
-        creds["cookie"]=request.get(self.cookie_name).decode("bas64")
+        creds["cookie"]=request.get(self.cookie_name).decode("base64")
         creds["source"]="plone.session"
 
         return creds
@@ -64,15 +65,13 @@ class SessionPlugin(BasePlugin):
 
     # IAuthenticationPlugin implementation
     def authenticateCredentials(self, credentials):
-        if not credentials.get("source", None)=="plone.sesion":
+        if not credentials.get("source", None)=="plone.session":
             return None
 
         source=self.getSource()
-        identifier=credentials["cookie"].decode("base64")
-        # TODO: decode the cookie
-        userid=source.verifyIdentifier(identifier)
-
-        if userid:
+        identifier=credentials["cookie"]
+        if source.verifyIdentifier(identifier):
+            userid=source.extractUserid(identifier)
             return (userid, userid)
 
     	return None
@@ -85,7 +84,6 @@ class SessionPlugin(BasePlugin):
 
         response=self.REQUEST["RESPONSE"]
         response.expireCookie(self.cookie_name, path=self.path)
-
 
 
 classImplements(SessionPlugin, ISessionPlugin,
