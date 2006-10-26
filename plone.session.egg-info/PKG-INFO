@@ -1,6 +1,6 @@
 Metadata-Version: 1.0
 Name: plone.session
-Version: 0.1dev
+Version: 0.1dev-r11219
 Summary: Session based authentication for Zope
 Home-page: http://svn.plone.org/svn/plone/plone.session
 Author: Plone Foundation

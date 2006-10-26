@@ -2,7 +2,7 @@ from Products.PluggableAuthService.plugins.BasePlugin import BasePlugin
 from Products.PluggableAuthService.utils import classImplements
 from Products.PluggableAuthService.interfaces.plugins \
         import IExtractionPlugin, IAuthenticationPlugin, \
-                ICredentialsResetPlugin
+                ICredentialsResetPlugin, ICredentialsUpdatePlugin
 from AccessControl.SecurityInfo import ClassSecurityInfo
 from plone.session.interfaces import ISessionPlugin, ISessionSource
 
@@ -77,6 +77,11 @@ class SessionPlugin(BasePlugin):
     	return None
 
 
+    # ICredentialsUpdatePlugin implementation
+    def updateCredentials(self, request, response, login, new_password):
+        self.setupSession(login)
+
+
     # ICredentialsResetPlugin implementation
     def resetCredentials(self, request, response):
         source=self.getSource()
@@ -88,5 +93,5 @@ class SessionPlugin(BasePlugin):
 
 classImplements(SessionPlugin, ISessionPlugin,
                 IExtractionPlugin, IAuthenticationPlugin,
-                ICredentialsResetPlugin)
+                ICredentialsResetPlugin, ICredentialsUpdatePlugin)
 
