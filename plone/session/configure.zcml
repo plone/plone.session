@@ -2,7 +2,7 @@
     xmlns="http://namespaces.zope.org/zope"
     xmlns:five="http://namespaces.zope.org/five">
 
-    <include package=".adapters" />
+    <include package=".sources" />
 
     <include package="zope.annotation" />
 
