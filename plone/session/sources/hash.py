@@ -40,13 +40,25 @@ class HashSession(object):
         return "%s %s" % (signature, userid)
 
 
+    def splitIdentifier(self, identifier):
+        index=identifier.rfind(" ")
+        if index==-1:
+            raise ValueError
+
+        return (identifier[:index], identifier[index+1:])
+
+
     def verifyIdentifier(self, identifier):
-        (signature, userid)=identifier.split()
-        return signature==self.signUserid(userid)
+        try:
+            (signature, userid)=self.splitIdentifier(identifier)
+        except ValueError:
+            return False
+        else:
+            return signature==self.signUserid(userid)
 
 
     def extractUserid(self, identifier):
-        (signature, userid)=identifier.split()
+        (signature, userid)=self.splitIdentifier(identifier)
         return userid
 
 
