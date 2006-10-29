@@ -51,7 +51,7 @@ class HashSession(object):
     def verifyIdentifier(self, identifier):
         try:
             (signature, userid)=self.splitIdentifier(identifier)
-        except ValueError:
+        except (AttributeError, ValueError):
             return False
         else:
             return signature==self.signUserid(userid)

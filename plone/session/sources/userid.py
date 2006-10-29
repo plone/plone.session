@@ -13,7 +13,7 @@ class UserIdSession(object):
 
 
     def verifyIdentifier(self, identifier):
-        return True
+        return isinstance(identifier, str)
 
 
     def extractUserid(self, identifier):
