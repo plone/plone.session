@@ -1,4 +1,8 @@
-Lets start of with some setup:
+Initial setup
+=============
+
+Before we can start working with our session sources we need to do some initial
+Zope setup:
 
   >>> import Products.Five.tests
   >>> from Products.Five import zcml
@@ -37,12 +41,24 @@ to the hash plugin:
 Standard sources
 ================
 
+A source is an object which manages session identifiers. They are used to
+create session identifiers, verify them and extract user ids from them.
+
+They are defined by ISessionSource, which implements just three simple methods.
+The first one creates a string object which can be used to identify a users
+session:
+
   >>> id=source.createIdentifier("johny.bravo")
   >>> isinstance(id, str)
   True
 
+A source can verify if an identifier is valid:
+
   >>> source.verifyIdentifier(id)
   True
 
+Finally we should be able to extract the original user id from the identifier:
+
   >>> source.extractUserid(id)
   'johny.bravo'
+
