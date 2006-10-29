@@ -1,0 +1,48 @@
+Lets start of with some setup:
+
+  >>> import Products.Five.tests
+  >>> from Products.Five import zcml
+
+  >>> zcml.load_config('meta.zcml', Products.Five)
+  >>> zcml.load_config('permissions.zcml', Products.Five)
+  >>> zcml.load_config('directives.zcml', Products.Five.tests)
+
+  >>> import plone.session
+  >>> zcml.load_config('configure.zcml', package=plone.session)
+
+Now that the basic Zope setup is in place we can create a session
+instance:
+
+  >>> from plone.session.plugins.session import SessionPlugin
+  >>> session=SessionPlugin("session")
+  >>> self.folder._setObject("session", session)
+  'session'
+
+Adapting a session plugin
+=========================
+
+All sessions have to provide the ISessionPlugin interface, which allows
+them to be adapted to an ISessionSource:
+
+  >>> from plone.session.interfaces import ISessionPlugin
+  >>> ISessionPlugin.providedBy(session)
+  True
+
+The default plone.session configuration defines an adapter from ISessionPlugin
+to the hash plugin:
+
+  >>> from plone.session.interfaces import ISessionSource
+  >>> source=ISessionSource(session)
+
+Standard sources
+================
+
+  >>> id=source.createIdentifier("johny.bravo")
+  >>> isinstance(id, str)
+  True
+
+  >>> source.verifyIdentifier(id)
+  True
+
+  >>> source.extractUserid(id)
+  'johny.bravo'
