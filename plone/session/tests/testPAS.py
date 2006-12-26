@@ -8,9 +8,11 @@ from sessioncase import PloneSessionTestCase
 
 
 class TestOpenIdExtraction(PloneSessionTestCase):
+
     def testInterfaces(self):
-        self.assertEqual(ISessionPlugin.providedBy(self.app.session), True)
-        source=self.app.session.getSource()
+        session = self.app.folder.session
+        self.assertEqual(ISessionPlugin.providedBy(session), True)
+        source = session.getSource()
         self.assertEqual(ISessionSource.providedBy(source), True)
 
 
