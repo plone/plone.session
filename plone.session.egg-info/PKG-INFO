@@ -1,9 +1,9 @@
 Metadata-Version: 1.0
 Name: plone.session
-Version: 0.1dev-r11219
+Version: 0.1dev-r11921
 Summary: Session based authentication for Zope
 Home-page: http://svn.plone.org/svn/plone/plone.session
-Author: Plone Foundation
+Author: Wichert Akkerman
 Author-email: plone-developers@lists.sourceforge.net
 License: GPL
 Description: Session based authentication for the Zope Pluggable Authentication Services.
