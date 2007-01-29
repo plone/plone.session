@@ -69,4 +69,3 @@ There are a few downsides to this approach:
 Creating adapters is very simple: an adapter needs to implement the
 plone.session.interfaces.ISessionSource interface and has to be registered
 with the component architecture.
-
