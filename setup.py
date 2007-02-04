@@ -25,6 +25,7 @@ Session based authentication for the Zope Pluggable Authentication Services.""",
       namespace_packages=['plone'],
       include_package_data=True,
       zip_safe=False,
+      download_url='http://code.google.com/p/plone/downloads/list',
       install_requires=[
         'setuptools',
       ],
