@@ -74,7 +74,7 @@ class SessionPlugin(BasePlugin):
             userid=source.extractUserid(identifier)
             return (userid, userid)
 
-    	return None
+        return None
 
 
     # ICredentialsUpdatePlugin implementation

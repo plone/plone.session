@@ -28,7 +28,7 @@ class ISessionSource(Interface):
     def verifyIdentifier(identifier):
         """
         Verify if an identity corresponds to a valid session. Returns
-	a boolean indicating if the identify is valid.
+        a boolean indicating if the identify is valid.
         """
 
 

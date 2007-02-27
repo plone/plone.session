@@ -21,7 +21,7 @@ class HashSession(object):
     def __init__(self, context):
         self.context=context
         anno=IAnnotations(self.context)
-	if not anno.has_key("plone.session.plugins.hash.secret"):
+        if not anno.has_key("plone.session.plugins.hash.secret"):
             anno["plone.session.plugins.hash.secret"]=GenerateSecret()
 
 
