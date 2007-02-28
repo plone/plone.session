@@ -3,14 +3,11 @@ from zope.annotation.interfaces import IAnnotations
 from plone.session.interfaces import ISessionSource
 import random, hmac, sha
 
-def GenerateSecret(length=16):
-    letters ="ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-    letters+="abcdefghijklmnopqrstuvwxyz"
-    letters+="01234567890!@#$%^&*()"
+def GenerateSecret(length=64):
 
     secret=""
     for i in range(length):
-        secret+=random.choice(letters)
+        secret+=chr(random.getrandbits(8))
 
     return secret
 
