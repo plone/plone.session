@@ -1,10 +1,11 @@
 from zope.interface import implements
 from zope.annotation.interfaces import IAnnotations
-from plone.session.interfaces import ISessionSource
+from plone.session.sources.base import BaseSource
+from AccessControl import ClassSecurityInfo
+from Products.Five.browser.pagetemplatefile import ViewPageTemplateFile
 import random, hmac, sha
 
 def GenerateSecret(length=64):
-
     secret=""
     for i in range(length):
         secret+=chr(random.getrandbits(8))
@@ -12,23 +13,53 @@ def GenerateSecret(length=64):
     return secret
 
 
-class HashSession(object):
-    implements(ISessionSource)
+class HashSession(BaseSource):
+    """A Hash session source implementation.
+    """
+
+    # Number of secrets to keep. The first secret is the current signing key
+    secret_count = 5
+
+    manage_options = (
+                { 'label':      'Hash tools',
+                  'action':     '@@hash_view/manage_secret' },
+                { 'label':      'Hash tools',
+                  'action':     'manage_secret' },
+              )
 
     def __init__(self, context):
         self.context=context
         anno=IAnnotations(self.context)
-        if not anno.has_key("plone.session.plugins.hash.secret"):
-            anno["plone.session.plugins.hash.secret"]=GenerateSecret()
+        if not anno.has_key("plone.session.plugins.hash.secrets"):
+            self.clearSecrets()
 
 
-    def getSecret(self):
+    def clearSecrets(self):
         anno=IAnnotations(self.context)
-        return anno["plone.session.plugins.hash.secret"]
+        anno["plone.session.plugins.hash.secrets"]=[]
+        self.createNewSecret()
 
 
-    def signUserid(self, userid):
-        return hmac.new(self.getSecret(), userid, sha).digest()
+    def createNewSecret(self):
+        anno=IAnnotations(self.context)
+        anno["plone.session.plugins.hash.secrets"]=[GenerateSecret()] + \
+                anno["plone.session.plugins.hash.secrets"][:self.secret_count-1]
+
+
+    def getSecrets(self):
+        anno=IAnnotations(self.context)
+        return anno["plone.session.plugins.hash.secrets"]
+
+
+    def getSigningSecret(self):
+        return self.getSecrets()[0]
+
+
+    def signUserid(self, userid, secret=None):
+        if secret is None:
+            secret = self.getSigningSecret()
+
+        return hmac.new(secret, userid, sha).digest()
 
 
     def createIdentifier(self, userid):
@@ -46,12 +77,16 @@ class HashSession(object):
 
 
     def verifyIdentifier(self, identifier):
-        try:
-            (signature, userid)=self.splitIdentifier(identifier)
-        except (AttributeError, ValueError):
-            return False
-        else:
-            return signature==self.signUserid(userid)
+        for secret in self.getSecrets():
+            try:
+                (signature, userid)=self.splitIdentifier(identifier)
+                if  signature==self.signUserid(userid, secret):
+# XXX if the secret is not the current signing secret we should reset the cookie
+                    return True
+            except (AttributeError, ValueError):
+                continue
+
+        return False
 
 
     def extractUserid(self, identifier):
@@ -59,6 +94,6 @@ class HashSession(object):
         return userid
 
 
-    def invalidateSession(self, principal):
-        pass
+    manage_secret = ViewPageTemplateFile('hash.pt')
+
 

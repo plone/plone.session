@@ -19,5 +19,18 @@ class PloneSessionTestCase(ZopeTestCase.ZopeTestCase):
         if not self.app.folder.hasObject("session"):
             self.app.folder._setObject("session", SessionPlugin("session"))
 
+
 class FunctionalPloneSessionTestCase(ZopeTestCase.Functional, PloneSessionTestCase):
-    pass
+    def afterSetUp(self):
+        import Products.Five.tests
+        zcml.load_config('meta.zcml', Products.Five)
+        zcml.load_config('permissions.zcml', Products.Five)
+        zcml.load_config('directives.zcml', Products.Five.tests)
+
+        zcml.load_config('configure.zcml', plone.session)
+
+        from plone.session.plugins.session import SessionPlugin
+        session=SessionPlugin("session")
+        self.folder._setObject("session", session)
+
+

@@ -8,8 +8,15 @@ optionflags = doctest.REPORT_ONLY_FIRST_FAILURE | doctest.ELLIPSIS
 
 
 def test_suite():
-    return unittest.TestSuite((
-            FunctionalDocFileSuite("adapters.txt",
+    tests = [ # "adapters.txt",
+              "hash.txt",
+            ]
+
+    suite = unittest.TestSuite()
+    for test in tests:
+        suite.addTest(FunctionalDocFileSuite(test,
+                optionflags=optionflags,
                 package="plone.session.tests",
-                test_class=FunctionalPloneSessionTestCase),
-            ))
+                test_class=FunctionalPloneSessionTestCase))
+
+    return suite

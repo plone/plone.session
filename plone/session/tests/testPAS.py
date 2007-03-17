@@ -8,7 +8,7 @@ class TestOpenIdExtraction(PloneSessionTestCase):
     def testInterfaces(self):
         session = self.app.folder.session
         self.assertEqual(ISessionPlugin.providedBy(session), True)
-        source = session.getSource()
+        source = session.source
         self.assertEqual(ISessionSource.providedBy(source), True)
 
 

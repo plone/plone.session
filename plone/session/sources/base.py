@@ -1,17 +1,25 @@
 from zope.interface import implements
 from plone.session.interfaces import ISessionSource
-from plone.session.sources.base import BaseSource
 
-class UserIdSession(BaseSource):
+class BaseSource(object):
     implements(ISessionSource)
 
+    def __init__(self, context):
+        self.context=context
+
+
     def createIdentifier(self, userid):
-        return userid
+        raise NotImplemented
 
 
     def verifyIdentifier(self, identifier):
-        return isinstance(identifier, str)
+        raise NotImplemented
 
 
     def extractUserid(self, identifier):
-        return identifier
+        raise NotImplemented
+
+
+    def invalidateSession(self, principal):
+        return False
+

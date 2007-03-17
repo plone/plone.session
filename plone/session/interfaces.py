@@ -38,8 +38,11 @@ class ISessionSource(Interface):
         """
 
 
-    def invalidateSession(principal):
+    def invalidateSession(principal=None):
         """
-        Mark a session for a userid as invalid. 
+        Mark a session for a userid as invalid. A source may not support this,
+        in which case it should return False.
         """
+
+
 
