@@ -6,6 +6,13 @@ from Products.PluggableAuthService.interfaces.plugins \
 from AccessControl.SecurityInfo import ClassSecurityInfo
 from plone.session.interfaces import ISessionPlugin, ISessionSource
 
+try:
+    from AccessControl.requestmethod import postonly
+except ImportError:
+    # For Zope <2.8.9, <2.9.7 and <2.10.3
+    def postonly(func):
+        return func
+
 # Temporary imports
 from Products.PageTemplates.PageTemplateFile import PageTemplateFile
 from Products.PluggableAuthService.permissions import ManageUsers
@@ -54,7 +61,6 @@ class SessionPlugin(BasePlugin):
                 more = more()
 
         return more  + BasePlugin.manage_options
-
 
 
     # ISessionPlugin implementation
@@ -112,22 +118,24 @@ class SessionPlugin(BasePlugin):
     manage_secret = PageTemplateFile("../sources/hash.pt", globals())
 
     security.declareProtected(ManageUsers, 'manage_clearSecrets')
-    def manage_clearSecrets(self, RESPONSE):
+    @postonly
+    def manage_clearSecrets(self, REQUEST):
         """Clear all secrets from this source.
 
         This invalidates all current sessions and requires users to login again.
         """
         self.source.clearSecrets()
-        RESPONSE.redirect('%s/manage_secret?manage_tabs_message=%s'
+        REQUEST.RESPONSE.redirect('%s/manage_secret?manage_tabs_message=%s'
                                      % (self.absolute_url(), 'All+secrets+cleared.'))
 
 
     security.declareProtected(ManageUsers, 'manage_createNewSecret')
-    def manage_createNewSecret(self, RESPONSE):
+    @postonly
+    def manage_createNewSecret(self, REQUEST):
         """Create a new (signing) secret.
         """
         self.source.createNewSecret()
-        RESPONSE.redirect('%s/manage_secret?manage_tabs_message=%s'
+        REQUEST.RESPONSE.redirect('%s/manage_secret?manage_tabs_message=%s'
                                      % (self.absolute_url(), 'New+secret+created.'))
 
 classImplements(SessionPlugin, ISessionPlugin,
