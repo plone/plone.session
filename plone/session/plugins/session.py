@@ -84,7 +84,7 @@ class SessionPlugin(BasePlugin):
         if not credentials.get("source", None)=="plone.session":
             return None
 
-        source=self.getSource()
+        source=self.source
         identifier=credentials["cookie"]
         if source.verifyIdentifier(identifier):
             userid=source.extractUserid(identifier)
@@ -100,7 +100,7 @@ class SessionPlugin(BasePlugin):
 
     # ICredentialsResetPlugin implementation
     def resetCredentials(self, request, response):
-        source=self.getSource()
+        source=self.source
         source.invalidateSession()
 
         response=self.REQUEST["RESPONSE"]
