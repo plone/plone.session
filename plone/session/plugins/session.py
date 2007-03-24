@@ -1,3 +1,4 @@
+from Products.PageTemplates.PageTemplateFile import PageTemplateFile
 from Products.PluggableAuthService.plugins.BasePlugin import BasePlugin
 from Products.PluggableAuthService.utils import classImplements
 from Products.PluggableAuthService.interfaces.plugins \
@@ -14,8 +15,22 @@ except ImportError:
         return func
 
 # Temporary imports
-from Products.PageTemplates.PageTemplateFile import PageTemplateFile
 from Products.PluggableAuthService.permissions import ManageUsers
+
+
+manage_addSessionPlugin = PageTemplateFile('session', globals())
+    
+
+def addSessionPlugin(dispatcher, id, title=None, path='/', REQUEST=None):
+    """Add a session plugin."""
+    sp=SessionPlugin(id, title=title, path=path)
+    dispatcher._setObject(id, sp)
+
+    REQUEST.RESPONSE.redirect( '%s/manage_workspace?'
+                               'manage_tabs_message=Session+plugin+created.' %
+                               dispatcher.absolute_url())
+
+
 
 class SessionPlugin(BasePlugin):
     """Session authentication plugin.

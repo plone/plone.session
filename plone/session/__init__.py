@@ -1,8 +1,15 @@
-from AccessControl.Permissions import manage_users
+from AccessControl.Permissions import add_user_folders
 from Products.PluggableAuthService.PluggableAuthService import registerMultiPlugin
+from plone.session.plugins import session
+
+
+registerMultiPlugin(session.SessionPlugin.meta_type)
 
 
 def initialize(context):
-    pass
-
+    context.registerClass(session.SessionPlugin,
+            permission = add_user_folders,
+            constructors = (session.manage_addSessionPlugin,
+                            session.addSessionPlugin),
+            visibility = None)
 
