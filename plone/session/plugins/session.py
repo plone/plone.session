@@ -122,7 +122,6 @@ class SessionPlugin(BasePlugin):
     # ICredentialsResetPlugin implementation
     def resetCredentials(self, request, response):
         source=self.source
-        source.invalidateSession()
 
         response=self.REQUEST["RESPONSE"]
         response.expireCookie(self.cookie_name, path=self.path)
