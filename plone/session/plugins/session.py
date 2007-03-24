@@ -8,6 +8,7 @@ from plone.session.interfaces import ISessionPlugin, ISessionSource
 
 # Temporary imports
 from Products.PageTemplates.PageTemplateFile import PageTemplateFile
+from Products.PluggableAuthService.permissions import ManageUsers
 
 class SessionPlugin(BasePlugin):
     """Session authentication plugin.
@@ -110,6 +111,7 @@ class SessionPlugin(BasePlugin):
 
     manage_secret = PageTemplateFile("../sources/hash.pt", globals())
 
+    security.declareProtected(ManageUsers, 'manage_clearSecrets')
     def manage_clearSecrets(self, RESPONSE):
         """Clear all secrets from this source.
 
@@ -120,6 +122,7 @@ class SessionPlugin(BasePlugin):
                                      % (self.absolute_url(), 'All+secrets+cleared.'))
 
 
+    security.declareProtected(ManageUsers, 'manage_createNewSecret')
     def manage_createNewSecret(self, RESPONSE):
         """Create a new (signing) secret.
         """
