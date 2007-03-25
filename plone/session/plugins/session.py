@@ -36,7 +36,7 @@ class SessionPlugin(BasePlugin):
     """Session authentication plugin.
     """
 
-    meta_type = "Session plugin"
+    meta_type = "Plone Session Plugin"
     security = ClassSecurityInfo()
     cookie_name = "__ac"
 
