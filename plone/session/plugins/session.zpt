@@ -7,7 +7,7 @@
   plone.session is a session plugin which does not use Zope sessions.
 </p>
 
-<form action="addSessionPlugin" method="post" 
+<form action="manage_addSessionPlugin" method="post" 
       enctype="multipart/form-data">
   <table cellspacing="0" cellpadding="2" border="0">
     <tr>

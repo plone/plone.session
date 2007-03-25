@@ -18,15 +18,16 @@ except ImportError:
 from Products.PluggableAuthService.permissions import ManageUsers
 
 
-manage_addSessionPlugin = PageTemplateFile('session', globals())
+manage_addSessionPluginForm = PageTemplateFile('session', globals())
     
 
-def addSessionPlugin(dispatcher, id, title=None, path='/', REQUEST=None):
+def manage_addSessionPlugin(dispatcher, id, title=None, path='/', REQUEST=None):
     """Add a session plugin."""
     sp=SessionPlugin(id, title=title, path=path)
     dispatcher._setObject(id, sp)
 
-    REQUEST.RESPONSE.redirect( '%s/manage_workspace?'
+    if REQUEST is not None:
+        REQUEST.RESPONSE.redirect('%s/manage_workspace?'
                                'manage_tabs_message=Session+plugin+created.' %
                                dispatcher.absolute_url())
 
