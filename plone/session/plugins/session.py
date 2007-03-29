@@ -6,6 +6,7 @@ from Products.PluggableAuthService.interfaces.plugins \
                 ICredentialsResetPlugin, ICredentialsUpdatePlugin
 from AccessControl.SecurityInfo import ClassSecurityInfo
 from plone.session.interfaces import ISessionPlugin, ISessionSource
+import binascii
 
 try:
     from AccessControl.requestmethod import postonly
@@ -95,8 +96,14 @@ class SessionPlugin(BasePlugin):
         if not self.cookie_name in request:
             return creds
 
-        creds["cookie"]=request.get(self.cookie_name).decode("base64")
-        creds["source"]="plone.session"
+        try:
+            creds["cookie"]=request.get(self.cookie_name).decode("base64")
+        except binascii.Error:
+            # If we have a cookie which is not properly base64 encoded it
+            # can not be hours.
+            return creds
+
+        creds["source"]="plone.session" # XXX should this be the id?
 
         return creds
 
