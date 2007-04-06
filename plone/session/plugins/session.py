@@ -81,11 +81,10 @@ class SessionPlugin(BasePlugin):
 
 
     # ISessionPlugin implementation
-    def setupSession(self, userid):
+    def setupSession(self, userid, response):
         cookie=self.source.createIdentifier(userid)
         cookie=cookie.encode("base64").strip()
 
-        response=self.REQUEST["RESPONSE"]
         response.setCookie(self.cookie_name, cookie, path=self.path)
 
 
@@ -124,7 +123,10 @@ class SessionPlugin(BasePlugin):
 
     # ICredentialsUpdatePlugin implementation
     def updateCredentials(self, request, response, login, new_password):
-        self.setupSession(login)
+        pas=self.aq_parent
+        if pas._verifyUser(pas.plugins, login=login) is not None:
+            # Only setup a session for users in our own user folder.
+            self.setupSession(login, response)
 
 
     # ICredentialsResetPlugin implementation

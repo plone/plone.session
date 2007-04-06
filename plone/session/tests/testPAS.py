@@ -7,17 +7,17 @@ from sessioncase import FunctionalPloneSessionTestCase
 class TestSessionPlugin(FunctionalPloneSessionTestCase):
 
     def testInterfaces(self):
-        session = self.folder.session
+        session=self.folder.pas.session
         self.assertEqual(ISessionPlugin.providedBy(session), True)
-        source = session.source
+        source=session.source
         self.assertEqual(ISessionSource.providedBy(source), True)
 
     def makeRequest(self, cookie):
-        session = self.folder.session
+        session=self.folder.pas.session
         return TestRequest(**{session.cookie_name : cookie})
 
     def testExtraction(self):
-        session = self.folder.session
+        session=self.folder.pas.session
 
         request=self.makeRequest("test string".encode("base64"))
         creds=session.extractCredentials(request)
@@ -27,6 +27,17 @@ class TestSessionPlugin(FunctionalPloneSessionTestCase):
         request=self.makeRequest("test string")
         creds=session.extractCredentials(request)
         self.assertEqual(creds, {})
+
+    def testCredentialsUpdate(self):
+        session=self.folder.pas.session
+        request=self.makeRequest("test string")
+        session.updateCredentials(request, request.response, "bla", "password")
+        self.assertEqual(request.response.getCookie(session.cookie_name), None)
+
+        session.updateCredentials(request, request.response,
+                "our_user", "password")
+        self.assertNotEqual(request.response.getCookie(session.cookie_name),
+                None)
 
 
 def test_suite():

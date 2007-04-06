@@ -3,7 +3,7 @@ Hash sources
 
 The default source for plone.session is the hash source:
 
-  >>> session = self.folder.session
+  >>> session = self.folder.pas.session
   >>> source = session.source
   >>> source
   <plone.session.sources.hash.HashSession object at ...>

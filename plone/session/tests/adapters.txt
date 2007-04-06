@@ -5,7 +5,7 @@ All sessions have to provide the ISessionPlugin interface, which allows
 them to be adapted to an ISessionSource:
 
   >>> from plone.session.interfaces import ISessionPlugin
-  >>> session = self.folder.session
+  >>> session = self.folder.pas.session
   >>> ISessionPlugin.providedBy(session)
   True
 
