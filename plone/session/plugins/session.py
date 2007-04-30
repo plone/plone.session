@@ -123,7 +123,7 @@ class SessionPlugin(BasePlugin):
 
     # ICredentialsUpdatePlugin implementation
     def updateCredentials(self, request, response, login, new_password):
-        pas=self.aq_parent
+        pas=self._getPAS()
         if pas._verifyUser(pas.plugins, login=login) is not None:
             # Only setup a session for users in our own user folder.
             self.setupSession(login, response)
