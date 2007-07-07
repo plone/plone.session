@@ -115,8 +115,11 @@ class SessionPlugin(BasePlugin):
         source=self.source
         identifier=credentials["cookie"]
         if source.verifyIdentifier(identifier):
-            userid=source.extractUserid(identifier)
-            return (userid, userid)
+            login=source.extractLoginName(identifier)
+            pas=self._getPAS()
+            info=pas._verifyUser(pas.plugins, login=login)
+            if info is not None:
+                return (info['id'], info['login'])
 
         return None
 

@@ -16,7 +16,7 @@ class BaseSource(object):
         raise NotImplemented
 
 
-    def extractUserid(self, identifier):
+    def extractLoginName(self, identifier):
         raise NotImplemented
 
 

@@ -13,5 +13,5 @@ class UserIdSession(BaseSource):
         return isinstance(identifier, str)
 
 
-    def extractUserid(self, identifier):
+    def extractLoginName(self, identifier):
         return identifier
