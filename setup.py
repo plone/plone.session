@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 import sys, os
 
-version = '1.0b3'
+version = '1.0rc1'
 
 setup(name='plone.session',
       version=version,
