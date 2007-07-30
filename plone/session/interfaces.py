@@ -34,14 +34,14 @@ class ISessionSource(Interface):
 
     def extractLoginName(identifier):
         """
-        Extract the userid from an identifier.
+        Extract the login name from an identifier.
         """
 
 
     def invalidateSession(principal=None):
         """
-        Mark a session for a userid as invalid. A source may not support this,
-        in which case it should return False.
+        Mark a session for a principal as invalid. A source may not support
+        this, in which case it should return False.
         """
 
 

@@ -1,14 +1,12 @@
 from setuptools import setup, find_packages
 import sys, os
 
-version = '1.0rc2'
+version = '1.0rc1'
 
 setup(name='plone.session',
       version=version,
       description="Session based authentication for Zope",
-      long_description="""\
-Session based authentication for the Zope Pluggable Authentication Services.""",
-      # Get more strings from http://www.python.org/pypi?%3Aaction=list_classifiers
+      long_description=open("README.txt").read(),
       classifiers=[
         "Framework :: Plone",
         "Framework :: Zope2",
@@ -18,7 +16,7 @@ Session based authentication for the Zope Pluggable Authentication Services.""",
 	"Topic :: System :: Systems Administration :: Authentication/Directory",
         ],
       keywords='PAS session authentication Zope',
-      author='Plone Foundation',
+      author='Wichert Akkerman - Plone Foundation',
       author_email='plone-developers@lists.sourceforge.net',
       url='http://svn.plone.org/svn/plone/plone.session',
       license='GPL',
