@@ -6,7 +6,7 @@ can be used directly, or be used as a base for custom session management
 strategies.
 
 In its default configuration plone.sessions uses a secure cryptographic
-hash based on HMAC_ SHA1_ to authenticate sessions. The hash is generated
+hash based on HMAC_ SHA-1_ to authenticate sessions. The hash is generated
 using the users login name and a secret stored in the PAS plugin. This has
 several advantages over other session management systems:
 
