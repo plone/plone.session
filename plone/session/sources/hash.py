@@ -1,7 +1,5 @@
-from zope.interface import implements
 from zope.annotation.interfaces import IAnnotations
 from plone.session.sources.base import BaseSource
-from AccessControl import ClassSecurityInfo
 from Products.Five.browser.pagetemplatefile import ViewPageTemplateFile
 import random, hmac, sha
 
