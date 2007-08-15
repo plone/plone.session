@@ -2,8 +2,8 @@ Changelog for plone.session
 
     (name of developer listed in brackets)
 
-plone.session - 0.1 Unreleased
+plone.session - 1.0 August 15, 2007
 
-    - Initial package structure.
-      [zopeskel]
+    - First stable release
+      [wichert]
 
