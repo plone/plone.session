@@ -5,7 +5,7 @@ version = '1.1'
 setup(name='plone.session',
       version=version,
       description="Session based authentication for Zope",
-      long_description=open("README.txt").read(),
+      long_description=open("README.txt").read() + open("docs/HISTORY.txt").read(),
       classifiers=[
         "Framework :: Plone",
         "Framework :: Zope2",

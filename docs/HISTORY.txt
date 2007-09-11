@@ -1,9 +1,19 @@
-Changelog for plone.session
+Changelog
+---------
 
-    (name of developer listed in brackets)
+Version 1.1  - September 11, 2007
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-plone.session - 1.0 August 15, 2007
+- Use the userid instead of the login name in session identifiers. This
+  has the side-effect of working around a bug in PAS which caused us to
+  mix up users when the login name used was an inexact match for another
+  login name.
+  [wichert]
 
-    - First stable release
-      [wichert]
+
+Version 1.0  - August 15, 2007
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- First stable release
+  [wichert]
 
