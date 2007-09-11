@@ -115,9 +115,9 @@ class SessionPlugin(BasePlugin):
         source=self.source
         identifier=credentials["cookie"]
         if source.verifyIdentifier(identifier):
-            login=source.extractLoginName(identifier)
+            userid=source.extractUserId(identifier)
             pas=self._getPAS()
-            info=pas._verifyUser(pas.plugins, login=login)
+            info=pas._verifyUser(pas.plugins, user_id=login)
             if info is not None:
                 return (info['id'], info['login'])
 
@@ -127,9 +127,10 @@ class SessionPlugin(BasePlugin):
     # ICredentialsUpdatePlugin implementation
     def updateCredentials(self, request, response, login, new_password):
         pas=self._getPAS()
-        if pas._verifyUser(pas.plugins, login=login) is not None:
+        info=pas._verifyUser(pas.plugins, login=login)
+        if info is not None:
             # Only setup a session for users in our own user folder.
-            self.setupSession(login, response)
+            self.setupSession(info["id"], response)
 
 
     # ICredentialsResetPlugin implementation

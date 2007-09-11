@@ -87,7 +87,7 @@ class HashSession(BaseSource):
         return False
 
 
-    def extractLoginName(self, identifier):
+    def extractUserId(self, identifier):
         (signature, userid)=self.splitIdentifier(identifier)
         return userid
 

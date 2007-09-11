@@ -32,9 +32,9 @@ class ISessionSource(Interface):
         """
 
 
-    def extractLoginName(identifier):
+    def extractUserId(identifier):
         """
-        Extract the login name from an identifier.
+        Extract the user id from an identifier.
         """
 
 

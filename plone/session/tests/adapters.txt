@@ -36,6 +36,6 @@ A source can verify if an identifier is valid:
 
 Finally we should be able to extract the original user id from the identifier:
 
-  >>> source.extractLoginName(id)
+  >>> source.extractUserId(id)
   'johny.bravo'
 
