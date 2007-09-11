@@ -117,7 +117,7 @@ class SessionPlugin(BasePlugin):
         if source.verifyIdentifier(identifier):
             userid=source.extractUserId(identifier)
             pas=self._getPAS()
-            info=pas._verifyUser(pas.plugins, user_id=login)
+            info=pas._verifyUser(pas.plugins, user_id=userid)
             if info is not None:
                 return (info['id'], info['login'])
 
