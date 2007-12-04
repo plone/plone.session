@@ -1,4 +1,4 @@
-from zope.annotation.interfaces import IAnnotations
+from zope.app.annotation.interfaces import IAnnotations
 from plone.session.sources.base import BaseSource
 from Products.Five.browser.pagetemplatefile import ViewPageTemplateFile
 import random, hmac, sha
