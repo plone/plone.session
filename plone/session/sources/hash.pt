@@ -17,9 +17,9 @@ are still considerd to be valid.
 <h4>Invalidate all session identifiers</h4>
 
 <p>
-By clicking the button below you clear all secrets user to validate sessions. This
-will immediately log out all users who use session authenticion and require them
-to log in again.
+By clicking the button below you clear all secrets user to validate sessions.
+This will immediately log out all users who use session authentication and
+require them to log in again.
 </p>
 
 <form method="post" action="."
@@ -58,8 +58,8 @@ do this add a stanza like the following to your <em>zope.conf</em>:
 </pre>
 
 <p>
-This instructs Zope to call routine to create a new secret every four hours. Make
-sure to configure a valid manager login.
+This instructs Zope to call routine to create a new secret every four hours.
+Make sure to configure a valid manager login.
 </p>
 
 <h1 tal:replace="structure here/manage_page_footer"> PAGE FOOTER </h1>
