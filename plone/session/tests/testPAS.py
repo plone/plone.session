@@ -16,6 +16,27 @@ class TestSessionPlugin(FunctionalPloneSessionTestCase):
         session=self.folder.pas.session
         return TestRequest(**{session.cookie_name : cookie})
 
+    def testOneLineCookiesOnly(self):
+        def createIdentifier(self, *args):
+            return "x"*256
+
+        class MockResponse:
+            def setCookie(self, name, value, path):
+                self.cookie=value
+
+        response=MockResponse()
+        session=self.folder.pas.session
+
+        klass=session.source.__class__
+        org=klass.createIdentifier
+        klass.createIdentifier=createIdentifier
+
+        session.setupSession(None, response)
+
+        klass.createIdentifier=org
+        self.assertEqual(len(response.cookie.split()), 1)
+        
+
     def testExtraction(self):
         session=self.folder.pas.session
 
