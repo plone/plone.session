@@ -85,6 +85,9 @@ class SessionPlugin(BasePlugin):
         cookie=self.source.createIdentifier(userid)
         cookie=cookie.encode("base64").strip()
 
+        cookie=cookie.replace("\r","")
+        cookie=cookie.replace("\n","")        
+
         response.setCookie(self.cookie_name, cookie, path=self.path)
 
 
