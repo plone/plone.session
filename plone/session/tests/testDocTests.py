@@ -8,7 +8,7 @@ optionflags = doctest.REPORT_ONLY_FIRST_FAILURE | doctest.ELLIPSIS
 
 
 def test_suite():
-    tests = [ # "adapters.txt",
+    tests = [ "adapters.txt",
               "hash.txt",
             ]
 
