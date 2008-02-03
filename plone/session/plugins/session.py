@@ -83,10 +83,7 @@ class SessionPlugin(BasePlugin):
     # ISessionPlugin implementation
     def setupSession(self, userid, response):
         cookie=self.source.createIdentifier(userid)
-        cookie=cookie.encode("base64").strip()
-
-        cookie=cookie.replace("\r","")
-        cookie=cookie.replace("\n","")        
+        cookie=binascii.b2a_base64(cookie).rstrip()
 
         response.setCookie(self.cookie_name, cookie, path=self.path)
 
@@ -99,7 +96,7 @@ class SessionPlugin(BasePlugin):
             return creds
 
         try:
-            creds["cookie"]=request.get(self.cookie_name).decode("base64")
+            creds["cookie"]=binascii.a2b_base64(request.get(self.cookie_name))
         except binascii.Error:
             # If we have a cookie which is not properly base64 encoded it
             # can not be hours.

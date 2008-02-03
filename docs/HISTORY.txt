@@ -1,6 +1,14 @@
 Changelog
 ---------
 
+Version 1.2  - UNRELEASED
+~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- Use the binascii base64 methods to encode/decode the session cookie. This
+  prevents newlines being inserted in long cookies.
+  [wichert]
+
+
 Version 1.1  - September 11, 2007
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
