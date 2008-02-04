@@ -99,7 +99,7 @@ class SessionPlugin(BasePlugin):
             creds["cookie"]=binascii.a2b_base64(request.get(self.cookie_name))
         except binascii.Error:
             # If we have a cookie which is not properly base64 encoded it
-            # can not be hours.
+            # can not be ours.
             return creds
 
         creds["source"]="plone.session" # XXX should this be the id?
