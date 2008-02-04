@@ -54,7 +54,7 @@ invalidateSession
     Mark a session for a principal as invalid. A source may not support this,
     in which case it should return False.
 
-plone.sesion ships with two example adapers: hash and userid.
+plone.session ships with two example adapers: hash and userid.
 
 The userid adapter is a trivial example which uses the userid as session
 identifier.  This is very insecure since there is no form of verification at
