@@ -140,31 +140,6 @@ class SessionPlugin(BasePlugin):
         response=self.REQUEST["RESPONSE"]
         response.expireCookie(self.cookie_name, path=self.path)
 
-# XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX
-# This should be in HashSource !
-
-    manage_secret = PageTemplateFile("../sources/hash.pt", globals())
-
-    security.declareProtected(ManageUsers, 'manage_clearSecrets')
-    @postonly
-    def manage_clearSecrets(self, REQUEST):
-        """Clear all secrets from this source.
-
-        This invalidates all current sessions and requires users to login again.
-        """
-        self.source.clearSecrets()
-        REQUEST.RESPONSE.redirect('%s/manage_secret?manage_tabs_message=%s'
-                                     % (self.absolute_url(), 'All+secrets+cleared.'))
-
-
-    security.declareProtected(ManageUsers, 'manage_createNewSecret')
-    @postonly
-    def manage_createNewSecret(self, REQUEST):
-        """Create a new (signing) secret.
-        """
-        self.source.createNewSecret()
-        REQUEST.RESPONSE.redirect('%s/manage_secret?manage_tabs_message=%s'
-                                     % (self.absolute_url(), 'New+secret+created.'))
 
 classImplements(SessionPlugin, ISessionPlugin,
                 IExtractionPlugin, IAuthenticationPlugin,

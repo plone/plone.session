@@ -6,11 +6,6 @@
 
     <include package=".sources" />
 
-    <include package="zope.annotation" />
-
-    <five:implements
-        class=".plugins.session.SessionPlugin"
-        interface="zope.annotation.interfaces.IAttributeAnnotatable"
-        />
+    <include package="plone.keyring" />
 
 </configure>

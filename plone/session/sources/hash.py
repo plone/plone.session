@@ -1,6 +1,6 @@
-from zope.annotation.interfaces import IAnnotations
+from zope.component import getUtility
 from plone.session.sources.base import BaseSource
-from Products.Five.browser.pagetemplatefile import ViewPageTemplateFile
+from plone.keyring.interfaces import IKeyManager
 import random, hmac, sha
 
 def GenerateSecret(length=64):
@@ -15,38 +15,9 @@ class HashSession(BaseSource):
     """A Hash session source implementation.
     """
 
-    # Number of secrets to keep. The first secret is the current signing key
-    secret_count = 5
-
-    manage_options = (
-                { 'label':      'Hash tools',
-                  'action':     '@@hash_view/manage_secret' },
-                { 'label':      'Hash tools',
-                  'action':     'manage_secret' },
-              )
-
-    def __init__(self, context):
-        self.context=context
-        anno=IAnnotations(self.context)
-        if not anno.has_key("plone.session.plugins.hash.secrets"):
-            self.clearSecrets()
-
-
-    def clearSecrets(self):
-        anno=IAnnotations(self.context)
-        anno["plone.session.plugins.hash.secrets"]=[]
-        self.createNewSecret()
-
-
-    def createNewSecret(self):
-        anno=IAnnotations(self.context)
-        anno["plone.session.plugins.hash.secrets"]=[GenerateSecret()] + \
-                anno["plone.session.plugins.hash.secrets"][:self.secret_count-1]
-
-
     def getSecrets(self):
-        anno=IAnnotations(self.context)
-        return anno["plone.session.plugins.hash.secrets"]
+        manager=getUtility(IKeyManager)
+        return manager[u"_system"]
 
 
     def getSigningSecret(self):
@@ -90,8 +61,5 @@ class HashSession(BaseSource):
     def extractUserId(self, identifier):
         (signature, userid)=self.splitIdentifier(identifier)
         return userid
-
-
-    manage_secret = ViewPageTemplateFile('hash.pt')
 
 
