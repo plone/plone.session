@@ -1,7 +1,11 @@
-from zope.component import getUtility
+from zope.component import queryUtility
 from plone.session.sources.base import BaseSource
 from plone.keyring.interfaces import IKeyManager
 import random, hmac, sha
+
+class NoKeyManager(Exception):
+    pass
+
 
 def GenerateSecret(length=64):
     secret=""
@@ -16,7 +20,9 @@ class HashSession(BaseSource):
     """
 
     def getSecrets(self):
-        manager=getUtility(IKeyManager)
+        manager=queryUtility(IKeyManager, None)
+        if manager is None:
+            raise NoKeyManager
         return manager[u"_system"]
 
 
@@ -46,7 +52,12 @@ class HashSession(BaseSource):
 
 
     def verifyIdentifier(self, identifier):
-        for secret in self.getSecrets():
+        try:
+            secrets=self.getSecrets()
+        except NoKeyManager:
+            return False
+
+        for secret in secrets:
             try:
                 (signature, userid)=self.splitIdentifier(identifier)
                 if  signature==self.signUserid(userid, secret):
