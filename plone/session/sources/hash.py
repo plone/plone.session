@@ -34,7 +34,7 @@ class HashSession(BaseSource):
         if secret is None:
             secret = self.getSigningSecret()
 
-        return hmac.new(secret, userid, sha).hexdigest()
+        return hmac.new(secret, userid, sha).digest()
 
 
     def createIdentifier(self, userid):

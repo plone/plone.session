@@ -4,10 +4,6 @@ Changelog
 Version 2.0  - UNRELEASED
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 
-- HashSession.signUserid: Use hexdigest instead of digest as the latter
-  may return non-ASCII. See http://docs.python.org/lib/module-hmac.html.
-  [stefan]
-
 - Update default (hash) session source to use plone.keyring to manage
   the secrets.
   [wichert]
