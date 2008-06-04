@@ -25,6 +25,7 @@ require them to log in again.
 <form method="post" action="."
       tal:attributes="action string:${context/absolute_url}">
     <input type="submit" name="manage_clearSecrets:method" value="Clear secrets">
+    <input tal:replace="structure context/@@authenticator/authenticator" />
 </form>
 
 <h4>Create a new (signing) secret</h4>
@@ -39,6 +40,7 @@ were five secrets present.
 <form method="post" action="."
       tal:attributes="action string:${context/absolute_url}">
     <input type="submit" name="manage_createNewSecret:method" value="New secret">
+    <input tal:replace="structure context/@@authenticator/authenticator" />
 </form>
 
 <p>
