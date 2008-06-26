@@ -6,6 +6,27 @@
        for="plone.session.interfaces.ISessionPlugin"
        provides="plone.session.interfaces.ISessionSource"
        factory=".hash.HashSession"
+       /> <!-- Register this as the default -->
+
+   <adapter
+       for="plone.session.interfaces.ISessionPlugin"
+       provides="plone.session.interfaces.ISessionSource"
+       factory=".hash.HashSession"
+       name="Hash"
        />
 
+   <adapter
+       for="plone.session.interfaces.ISessionPlugin"
+       provides="plone.session.interfaces.ISessionSource"
+       factory=".tktauth.TktAuthSession"
+       name="TktAuth"
+       />
+<!--
+	<browser:page
+	    for="plone.session.interfaces.ISessionPlugin"
+	    name="tktauth_view"
+	    template="tktauth.pt"
+	    permission="zope2.ManageUsers"
+	    />
+-->
 </configure>

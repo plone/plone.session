@@ -1,0 +1,49 @@
+TktAuth sources
+===============
+
+TktAuth is registered as an alternative source:
+
+  >>> session = self.folder.pas.session
+  >>> session.source_name = "TktAuth"
+  >>> source = session.source
+  >>> source
+  <plone.session.sources.tktauth.TktAuthSession object at ...>
+
+
+The secret
+==========
+
+In keeping with mod_auth_tkt, only a single secret is used.
+
+As timestamp must be supplied to generate the same identifier multiple times:
+
+  >>> import time
+  >>> timestamp = int(time.time())
+  >>> one = source.createIdentifier("john.doe", timestamp=timestamp)
+  >>> two = source.createIdentifier("john.doe", timestamp=timestamp)
+  >>> one == two
+  True
+
+If we change the secret, a different identifier is generated:
+
+  >>> source.setSecret('abcdefghijklmnopqrstuvwxyz0123456789')
+  >>> three = source.createIdentifier("john.doe", timestamp=timestamp)
+  >>> two == three
+  False
+
+The old identifiers are no longer valid. XXX Think about this again!
+
+  >>> source.verifyIdentifier(one)
+  False
+
+Normally no timestamp is supplied.
+
+  >>> four = source.createIdentifier("john.doe")
+  >>> time.sleep(1)
+  >>> five = source.createIdentifier("john.doe")
+  >>> source.verifyIdentifier(four)
+  True
+  >>> source.verifyIdentifier(five)
+  True
+  >>> four == five
+  False

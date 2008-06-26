@@ -5,6 +5,7 @@ from Products.PluggableAuthService.interfaces.plugins \
         import IExtractionPlugin, IAuthenticationPlugin, \
                 ICredentialsResetPlugin, ICredentialsUpdatePlugin
 from AccessControl.SecurityInfo import ClassSecurityInfo
+from zope.component import getSiteManager, getAdapter
 from plone.session.interfaces import ISessionPlugin, ISessionSource
 import binascii
 
@@ -41,6 +42,9 @@ class SessionPlugin(BasePlugin):
     meta_type = "Plone Session Plugin"
     security = ClassSecurityInfo()
     cookie_name = "__ac"
+    path="/"
+    domain = ""
+    source_name = ""
 
     _properties = (
             {
@@ -55,20 +59,45 @@ class SessionPlugin(BasePlugin):
                 "type"  : "string",
                 "mode"  : "w",
             },
+            {
+                "id"    : "path",
+                "label" : "Cookie path",
+                "type"  : "string",
+                "mode"  : "w",
+            },
+            {
+                "id"    : "domain",
+                "label" : "Cookie domain (blank for default)",
+                "type"  : "string",
+                "mode"  : "w",
+            },
+            {
+                "id"    : "source_name",
+                "label" : "Source (blank for default)",
+                "type"  : "selection",
+                "mode"  : "w",
+                "select_variable" : "listSourceNames"
+            },
             )
 
-    def __init__(self, id, title=None, path="/"):
+    def __init__(self, id, title=None, path="/", domain=None, source_name=None):
         self._setId(id)
         self.title=title
         self.path=path
+        if domain: self.domain=domain
+        if source_name: self.source_name=source_name
 
     @property
     def source(self):
-        return ISessionSource(self)
+        return getAdapter(self, ISessionSource, name=self.source_name)
+    
+    def listSourceNames(self):
+        sm = getSiteManager()
+        return [name for name, adapter in sm.getAdapters((self,), ISessionSource)]
 
 
     def manage_options(self):
-        """Splice in mangae options from our source if it has them."""
+        """Splice in manage options from our source if it has them."""
 
         more = getattr(self.source, 'manage_options', ()) 
         if more:
@@ -84,8 +113,11 @@ class SessionPlugin(BasePlugin):
     def setupSession(self, userid, response):
         cookie=self.source.createIdentifier(userid)
         cookie=binascii.b2a_base64(cookie).rstrip()
-
-        response.setCookie(self.cookie_name, cookie, path=self.path)
+        
+        options = {'path': self.path}
+        if self.domain:
+            options['domain'] = self.domain
+        response.setCookie(self.cookie_name, cookie, **options)
 
 
     # IExtractionPlugin implementation

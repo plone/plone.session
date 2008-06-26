@@ -15,6 +15,13 @@ to the hash plugin:
   >>> from plone.session.interfaces import ISessionSource
   >>> source=ISessionSource(session)
 
+Additional sources may be made available by registering named adapters. 
+
+  >>> from zope.component import getAdapter
+  >>> source2 = getAdapter(session, ISessionSource, name="Hash")
+  >>> source.__class__ == source2.__class__
+  True
+
 Standard sources
 ================
 
