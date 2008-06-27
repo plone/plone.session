@@ -47,3 +47,11 @@ Normally no timestamp is supplied.
   True
   >>> four == five
   False
+
+And after a little time the same identifier should still be valid
+
+  >>> time.sleep(1)
+  >>> source.verifyIdentifier(five)
+  True
+  >>> source.extractUserId(five)
+  'john.doe'

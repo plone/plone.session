@@ -110,7 +110,7 @@ class TktAuthSession(BaseSource):
 
 
     def extractUserId(self, identifier):
-        (digest, timestamp, userid, tokens, user_data)=self.splitIdentifier(identifier)
+        (digest, userid, tokens, user_data, timestamp)=self.splitIdentifier(identifier)
         return userid
 
 
