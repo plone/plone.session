@@ -70,7 +70,7 @@ class TktAuthSession(BaseSource):
             user_data = ''
 
         token_list = ','.join(tokens)
-        digest0 = md5.new( inet_aton(ip) + pack("!I", timestamp) +
+        digest0 = md5.new( inet_aton(ip) + pack("!I", timestamp) + secret +
                     '\0'.join((userid, token_list, user_data)) ).hexdigest()
         digest = md5.new(digest0 + secret).hexdigest()
         
