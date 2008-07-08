@@ -26,5 +26,6 @@ setup(name='plone.session',
       download_url='http://code.google.com/p/plone/downloads/list',
       install_requires=[
         'setuptools',
+        'plone.protect',
       ],
       )
