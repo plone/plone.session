@@ -1,6 +1,6 @@
 from setuptools import setup, find_packages
 
-version = '1.3'
+version = '2.1'
 
 setup(name='plone.session',
       version=version,
@@ -27,7 +27,4 @@ setup(name='plone.session',
       install_requires=[
         'setuptools',
       ],
-      entry_points="""
-      # -*- Entry points: -*-
-      """,
       )
