@@ -26,7 +26,7 @@ As timestamp must be supplied to generate the same identifier multiple times:
 
 If we change the secret, a different identifier is generated:
 
-  >>> source.setSecret('abcdefghijklmnopqrstuvwxyz0123456789')
+  >>> source.setSecret('another secret')
   >>> three = source.createIdentifier("john.doe", timestamp=timestamp)
   >>> two == three
   False
@@ -54,4 +54,4 @@ And after a little time the same identifier should still be valid
   >>> source.verifyIdentifier(five)
   True
   >>> source.extractUserId(five)
-  'john.doe'
+  u'john.doe'

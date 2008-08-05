@@ -170,7 +170,10 @@ class SessionPlugin(BasePlugin):
         source=self.source
 
         response=self.REQUEST["RESPONSE"]
-        response.expireCookie(self.cookie_name, path=self.path)
+        if self.domain:
+            response.expireCookie(self.cookie_name, path=self.path, domain=self.domain)
+        else:
+            response.expireCookie(self.cookie_name, path=self.path)
 
 # XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX
 # This should be in HashSource !

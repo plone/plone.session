@@ -5,6 +5,7 @@ from socket import inet_aton
 from struct import pack
 import random, md5, time
 
+import mod_auth_tkt
 
 def GenerateSecret(length=64):
     secret=""
@@ -53,64 +54,27 @@ class TktAuthSession(BaseSource):
 
     def createIdentifier(self,
                          userid,
-                         tokens=None,
                          user_data=None,
-                         timestamp=None,
-                         ip=None,
-                         secret=None):
-        if secret is None:
-            secret = self.getSecret()
-        if ip is None:
-            ip =  "0.0.0.0" # XXX implied by ignoreIp
+                         timestamp=None):
         if timestamp is None:
             timestamp = int(time.time())
-        if tokens is None:
-            tokens = ()  # group ids could be useful here
         if user_data is None:
             user_data = ''
 
-        token_list = ','.join(tokens)
-        digest0 = md5.new( inet_aton(ip) + pack("!I", timestamp) + secret +
-                    '\0'.join((userid, token_list, user_data)) ).hexdigest()
-        digest = md5.new(digest0 + secret).hexdigest()
+        return mod_auth_tkt.createTicket(userid, (), user_data, '0.0.0.0', timestamp, self.getSecret())
         
-        identifier = "%s%08x%s!" % (digest, timestamp, userid) 
-        if tokens:
-            identifier += tokens_list + '!'
-        identifier += user_data
-        
-        return identifier
-
-    def splitIdentifier(self, identifier):
-        digest = identifier[:32]
-        timestamp = int(identifier[32:40], 16)
-        parts = identifier[40:].split("!")
-        
-        if len(parts) == 2:
-            userid, user_data = parts
-            tokens = ()
-        elif len(parts) == 3:
-            userid, token_list, user_data = parts
-            tokens = ','.split(token_list)
-        else:
-            raise ValueError
-
-        return (digest, userid, tokens, user_data, timestamp)
-
-
     def verifyIdentifier(self, identifier):
-        (digest, userid, tokens, user_data, timestamp)=self.splitIdentifier(identifier)
-        new_identifier = self.createIdentifier(userid, tokens, user_data, timestamp)
+        (digest, userid, tokens, user_data, timestamp) = mod_auth_tkt.splitTicket(identifier)
+        new_identifier = self.createIdentifier(userid, user_data, timestamp)
         if new_identifier[:32] == digest:
             if timestamp + self.timeout > time.time():
                 return True
-# XXX Should refresh the ticket if after timeout refresh.
-
+        # XXX Should refresh the ticket if after timeout refresh.
         return False
 
 
     def extractUserId(self, identifier):
-        (digest, userid, tokens, user_data, timestamp)=self.splitIdentifier(identifier)
+        (digest, userid, tokens, user_data, timestamp) = mod_auth_tkt.splitTicket(identifier)
         return userid
 
 
