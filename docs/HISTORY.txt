@@ -1,12 +1,20 @@
 Changelog
 ---------
 
-Version 2.0  - UNRELEASED
+Version 2.1  - Unreleased
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 
 - Update default (hash) session source to use plone.keyring to manage
   the secrets.
   [wichert]
+
+
+Version 2.0  - July 8, 2008
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- Fix CSRF protection for managing server secrets via the Plone session
+  plugin for PAS. Fixes http://dev.plone.org/plone/ticket/8176
+  [witsch]
 
 
 Version 1.2  - February 15, 2007

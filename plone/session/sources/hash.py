@@ -1,18 +1,14 @@
+import random, hmac, sha
+
 from zope.component import queryUtility
 from plone.session.sources.base import BaseSource
 from plone.keyring.interfaces import IKeyManager
-import random, hmac, sha
+
+from Products.Five.browser.pagetemplatefile import ViewPageTemplateFile
+
 
 class NoKeyManager(Exception):
     pass
-
-
-def GenerateSecret(length=64):
-    secret=""
-    for i in range(length):
-        secret+=chr(random.getrandbits(8))
-
-    return secret
 
 
 class HashSession(BaseSource):
@@ -72,5 +68,8 @@ class HashSession(BaseSource):
     def extractUserId(self, identifier):
         (signature, userid)=self.splitIdentifier(identifier)
         return userid
+
+
+    manage_secret = ViewPageTemplateFile('hash.pt')
 
 
