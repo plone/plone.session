@@ -4,6 +4,9 @@ Changelog
 Version 2.1  - Unreleased
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 
+- Fixed a component lookup call in the HashSession source.
+  [davisagli, hannosch]
+
 - Update default (hash) session source to use plone.keyring to manage
   the secrets.
   [wichert]
