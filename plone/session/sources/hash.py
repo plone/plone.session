@@ -16,7 +16,7 @@ class HashSession(BaseSource):
     """
 
     def getSecrets(self):
-        manager=queryUtility(IKeyManager, None)
+        manager=queryUtility(IKeyManager, default=None)
         if manager is None:
             raise NoKeyManager
         return manager[u"_system"]
