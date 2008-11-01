@@ -22,33 +22,3 @@ generate an identifier multiple times:
   >>> two = source.createIdentifier("john.doe")
   >>> one == two
   True
-
-We can add a new secret to the ring, which will result in a different
-identifier being generated:
-
-  >>> source.createNewSecret()
-  >>> three = source.createIdentifier("john.doe")
-  >>> two == three
-  False
-
-The old identifiers are still valid, since their secret is still in the
-secret ring:
-
-  >>> source.verifyIdentifier(one)
-  True
-
-If we think a secret has been compromised we can clear the secret ring
-and start with a new secret. This means all existing identifiers are no
-longer valid:
-
-  >>> source.clearSecrets()
-  >>> source.verifyIdentifier(two)
-  False
-  >>> source.verifyIdentifier(three)
-  False
-
-But we can create new identifiers using the new signing secret:
-
-  >>> four = source.createIdentifier("john.doe")
-  >>> source.verifyIdentifier(four)
-  True

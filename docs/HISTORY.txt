@@ -4,6 +4,9 @@ Changelog
 Version 2.1  - Unreleased
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 
+- Fixed the remaining tests to work with the new keyring backend.
+  [hannosch]
+
 - Fixed a component lookup call in the HashSession source.
   [davisagli, hannosch]
 

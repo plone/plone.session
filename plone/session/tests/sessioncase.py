@@ -1,7 +1,10 @@
+from zope.configuration.xmlconfig import XMLConfig
+
 from Testing import ZopeTestCase
 from Products.Five import zcml
 
 import plone.session
+import plone.session.tests
 from plone.session.plugins.session import SessionPlugin
 from plone.session.tests.layer import PloneSession
 
@@ -28,6 +31,7 @@ class PloneSessionTestCase(ZopeTestCase.ZopeTestCase):
 
     def afterSetUp(self):
         zcml.load_config('configure.zcml', plone.session)
+        zcml.load_config('configure.zcml', plone.session.tests)
         self.folder._setObject("pas", FakePAS("pas"))
         self.folder.pas._setObject("session", SessionPlugin("session"))
 
