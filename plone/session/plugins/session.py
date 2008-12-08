@@ -1,3 +1,4 @@
+from DateTime import DateTime
 from Products.PageTemplates.PageTemplateFile import PageTemplateFile
 from Products.PluggableAuthService.plugins.BasePlugin import BasePlugin
 from Products.PluggableAuthService.utils import classImplements
@@ -41,6 +42,7 @@ class SessionPlugin(BasePlugin):
     meta_type = "Plone Session Plugin"
     security = ClassSecurityInfo()
     cookie_name = "__ac"
+    cookie_lifetime = 0
 
     _properties = (
             {
@@ -53,6 +55,12 @@ class SessionPlugin(BasePlugin):
                 "id"    : "cookie_name",
                 "label" : "Cookie Name root",
                 "type"  : "string",
+                "mode"  : "w",
+            },
+            {
+                "id"    : "cookie_lifetime",
+                "label" : "Cookie lifetime (in days)",
+                "type"  : "int",
                 "mode"  : "w",
             },
             )
@@ -85,7 +93,11 @@ class SessionPlugin(BasePlugin):
         cookie=self.source.createIdentifier(userid)
         cookie=binascii.b2a_base64(cookie).rstrip()
 
-        response.setCookie(self.cookie_name, cookie, path=self.path)
+        if isinstance(self.cookie_lifetime, int) and self.cookie_lifetime:
+            expires = (DateTime() + self.cookie_lifetime).toZone('GMT').rfc822()
+            response.setCookie(self.cookie_name, cookie, path=self.path, expires=expires)
+        else:
+            response.setCookie(self.cookie_name, cookie, path=self.path)
 
 
     # IExtractionPlugin implementation

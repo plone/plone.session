@@ -17,6 +17,12 @@ several advantages over other session management systems:
 * it allows you to invalidate all existing authentication cookies for
   users by updating the secret.
 
+Normally a session cookie is used to track sessions; that means that as long as
+a user keeps his browser open (and does not explicitly log out) the session
+remains opens. This can be changed by setting the ``cookie_lifetime`` property
+of the plugin to the number of seconds the cookie should remain valid *after
+the moment of login*. 
+
 .. _HMAC: http://en.wikipedia.org/wiki/HMAC
 .. _SHA-1: http://en.wikipedia.org/wiki/SHA-1
 

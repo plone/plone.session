@@ -4,6 +4,10 @@ Changelog
 Version 2.1  - Unreleased
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 
+- Make the cookie lifetime configurable. Patch by Rok Garbas. Fixes
+  http://dev.plone.org/plone/ticket/7248
+  [wichert, garbas]
+
 
 Version 2.0  - July 8, 2008
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
