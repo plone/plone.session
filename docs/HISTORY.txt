@@ -1,8 +1,8 @@
 Changelog
 ---------
 
-Version 2.1  - Unreleased
-~~~~~~~~~~~~~~~~~~~~~~~~~
+3.0  - Unreleased
+~~~~~~~~~~~~~~~~~
 
 - Fixed the remaining tests to work with the new keyring backend.
   [hannosch]
@@ -15,24 +15,32 @@ Version 2.1  - Unreleased
   [wichert]
 
 
-Version 2.0  - July 8, 2008
-~~~~~~~~~~~~~~~~~~~~~~~~~~~
+2.1  - Unreleased
+~~~~~~~~~~~~~~~~~
+
+- Make the cookie lifetime configurable. Patch by Rok Garbas. Fixes
+  http://dev.plone.org/plone/ticket/7248
+  [wichert, garbas]
+
+
+2.0  - July 8, 2008
+~~~~~~~~~~~~~~~~~~~
 
 - Fix CSRF protection for managing server secrets via the Plone session
   plugin for PAS. Fixes http://dev.plone.org/plone/ticket/8176
   [witsch]
 
 
-Version 1.2  - February 15, 2007
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+1.2  - February 15, 2007
+~~~~~~~~~~~~~~~~~~~~~~~~
 
 - Use the binascii base64 methods to encode/decode the session cookie. This
   prevents newlines being inserted in long cookies.
   [wichert]
 
 
-Version 1.1  - September 11, 2007
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+1.1  - September 11, 2007
+~~~~~~~~~~~~~~~~~~~~~~~~~
 
 - Use the userid instead of the login name in session identifiers. This
   has the side-effect of working around a bug in PAS which caused us to
@@ -41,8 +49,8 @@ Version 1.1  - September 11, 2007
   [wichert]
 
 
-Version 1.0  - August 15, 2007
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+1.0  - August 15, 2007
+~~~~~~~~~~~~~~~~~~~~~~
 
 - First stable release
   [wichert]
