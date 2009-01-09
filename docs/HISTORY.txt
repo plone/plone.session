@@ -4,6 +4,9 @@ Changelog
 3.0  - Unreleased
 ~~~~~~~~~~~~~~~~~
 
+- Specify package dependencies.
+  [hannosch]
+
 - Fixed the remaining tests to work with the new keyring backend.
   [hannosch]
 
