@@ -23,15 +23,19 @@ setup(name='plone.session',
       include_package_data=True,
       zip_safe=False,
       download_url='http://code.google.com/p/plone/downloads/list',
+      extras_require=dict(
+        test=[
+            'zope.configuration',
+            'zope.publisher',
+            'Products.PloneTestCase',
+        ]
+      ),
       install_requires=[
         'setuptools',
         'plone.keyring',
         'plone.protect',
         'zope.component',
-        'zope.configuration',
         'zope.interface',
-        'zope.publisher',
-        'Products.PloneTestCase',
         'Products.PluggableAuthService',
         # 'DateTime',
         # 'Zope2',
