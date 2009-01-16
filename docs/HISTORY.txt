@@ -4,6 +4,10 @@ Changelog
 Version 2.1  - Unreleased
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 
+- Protect the setupSession call with the ManageUsers permission.
+  Fixes possible privilege escalation.
+  [maurits]
+
 - Make the cookie lifetime configurable. Patch by Rok Garbas. Fixes
   http://dev.plone.org/plone/ticket/7248
   [wichert, garbas]
