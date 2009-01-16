@@ -81,6 +81,7 @@ class SessionPlugin(BasePlugin):
 
 
     # ISessionPlugin implementation
+    security.declareProtected(ManageUsers, 'setupSession')
     def setupSession(self, userid, response):
         cookie=self.source.createIdentifier(userid)
         cookie=binascii.b2a_base64(cookie).rstrip()
