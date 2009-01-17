@@ -1,10 +1,15 @@
-import random, hmac, sha
+import hmac
 
 from zope.component import queryUtility
 from plone.session.sources.base import BaseSource
 from plone.keyring.interfaces import IKeyManager
 
 from Products.Five.browser.pagetemplatefile import ViewPageTemplateFile
+
+try:
+    from hashlib import sha1 as sha
+except ImportError:
+    import sha
 
 
 class NoKeyManager(Exception):
