@@ -1,8 +1,12 @@
 Changelog
 ---------
 
-Version 2.1  - Unreleased
+Version 2.2  - Unreleased
 ~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+Version 2.1  - February 4, 2009
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 - Protect the setupSession call with the ManageUsers permission.
   Fixes possible privilege escalation.
