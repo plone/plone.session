@@ -1,6 +1,6 @@
 from setuptools import setup, find_packages
 
-version = '2.1'
+version = '3.0'
 
 setup(name='plone.session',
       version=version,
@@ -16,13 +16,12 @@ setup(name='plone.session',
       keywords='PAS session authentication Zope',
       author='Wichert Akkerman - Plone Foundation',
       author_email='plone-developers@lists.sourceforge.net',
-      url='http://svn.plone.org/svn/plone/plone.session',
+      url='http://pypi.python.org/pypi/plone.session',
       license='GPL',
       packages=find_packages(exclude=['ez_setup']),
       namespace_packages=['plone'],
       include_package_data=True,
       zip_safe=False,
-      download_url='http://code.google.com/p/plone/downloads/list',
       extras_require=dict(
         test=[
             'zope.configuration',
@@ -37,7 +36,7 @@ setup(name='plone.session',
         'zope.component',
         'zope.interface',
         'Products.PluggableAuthService',
-        # 'DateTime',
-        # 'Zope2',
+        'DateTime',
+        'Zope2',
       ],
       )

@@ -7,10 +7,6 @@ Changelog
 - Avoid deprecation warning for the sha module in Python 2.6.
   [hannosch]
 
-- Protect the setupSession call with the ManageUsers permission.
-  Fixes possible privilege escalation.
-  [maurits]
-
 - Declare test dependencies in an extra.
   [hannosch]
 
@@ -28,8 +24,12 @@ Changelog
   [wichert]
 
 
-2.1  - Unreleased
-~~~~~~~~~~~~~~~~~
+2.1  - February 4, 2009
+~~~~~~~~~~~~~~~~~~~~~~~
+
+- Protect the setupSession call with the ManageUsers permission.
+  Fixes possible privilege escalation.
+  [maurits]
 
 - Make the cookie lifetime configurable. Patch by Rok Garbas. Fixes
   http://dev.plone.org/plone/ticket/7248
