@@ -4,6 +4,9 @@ Changelog
 Version 2.2  - Unreleased
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 
+- Avoid deprecation warning for the sha module in Python 2.6.
+  [hannosch]
+
 
 Version 2.1  - February 4, 2009
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
