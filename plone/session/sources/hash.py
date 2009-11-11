@@ -4,8 +4,6 @@ from zope.component import queryUtility
 from plone.session.sources.base import BaseSource
 from plone.keyring.interfaces import IKeyManager
 
-from Products.Five.browser.pagetemplatefile import ViewPageTemplateFile
-
 try:
     from hashlib import sha1 as sha
 except ImportError:
@@ -73,8 +71,4 @@ class HashSession(BaseSource):
     def extractUserId(self, identifier):
         (signature, userid)=self.splitIdentifier(identifier)
         return userid
-
-
-    manage_secret = ViewPageTemplateFile('hash.pt')
-
 

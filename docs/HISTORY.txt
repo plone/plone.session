@@ -4,6 +4,8 @@ Changelog
 3.0a2 - unreleased
 ~~~~~~~~~~~~~~~~~~
 
+- Remove hash management UI which had been accidentally re-merged.
+  [davisagli]
 
 3.0a1 - 2009-04-04
 ~~~~~~~~~~~~~~~~~~
