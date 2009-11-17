@@ -75,7 +75,7 @@ class TktAuthSession(BaseSource):
 
     def extractUserId(self, identifier):
         (digest, userid, tokens, user_data, timestamp) = mod_auth_tkt.splitTicket(identifier)
-        return userid
+        return userid.encode('utf-8')
 
 
     manage_secret = ViewPageTemplateFile('tktauth.pt')
