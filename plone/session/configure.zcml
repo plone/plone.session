@@ -7,6 +7,7 @@
     <include package=".sources" />
 
     <include package="zope.annotation" />
+    <include package="plone.protect" />
 
     <five:implements
         class=".plugins.session.SessionPlugin"

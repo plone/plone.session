@@ -1,7 +1,12 @@
 from zope.annotation.interfaces import IAnnotations
+
 from plone.session.sources.base import BaseSource
 from Products.Five.browser.pagetemplatefile import ViewPageTemplateFile
-import random, hmac, sha
+import random, hmac
+try:
+    from hashlib import sha1 as sha
+except ImportError:
+    import sha
 
 def GenerateSecret(length=64):
     secret=""

@@ -1,3 +1,4 @@
+from DateTime import DateTime
 from Products.PageTemplates.PageTemplateFile import PageTemplateFile
 from Products.PluggableAuthService.plugins.BasePlugin import BasePlugin
 from Products.PluggableAuthService.utils import classImplements
@@ -42,6 +43,7 @@ class SessionPlugin(BasePlugin):
     meta_type = "Plone Session Plugin"
     security = ClassSecurityInfo()
     cookie_name = "__ac"
+    cookie_lifetime = 0
     path="/"
     domain = ""
     source_name = ""
@@ -57,6 +59,12 @@ class SessionPlugin(BasePlugin):
                 "id"    : "cookie_name",
                 "label" : "Cookie Name root",
                 "type"  : "string",
+                "mode"  : "w",
+            },
+            {
+                "id"    : "cookie_lifetime",
+                "label" : "Cookie lifetime (in days)",
+                "type"  : "int",
                 "mode"  : "w",
             },
             {
@@ -110,6 +118,7 @@ class SessionPlugin(BasePlugin):
 
 
     # ISessionPlugin implementation
+    security.declareProtected(ManageUsers, 'setupSession')
     def setupSession(self, userid, response):
         cookie=self.source.createIdentifier(userid)
         cookie=binascii.b2a_base64(cookie).rstrip()
@@ -119,6 +128,11 @@ class SessionPlugin(BasePlugin):
             options['domain'] = self.domain
         response.setCookie(self.cookie_name, cookie, **options)
 
+        if isinstance(self.cookie_lifetime, int) and self.cookie_lifetime:
+            expires = (DateTime() + self.cookie_lifetime).toZone('GMT').rfc822()
+            response.setCookie(self.cookie_name, cookie, path=self.path, expires=expires)
+        else:
+            response.setCookie(self.cookie_name, cookie, path=self.path)
 
     # IExtractionPlugin implementation
     def extractCredentials(self, request):

@@ -1,8 +1,49 @@
 Changelog
 ---------
 
-Version 1.3  - UNRELEASED
+Version X.Y
+~~~~~~~~~~~
+
+- LDAPUserFolder expects encoded strings, not unicode.
+  [ldr]
+
+- Separate out mod_auth_tkt.py.
+  [ldr]
+
+- Fix ticket algorithm to be compatible with mod_auth_tkt.
+  [ldr]
+
+- Fix user id extraction.
+  [ldr]
+
+- tktauth source and more configurability for sources.
+  [ldr]
+
+- Create branch for adding mod_auth_tkt support.
+  [ldr]
+
+
+Version 2.2  - Unreleased
 ~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- Avoid deprecation warning for the sha module in Python 2.6.
+  [hannosch]
+
+
+Version 2.1  - February 4, 2009
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- Protect the setupSession call with the ManageUsers permission.
+  Fixes possible privilege escalation.
+  [maurits]
+
+- Make the cookie lifetime configurable. Patch by Rok Garbas. Fixes
+  http://dev.plone.org/plone/ticket/7248
+  [wichert, garbas]
+
+
+Version 2.0  - July 8, 2008
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 - Fix CSRF protection for managing server secrets via the Plone session
   plugin for PAS. Fixes http://dev.plone.org/plone/ticket/8176
