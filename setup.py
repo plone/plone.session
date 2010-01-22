@@ -1,6 +1,6 @@
 from setuptools import setup, find_packages
 
-version = '1.2'
+version = '1.2.eea.1'
 
 setup(name='plone.session',
       version=version,

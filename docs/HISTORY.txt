@@ -1,6 +1,12 @@
 Changelog
 ---------
 
+Version 1.2.eea.1  - January 22, 2010
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- Plone 2.5 compatible 
+- Internal EEA release
+
 Version 1.1  - September 11, 2007
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
