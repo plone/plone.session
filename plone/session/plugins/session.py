@@ -1,4 +1,3 @@
-from DateTime import DateTime
 from Products.PageTemplates.PageTemplateFile import PageTemplateFile
 from Products.PluggableAuthService.plugins.BasePlugin import BasePlugin
 from Products.PluggableAuthService.utils import classImplements
@@ -6,16 +5,14 @@ from Products.PluggableAuthService.interfaces.plugins \
         import IExtractionPlugin, IAuthenticationPlugin, \
                 ICredentialsResetPlugin, ICredentialsUpdatePlugin
 from AccessControl.SecurityInfo import ClassSecurityInfo
-from plone.session.interfaces import ISessionPlugin, ISessionSource
+from plone.keyring.interfaces import IKeyManager
+from plone.session import tktauth
+from plone.session.interfaces import ISessionPlugin
+from zope.component import getUtility
 import binascii
+import datetime
 
-try:
-    from AccessControl.requestmethod import postonly
-except ImportError:
-    # For Zope <2.8.9, <2.9.7 and <2.10.3
-    def postonly(func):
-        return func
-
+from AccessControl.requestmethod import postonly
 # Temporary imports
 from Products.PluggableAuthService.permissions import ManageUsers
 
@@ -33,7 +30,11 @@ def manage_addSessionPlugin(dispatcher, id, title=None, path='/', REQUEST=None):
                                'manage_tabs_message=Session+plugin+created.' %
                                dispatcher.absolute_url())
 
-
+def cookie_expiration_date(days):
+    dt = datetime.datetime.utcnow() + datetime.timedelta(days)
+    # format string from http://docs.python.org/library/time.html
+    return dt.strftime("%a, %d %b %Y %H:%M:%S +0000")
+    
 
 class SessionPlugin(BasePlugin):
     """Session authentication plugin.
@@ -43,17 +44,30 @@ class SessionPlugin(BasePlugin):
     security = ClassSecurityInfo()
     cookie_name = "__ac"
     cookie_lifetime = 0
+    cookie_domain = ''
+    mod_auth_tkt = False
+    timeout = 12*60*60 # 12h. Default is 2h in mod_auth_tkt
+
+    # These mod_auth_tkt options are not yet implemented
+    #ignoreIP = True # you always want this on the public internet
+    #timeoutRefresh = 0 # default is 0.5 in mod_auth_tkt
 
     _properties = (
             {
-                "id"    : "title",
-                "label" : "Title",
-                "type"  : "string",
-                "mode"  : "w",
-            },
+                 "id"    : "timeout",
+                 "label" : "Cookie validity timeout (in seconds)",
+                 "type"  : "int",
+                 "mode"  : "w",
+             },
+            {
+                 "id"    : "mod_auth_tkt",
+                 "label" : "Use mod_auth_tkt compatabile hashing algorithm",
+                 "type"  : "boolean",
+                 "mode"  : "w",
+             },
             {
                 "id"    : "cookie_name",
-                "label" : "Cookie Name root",
+                "label" : "Cookie name",
                 "type"  : "string",
                 "mode"  : "w",
             },
@@ -63,42 +77,48 @@ class SessionPlugin(BasePlugin):
                 "type"  : "int",
                 "mode"  : "w",
             },
+            {
+                 "id"    : "cookie_domain",
+                 "label" : "Cookie domain (blank for default)",
+                 "type"  : "string",
+                 "mode"  : "w",
+            },
+            {
+                 "id"    : "path",
+                 "label" : "Cookie path",
+                 "type"  : "string",
+                 "mode"  : "w",
+            },
             )
+
+    manage_options = (
+        dict(label='Manage secrets', action='manage_secret'),
+        ) + BasePlugin.manage_options
 
     def __init__(self, id, title=None, path="/"):
         self._setId(id)
         self.title=title
         self.path=path
 
-    @property
-    def source(self):
-        return ISessionSource(self)
+    _shared_secret = None
 
-
-    def manage_options(self):
-        """Splice in mangae options from our source if it has them."""
-
-        more = getattr(self.source, 'manage_options', ()) 
-        if more:
-            try:
-                more = tuple(more)
-            except TypeError:
-                more = more()
-
-        return more  + BasePlugin.manage_options
-
+    def _getSigningSecret(self):
+        if self._shared_secret is not None:
+            return self._shared_secret
+        manager=getUtility(IKeyManager)
+        return manager.secret()
 
     # ISessionPlugin implementation
     security.declareProtected(ManageUsers, 'setupSession')
     def setupSession(self, userid, response):
-        cookie=self.source.createIdentifier(userid)
+        cookie=tktauth.createTicket(self._getSigningSecret(), userid, mod_auth_tkt=self.mod_auth_tkt)
         cookie=binascii.b2a_base64(cookie).rstrip()
-
-        if isinstance(self.cookie_lifetime, int) and self.cookie_lifetime:
-            expires = (DateTime() + self.cookie_lifetime).toZone('GMT').rfc822()
-            response.setCookie(self.cookie_name, cookie, path=self.path, expires=expires)
-        else:
-            response.setCookie(self.cookie_name, cookie, path=self.path)
+        options = dict(path=self.path) 
+        if self.cookie_domain: 
+            options['domain'] = self.cookie_domain
+        if self.cookie_lifetime:
+            options['expires'] = cookie_expiration_date(self.cookie_lifetime)
+        response.setCookie(self.cookie_name, cookie, **options) 
 
 
     # IExtractionPlugin implementation
@@ -125,16 +145,30 @@ class SessionPlugin(BasePlugin):
         if not credentials.get("source", None)=="plone.session":
             return None
 
-        source=self.source
-        identifier=credentials["cookie"]
-        if source.verifyIdentifier(identifier):
-            userid=source.extractUserId(identifier)
-            pas=self._getPAS()
-            info=pas._verifyUser(pas.plugins, user_id=userid)
-            if info is not None:
-                return (info['id'], info['login'])
+        ticket=credentials["cookie"]
+        if self._shared_secret is not None:
+            ticket_data = tktauth.validateTicket(self._shared_secret, ticket, timeout=self.timeout, mod_auth_tkt=self.mod_auth_tkt)
+        else:
+            ticket_data = None
+            manager=getUtility(IKeyManager)
+            for secret in manager[u"_system"]:
+                if secret is None:
+                    continue
+                ticket_data = tktauth.validateTicket(secret, ticket, timeout=self.timeout, mod_auth_tkt=self.mod_auth_tkt)
+                if ticket_data is not None:
+                    break
+        if ticket_data is None:
+            return None
 
-        return None
+        (digest, userid, tokens, user_data, timestamp) = ticket_data
+        pas=self._getPAS()
+        info=pas._verifyUser(pas.plugins, user_id=userid)
+        if info is None:
+            return None
+
+        # XXX Should refresh the ticket if after timeout refresh.
+        return (info['id'], info['login'])
+
 
 
     # ICredentialsUpdatePlugin implementation
@@ -148,10 +182,70 @@ class SessionPlugin(BasePlugin):
 
     # ICredentialsResetPlugin implementation
     def resetCredentials(self, request, response):
-        source=self.source
-
         response=self.REQUEST["RESPONSE"]
-        response.expireCookie(self.cookie_name, path=self.path)
+        if self.cookie_domain: 
+            response.expireCookie(self.cookie_name, path=self.path, domain=self.cookie_domain) 
+        else: 
+            response.expireCookie(self.cookie_name, path=self.path) 
+
+
+    manage_secret = PageTemplateFile("secret.pt", globals())
+
+    security.declareProtected(ManageUsers, 'manage_clearSecrets')
+    @postonly
+    def manage_clearSecrets(self, REQUEST):
+        """Clear all secrets from this source.
+
+        This invalidates all current sessions and requires users to login again.
+        """
+        manager=getUtility(IKeyManager)
+        manager.clear()
+        manager.rotate()
+        REQUEST.RESPONSE.redirect('%s/manage_secret?manage_tabs_message=%s'
+                                     % (self.absolute_url(), 'All+secrets+cleared.'))
+
+
+    security.declareProtected(ManageUsers, 'manage_createNewSecret')
+    @postonly
+    def manage_createNewSecret(self, REQUEST):
+        """Create a new (signing) secret.
+        """
+        manager=getUtility(IKeyManager)
+        manager.rotate()
+        REQUEST.RESPONSE.redirect('%s/manage_secret?manage_tabs_message=%s'
+                                     % (self.absolute_url(), 'New+secret+created.'))
+
+
+    security.declareProtected(ManageUsers, 'haveSharedSecret')
+    def haveSharedSecret(self):
+        return self._shared_secret is not None
+
+
+    security.declareProtected(ManageUsers, 'manage_removeSharedSecret')
+    @postonly
+    def manage_removeSharedSecret(self, REQUEST):
+        """Clear all secrets from this source.
+
+        This invalidates all current sessions and requires users to login again.
+        """
+        self._shared_secret = None
+        REQUEST.RESPONSE.redirect('%s/manage_secret?manage_tabs_message=%s'
+                                     % (self.absolute_url(), 'Shared+secret+removed.'))
+
+
+    security.declareProtected(ManageUsers, 'manage_setSharedSecret')
+    @postonly
+    def manage_setSharedSecret(self, REQUEST):
+        """Set the shared secret.
+        """
+        secret = REQUEST.get('shared_secret')
+        if not secret:
+            REQUEST.RESPONSE.redirect('%s/manage_secret?manage_tabs_message=%s'
+                                         % (self.absolute_url(), 'Shared+secret+must+not+be+blank.'))
+            return
+        self._shared_secret = secret
+        REQUEST.RESPONSE.redirect('%s/manage_secret?manage_tabs_message=%s'
+                                     % (self.absolute_url(), 'New+shared+secret+set.'))
 
 
 classImplements(SessionPlugin, ISessionPlugin,

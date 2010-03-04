@@ -1,6 +1,6 @@
 from DateTime import DateTime
 from zope.publisher.browser import TestRequest
-from plone.session.interfaces import ISessionPlugin, ISessionSource
+from plone.session.interfaces import ISessionPlugin
 import plone.session
 from plone.session.tests.sessioncase import FunctionalPloneSessionTestCase
 
@@ -12,12 +12,11 @@ class MockResponse:
 
 
 class TestSessionPlugin(FunctionalPloneSessionTestCase):
+    userid = 'jbloggs'
 
     def testInterfaces(self):
         session=self.folder.pas.session
         self.assertEqual(ISessionPlugin.providedBy(session), True)
-        source=session.source
-        self.assertEqual(ISessionSource.providedBy(source), True)
 
 
     def makeRequest(self, cookie):
@@ -26,26 +25,17 @@ class TestSessionPlugin(FunctionalPloneSessionTestCase):
 
 
     def testOneLineCookiesOnly(self):
-        def createIdentifier(self, *args):
-            return "x"*256
-
+        longid = "x"*256
         response=MockResponse()
         session=self.folder.pas.session
-
-        klass=session.source.__class__
-        org=klass.createIdentifier
-        klass.createIdentifier=createIdentifier
-
-        session.setupSession(None, response)
-
-        klass.createIdentifier=org
+        session.setupSession(longid, response)
         self.assertEqual(len(response.cookie.split()), 1)
 
 
     def testCookieLifetimeNoExpiration(self):
         response=MockResponse()
         session=self.folder.pas.session
-        session.setupSession(None, response)
+        session.setupSession(self.userid, response)
         self.assertEqual(response.cookie_expires, None)
 
 
@@ -53,7 +43,7 @@ class TestSessionPlugin(FunctionalPloneSessionTestCase):
         response=MockResponse()
         session=self.folder.pas.session
         session.cookie_lifetime = 100
-        session.setupSession(None, response)
+        session.setupSession(self.userid, response)
         self.assertEqual(DateTime(response.cookie_expires).strftime('%Y%m%d'),
                         (DateTime()+100).strftime('%Y%m%d'))
         

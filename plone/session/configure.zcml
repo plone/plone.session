@@ -4,8 +4,6 @@
 
     <five:registerPackage package="." initialize=".initialize" />
 
-    <include package=".sources" />
-
     <include package="plone.protect" />
 
 </configure>

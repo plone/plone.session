@@ -4,6 +4,20 @@ Changelog
 3.0b1 - Unreleased
 ~~~~~~~~~~~~~~~~~~
 
+- Add back the hash management UI with added functionality to set shared
+  secret.
+  [elro]
+
+- Add properties for cookie domain and ticket validity timeout.
+  [elro]
+
+- Use mod_auth_tkt format cookies to give us a session validity timeout.
+  By default we use a more secure HMAC SHA-256 hashing scheme. An MD5 based
+  scheme compatible with other mod_auth_tkt implementations is optional.
+  [elro]
+
+- Remove the source component indirection.
+  [elro]
 
 3.0a2 - 2009-11-13
 ~~~~~~~~~~~~~~~~~~

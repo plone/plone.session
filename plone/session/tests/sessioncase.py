@@ -21,7 +21,7 @@ class FakePAS(Folder):
     def _verifyUser(self, plugin, user_id=None, login=None):
         assert user_id is None
         if login=='our_user':
-            return dict(id=user_id, login=user_id, pluginid="session")
+            return dict(id=login, login=login, pluginid="session")
         return None
 
 

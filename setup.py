@@ -36,7 +36,6 @@ setup(name='plone.session',
         'zope.component',
         'zope.interface',
         'Products.PluggableAuthService',
-        'DateTime',
         'Zope2',
       ],
       )

@@ -1,22 +1,14 @@
 import unittest
 from zope.testing import doctest
-from Testing.ZopeTestCase import FunctionalDocFileSuite
 
-from plone.session.tests.sessioncase import FunctionalPloneSessionTestCase
+from plone.session import tktauth
 
 optionflags = doctest.REPORT_ONLY_FIRST_FAILURE | doctest.ELLIPSIS
 
 
 def test_suite():
-    tests = [ "adapters.txt",
-              "hash.txt",
-            ]
-
     suite = unittest.TestSuite()
-    for test in tests:
-        suite.addTest(FunctionalDocFileSuite(test,
-                optionflags=optionflags,
-                package="plone.session.tests",
-                test_class=FunctionalPloneSessionTestCase))
+    suite.addTest(doctest.DocTestSuite(tktauth,
+            optionflags=optionflags))
 
     return suite
