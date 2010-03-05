@@ -1,7 +1,12 @@
 Changelog
 ---------
 
-3.0b1 - Unreleased
+3.0b2 - Unreleased
+~~~~~~~~~~~~~~~~~~
+
+
+
+3.0b1 - 2010-03-05
 ~~~~~~~~~~~~~~~~~~
 
 - Add back the hash management UI with added functionality to set shared
