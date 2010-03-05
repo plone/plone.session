@@ -64,7 +64,9 @@ The following properties may be set through the Properties tab:
 
   Cookie validity timeout (in seconds)
     After this, the session is invalid and the user must login again. Set to 0
-    for the cookie to remain valid indefinitely.
+    for the cookie to remain valid indefinitely. Note that when the user
+    folder has caching enabled, cookie validity may not be checked on every
+    request.
 
   Use mod_auth_tkt compatabile hashing algorithm
     Compatibility with other implemenations, but at the cost of using a weaker
