@@ -4,6 +4,9 @@ Changelog
 3.0b2 - Unreleased
 ~~~~~~~~~~~~~~~~~~
 
+- Prefix setupSession with underscore, the method should be unavailable TTW.
+  [elro]
+
 - Catch a ComponentLookupError in authenticateCredentials.
   [elro]
 

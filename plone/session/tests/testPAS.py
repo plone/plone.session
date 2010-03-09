@@ -28,14 +28,14 @@ class TestSessionPlugin(FunctionalPloneSessionTestCase):
         longid = "x"*256
         response=MockResponse()
         session=self.folder.pas.session
-        session.setupSession(longid, response)
+        session._setupSession(longid, response)
         self.assertEqual(len(response.cookie.split()), 1)
 
 
     def testCookieLifetimeNoExpiration(self):
         response=MockResponse()
         session=self.folder.pas.session
-        session.setupSession(self.userid, response)
+        session._setupSession(self.userid, response)
         self.assertEqual(response.cookie_expires, None)
 
 
@@ -43,7 +43,7 @@ class TestSessionPlugin(FunctionalPloneSessionTestCase):
         response=MockResponse()
         session=self.folder.pas.session
         session.cookie_lifetime = 100
-        session.setupSession(self.userid, response)
+        session._setupSession(self.userid, response)
         self.assertEqual(DateTime(response.cookie_expires).strftime('%Y%m%d'),
                         (DateTime()+100).strftime('%Y%m%d'))
         

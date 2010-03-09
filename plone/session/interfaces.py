@@ -5,7 +5,7 @@ class ISessionPlugin(Interface):
     Session handling PAS plugin.
     """
 
-    def setupSession(userid, response):
+    def _setupSession(userid, response):
         """
         Start a new session for a userid. The session will last until
         PAS indicates that the user has logged out.

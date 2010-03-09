@@ -109,8 +109,7 @@ class SessionPlugin(BasePlugin):
         return manager.secret()
 
     # ISessionPlugin implementation
-    security.declareProtected(ManageUsers, 'setupSession')
-    def setupSession(self, userid, response):
+    def _setupSession(self, userid, response):
         cookie=tktauth.createTicket(self._getSigningSecret(), userid, mod_auth_tkt=self.mod_auth_tkt)
         cookie=binascii.b2a_base64(cookie).rstrip()
         options = dict(path=self.path) 
@@ -179,7 +178,7 @@ class SessionPlugin(BasePlugin):
         info=pas._verifyUser(pas.plugins, login=login)
         if info is not None:
             # Only setup a session for users in our own user folder.
-            self.setupSession(info["id"], response)
+            self._setupSession(info["id"], response)
 
 
     # ICredentialsResetPlugin implementation
