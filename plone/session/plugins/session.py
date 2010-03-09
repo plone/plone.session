@@ -8,7 +8,7 @@ from AccessControl.SecurityInfo import ClassSecurityInfo
 from plone.keyring.interfaces import IKeyManager
 from plone.session import tktauth
 from plone.session.interfaces import ISessionPlugin
-from zope.component import getUtility
+from zope.component import getUtility, ComponentLookupError
 import binascii
 import datetime
 
@@ -150,7 +150,10 @@ class SessionPlugin(BasePlugin):
             ticket_data = tktauth.validateTicket(self._shared_secret, ticket, timeout=self.timeout, mod_auth_tkt=self.mod_auth_tkt)
         else:
             ticket_data = None
-            manager=getUtility(IKeyManager)
+            try:
+                manager = getUtility(IKeyManager)
+            except ComponentLookupError:
+                return None
             for secret in manager[u"_system"]:
                 if secret is None:
                     continue
