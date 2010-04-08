@@ -20,8 +20,7 @@ NEXT_URL = PLONE_URL + '/acl_users/session/external_login'
 userid = str(Request.ServerVariables("REMOTE_USER"))
 if not userid:
     # Don't process any further without credentials
-    #raise ValueError("You must not allow anonymous access to this page.")
-    pass
+    raise ValueError("You must not allow anonymous access to this page.")
 
 if '\\' in userid:
     # if we get a domain for the user ignore it
