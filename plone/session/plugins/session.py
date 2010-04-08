@@ -272,7 +272,7 @@ class SessionPlugin(BasePlugin):
         pas = self._getPAS()
         info = pas._verifyUser(pas.plugins, user_id=userid)
         if info is None:
-            return ValueError("Unknown user")
+            return ValueError("Unknown user '%s'" % userid)
         self._setCookie(ticket, response)
         came_from = request.form.get('came_from', None)
         if came_from is None:

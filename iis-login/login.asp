@@ -1,9 +1,10 @@
 <%@ Language = "Python" %><%
+#########################################
 # Configuration constants
 SECRET = 'abc123'
-SITE_URL = 'http://localhost:8080/Plone'
+PLONE_URL = 'http://localhost:8080/Plone'
 MOD_AUTH_TKT = False
-
+#########################################
 import tktauth
 import binascii
 import string
@@ -15,7 +16,7 @@ Response.AddHeader("Content-Type", "text/html; charset=utf-8")
 
 CAME_FROM_NAME = 'came_from'
 TICKET_NAME = 'ticket'
-NEXT_URL = SITE_URL + '/acl_users/session/external_login'
+NEXT_URL = PLONE_URL + '/acl_users/session/external_login'
 
 userid = str(Request.ServerVariables("REMOTE_USER"))
 if not userid:
@@ -33,13 +34,16 @@ came_from = Request.QueryString(CAME_FROM_NAME)
 if not came_from or str(came_from) == 'None':
     came_from = ''
 
+# An automatic form post is used to prevent the ticket being stored in the
+# browser's history.
+
 FORM = string.Template('''
 <form action="$action" method="post" name="login_form">
 <!-- userid: $userid -->
 <input type="hidden" name="$ticket_name" value="$ticket" />
 <input type="hidden" name="$came_from_name" value="$came_from" />
-Automatic form submission javascript is not written yet... You do not have javascript enabled. Press to log in:
-<input type="submit" name="submit" value="Login" />
+You do not have javascript enabled. Press button to log in:
+<input type="submit" name="login" value="Login" />
 </form>
 ''')
 form_html = FORM.substitute(
@@ -51,8 +55,8 @@ form_html = FORM.substitute(
     userid=userid,
     )
 
-%><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+%><!DOCTYPE html>
+<html lang="en">
 <head>
 <title>Login</title>
 </head>
@@ -63,6 +67,11 @@ form_html = FORM.substitute(
 <%
 Response.write(form_html)
 %>
+<script language="javascript">
+form = document.login_form;
+form.style.display = 'none';
+form.submit();
+</script>
 </div>
 </body>
 </html>
