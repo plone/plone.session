@@ -4,7 +4,9 @@ Changelog
 3.0b3 - Unreleased
 ~~~~~~~~~~~~~~~~~~
 
-
+- Support authentication by an external form, perhaps one running on an IIS
+  server with Integrated Windows Authentication.
+  [elro]
 
 3.0b2 - 2010-03-09
 ~~~~~~~~~~~~~~~~~~

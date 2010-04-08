@@ -1,20 +1,19 @@
+from AccessControl.SecurityInfo import ClassSecurityInfo
+from AccessControl.requestmethod import postonly
 from Products.PageTemplates.PageTemplateFile import PageTemplateFile
-from Products.PluggableAuthService.plugins.BasePlugin import BasePlugin
-from Products.PluggableAuthService.utils import classImplements
 from Products.PluggableAuthService.interfaces.plugins \
         import IExtractionPlugin, IAuthenticationPlugin, \
                 ICredentialsResetPlugin, ICredentialsUpdatePlugin
-from AccessControl.SecurityInfo import ClassSecurityInfo
+from Products.PluggableAuthService.permissions import ManageUsers
+from Products.PluggableAuthService.plugins.BasePlugin import BasePlugin
+from Products.PluggableAuthService.utils import classImplements
 from plone.keyring.interfaces import IKeyManager
 from plone.session import tktauth
 from plone.session.interfaces import ISessionPlugin
 from zope.component import getUtility, queryUtility
+
 import binascii
 import datetime
-
-from AccessControl.requestmethod import postonly
-# Temporary imports
-from Products.PluggableAuthService.permissions import ManageUsers
 
 
 manage_addSessionPluginForm = PageTemplateFile('session', globals())
@@ -34,7 +33,7 @@ def cookie_expiration_date(days):
     dt = datetime.datetime.utcnow() + datetime.timedelta(days)
     # format string from http://docs.python.org/library/time.html
     return dt.strftime("%a, %d %b %Y %H:%M:%S +0000")
-    
+
 
 class SessionPlugin(BasePlugin):
     """Session authentication plugin.
@@ -47,6 +46,7 @@ class SessionPlugin(BasePlugin):
     cookie_domain = ''
     mod_auth_tkt = False
     timeout = 12*60*60 # 12h. Default is 2h in mod_auth_tkt
+    external_ticket_name = 'ticket'
 
     # These mod_auth_tkt options are not yet implemented
     #ignoreIP = True # you always want this on the public internet
@@ -111,6 +111,10 @@ class SessionPlugin(BasePlugin):
     # ISessionPlugin implementation
     def _setupSession(self, userid, response):
         cookie=tktauth.createTicket(self._getSigningSecret(), userid, mod_auth_tkt=self.mod_auth_tkt)
+        self._setCookie(cookie, response)
+
+
+    def _setCookie(self, cookie, response):
         cookie=binascii.b2a_base64(cookie).rstrip()
         options = dict(path=self.path) 
         if self.cookie_domain: 
@@ -185,7 +189,7 @@ class SessionPlugin(BasePlugin):
     def resetCredentials(self, request, response):
         response=self.REQUEST["RESPONSE"]
         if self.cookie_domain: 
-            response.expireCookie(self.cookie_name, path=self.path, domain=self.cookie_domain) 
+            response.expireCookie(self.cookie_name, path=self.path, domain=self.cookie_domain)
         else: 
             response.expireCookie(self.cookie_name, path=self.path) 
 
@@ -225,7 +229,7 @@ class SessionPlugin(BasePlugin):
     security.declareProtected(ManageUsers, 'manage_removeSharedSecret')
     @postonly
     def manage_removeSharedSecret(self, REQUEST):
-        """Clear all secrets from this source.
+        """Clear the shared secret.
 
         This invalidates all current sessions and requires users to login again.
         """
@@ -248,6 +252,34 @@ class SessionPlugin(BasePlugin):
         REQUEST.RESPONSE.redirect('%s/manage_secret?manage_tabs_message=%s'
                                      % (self.absolute_url(), 'New+shared+secret+set.'))
 
+
+    security.declarePublic('external_login')
+    def external_login(self, REQUEST):
+        """Set the cookie from a form variable and redirect
+        """
+        request = REQUEST
+        response = REQUEST.RESPONSE
+        if self._shared_secret is None:
+            raise ValueError("No shared secret set")
+        try:
+            ticket = binascii.a2b_base64(request.form.get(self.external_ticket_name, None))
+        except (binascii.Error, TypeError):
+            raise ValueError("Badly formed ticket")
+        ticket_data = tktauth.validateTicket(self._shared_secret, ticket, timeout=self.timeout, mod_auth_tkt=self.mod_auth_tkt)
+        if ticket_data is None:
+            raise ValueError("Invalid ticket")
+        (digest, userid, tokens, user_data, timestamp) = ticket_data
+        pas = self._getPAS()
+        info = pas._verifyUser(pas.plugins, user_id=userid)
+        if info is None:
+            return ValueError("Unknown user")
+        self._setCookie(ticket, response)
+        came_from = request.form.get('came_from', None)
+        if came_from is None:
+            # XXX we want the portal url but cannot depend on CMF
+            came_from = pas.aq_parent.absolute_url()
+        response.redirect(came_from)
+        return None
 
 classImplements(SessionPlugin, ISessionPlugin,
                 IExtractionPlugin, IAuthenticationPlugin,
