@@ -1,7 +1,7 @@
 <%@ Language = "Python" %><%
 # Configuration constants
 SECRET = 'abc123'
-PLONE_URL = 'http://localhost:8080/Plone'
+SITE_URL = 'http://localhost:8080/Plone'
 MOD_AUTH_TKT = False
 
 import tktauth
@@ -15,7 +15,7 @@ Response.AddHeader("Content-Type", "text/html; charset=utf-8")
 
 CAME_FROM_NAME = 'came_from'
 TICKET_NAME = 'ticket'
-NEXT_URL = PLONE_URL + '/acl_users/session/external_login'
+NEXT_URL = SITE_URL + '/acl_users/session/external_login'
 
 userid = str(Request.ServerVariables("REMOTE_USER"))
 if not userid:

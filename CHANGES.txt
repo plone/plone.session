@@ -4,6 +4,10 @@ Changelog
 3.0b3 - Unreleased
 ~~~~~~~~~~~~~~~~~~
 
+- Example IIS login form and documentation. This builds on work by Hanno and I
+  at Jarn for Centrepoint.
+  [elro]
+
 - Support authentication by an external form, perhaps one running on an IIS
   server with Integrated Windows Authentication.
   [elro]

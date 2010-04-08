@@ -1,11 +1,11 @@
 Overview
---------
+========
 
 plone.session implements secure session management for Zope sites.
 
 In its default configuration plone.session uses an HMAC_ SHA-256_ secure
 cryptographic hash to authenticate sessions. The hash is generated using the
-users login name and a secret stored in the PAS plugin. Otherwise, the cookie
+userid and a secret stored in the PAS plugin. Otherwise, the cookie
 format is identical to that of Apache's mod_auth_tkt_. For single sign on with
 the original mod_auth_tkt or another compatible implementation, set the
 ``mod_auth_tkt`` property to true. This invokes an MD5_ based double hashing
@@ -23,8 +23,8 @@ This has several advantages over other session management systems:
 
 There are some downsides to this approach:
 
-* if a users password is changed or disabled session identifiers will continue
-  to work, making it hard to lock out individual users.
+* if a user's password is changed or disabled session identifiers will
+  continue to work, making it hard to lock out individual users.
 * a user must have cookies enabled.
 
 A session cookie is used to track sessions; that means that as long as
@@ -41,8 +41,9 @@ self-contained and may be of useful to other frameworks.
 .. _HMAC: http://en.wikipedia.org/wiki/HMAC
 .. _SHA-256: http://en.wikipedia.org/wiki/SHA-256
 
+
 Using plone.session
--------------------
+===================
 
 plone.session only takes care of handling sessions for already authenticated
 users. This means it can not be used stand-alone: you need to have another
@@ -54,7 +55,7 @@ PAS *credentials update* mechanism.
 
 
 Configuration options
----------------------
+=====================
 
 To enable logins between sites or other mod_auth_tkt systems, set the shared
 secret through the Zope Management Interface. You can manage the plone.keyring
@@ -85,3 +86,167 @@ The following properties may be set through the Properties tab:
 
   Cookie path
     What path the cookie is set valid (defaults to ``/``.)
+
+
+Single Sign On with IIS
+=======================
+
+For intranet setups with users on a Windows domain, it's possible to configure IIS with `Integrated Windows Authentication` to act as an external login provider, even for sites running on Linux/Unix servers.
+
+
+Requirements
+------------
+
+- You need a Microsoft Windows Server running IIS. Preferably Windows Server
+  2003 or a later version.
+
+- The server must be a member of the Windows domain you want to authenticate
+  users for. It does not need to be an Active Directory server itself.
+
+- You site should use LDAPMultiPlugins_ to use the same Active Directory as a
+  user source. (Use plone.app.ldap_ to set this up with Plone.)
+
+.. _LDAPMultiPlugins: http://pypi.python.org/pypi/Products.LDAPMultiPlugins
+.. _plone.app.ldap: http://pypi.python.org/pypi/plone.app.ldap
+
+
+Python
+------
+
+- The Windows server needs to have `Python 2.6
+  <http://www.python.org/download/`_ and the `Python Win 32 extensions
+  <http://sourceforge.net/projects/pywin32/files/>`_ installed. (Currently
+  Python 2.6.5 and pywin32-214.)
+
+- Until pywin32-215 is released, apply this `fix
+  <http://mail.python.org/pipermail/python-win32/2009-October/009639.html>`_
+  to the file::
+
+    C:\Python26\Lib\site-packages\win32comext\axscript\client\framework.py
+
+  and remove the framework.pyc and framework.pyo files.
+
+- Place a copy of ``tktauth.py`` (from plone/session of this package) into::
+
+    C:\Python26\Lib\site-packages\
+
+- Follow these `instructions on how to configure Python for IIS
+  <http://support.microsoft.com/kb/276494>`_. In bullet point 2.d. use::
+
+    Executable: "C:\Python26\python.exe -u %s %s"
+
+  instead. This will ensure files are opened in universal newline mode. You
+  can choose to only configure these settings for the specific web site and
+  not the entire IIS. Adjust settings accordingly and create the web site
+  first as detailed in the next chapter.
+
+
+IIS
+---
+
+- Find and open the IIS management console.
+
+- Create a new `Web Site`, by going into the `Web Sites` folder and using the
+  right-click menu. You should get a wizard asking you for various questions::
+
+    Description: SSO login service
+
+    TCP port: 80
+
+    Path: c:\Inetpub\sso
+
+    Allow anonymous access to this Web site: <not checked>
+
+    Permissions: Read, Run scripts, Execute
+
+- If you are running IIS 6, you need to go to the `Web Service Extensions`
+  folder and change `Active Server Pages` to be `Allowed`. Otherwise you
+  will get rather unhelpful `404 Not Found` errors for the asp scripts.
+
+
+IIS script
+----------
+
+- Copy the `login.asp` and `test.asp` scripts (from the iis-login folder of
+  this package) into root path of the web site (for example C:\Inetpub\sso).
+
+- You need to modify the `SECRET` constant found in the `login.asp` to the
+  same shared secret set on plone.session's `Manage secrets` tab.
+
+- Modify the `SITE_URL` constant in `login.asp` ot the address our your Plone
+  site.
+
+- Access http://LOGONSERVER/test.asp to confirm access permissions are
+  correctly configured.
+
+
+Configuring browsers to allow automatic logon
+---------------------------------------------
+
+Browsers must be configured to "trust" the logon server for user
+authentication data to be sent automatically.
+
+By default, Internet Explorer sends logon information to servers within the
+"Intranet Zone", so long as the site is accessed using it's intranet name
+(http://LOGONSERVER/login.asp). If the site is accessed using a fully
+qualified domain name or IP address, it must be explicitly added to the list
+of `trusted sites <http://support.microsoft.com/kb/174360>`_.
+
+Firefox configuration information may be found in this `article
+<http://support.mozilla.com/en-US/kb/Firefox+asks+for+user+name+and+password+on+internal+sites>`_.
+
+
+Configuring your Plone site
+---------------------------
+
+Ensure that you have setup authentication to Active Directory and that you can
+login with the your current Windows user name.
+
+Set the following configuration options through the Zope interface:
+
+- In `/Plone/acl_users/session`. On the `Manage secrets`
+
+- In `/Plone/acl_users/credentials_cookie_auth`. On the `Properties` tab set
+  `Login Form` to `http://LOGONSERVER/login.asp`
+
+- In `/Plone/portal_actions/user/login`. On the `Properties` tab set `URL
+  (Expression)` to
+  `python:portal.acl_users.credentials_cookie_auth.getProperty('login_path')`.
+
+
+Note for developers testing this under Windows XP
+-------------------------------------------------
+
+- IIS may be installed as an additional component using the Windows XP
+  installation CD.
+
+- The IIS management console can be located at::
+
+    Start -> Control Panel -> Adminstrative Tools -> Internet Information Services
+
+- The pywin32 installer setup IIS sufficiently for me not to need to follow
+  the `instructions on how to configure Python for IIS`.
+
+- I could not find how to setup a separate site, so placed the asp scripts
+  directly in C:\Inetpub\wwwroot - the "Default Web Site"
+
+- From the IIS management console, select "Default Web Site". You should see
+  `login.asp` and `test.asp` in the right hand pane. With each file,
+  right-click Properties. On the `File Security` tab click Edit... on
+  `Anonymous access and authentication control`. Uncheck `Anonymous access`
+  and check `Basic authentication` (to be used as a fallback) and `Integrated
+  Windows authentication`.
+
+- Access http://localhost/test.asp to confirm IIS authentication works as
+  expected.
+
+- Set the secret in `login.asp` and `Manage secrets` of plone.session.
+
+- Set SITE_URL in `login.asp` to `http://localhost:8080/Plone` (or whatever
+  the address of your site is.)
+
+- Add a Plone user with the same name as your Windows login name (e.g.
+  Administrator), this avoids setting up Active Directory.
+
+- Follow the section above to configure your Plone site, but set `Login Form`
+  to `http://localhost/login.asp`.
