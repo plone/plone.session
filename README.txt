@@ -114,7 +114,7 @@ Python
 ------
 
 - The Windows server needs to have `Python 2.6
-  <http://www.python.org/download/`_ and the `Python Win 32 extensions
+  <http://www.python.org/download/>` and the `Python Win 32 extensions
   <http://sourceforge.net/projects/pywin32/files/>`_ installed. (Currently
   Python 2.6.5 and pywin32-214.)
 
