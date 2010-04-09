@@ -36,7 +36,7 @@ if not errors:
     Response.write('''\
     <p>Test completed successfully, the login page should work correctly. If you
     were prompted with a login box, check that Integrated Windows Authentication
-    is enabled in IIS and that your browser security are correct.</p>
+    is enabled in IIS and that your browser security settings are correct.</p>
     ''')
 else:
     Response.write('''\
