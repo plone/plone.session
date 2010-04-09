@@ -1,8 +1,13 @@
 Changelog
 =========
 
-3.0b3 - Unreleased
-~~~~~~~~~~~~~~~~~~
+3.0b4 - Unreleased
+------------------
+
+
+
+3.0b3 - 2010-04-09
+------------------
 
 - Example IIS login form and documentation. This builds on work by Hanno and I
   at Jarn for Centrepoint.
@@ -13,7 +18,7 @@ Changelog
   [elro]
 
 3.0b2 - 2010-03-09
-~~~~~~~~~~~~~~~~~~
+------------------
 
 - Prefix setupSession with underscore, the method should be unavailable TTW.
   [elro]
@@ -22,7 +27,7 @@ Changelog
   [elro]
 
 3.0b1 - 2010-03-05
-~~~~~~~~~~~~~~~~~~
+------------------
 
 - Add back the hash management UI with added functionality to set shared
   secret.
@@ -40,13 +45,13 @@ Changelog
   [elro]
 
 3.0a2 - 2009-11-13
-~~~~~~~~~~~~~~~~~~
+------------------
 
 - Remove hash management UI which had been accidentally re-merged.
   [davisagli]
 
 3.0a1 - 2009-04-04
-~~~~~~~~~~~~~~~~~~
+------------------
 
 - Avoid deprecation warning for the sha module in Python 2.6.
   [hannosch]
@@ -69,7 +74,7 @@ Changelog
 
 
 2.1  - February 4, 2009
-~~~~~~~~~~~~~~~~~~~~~~~
+-----------------------
 
 - Protect the setupSession call with the ManageUsers permission.
   Fixes possible privilege escalation.
@@ -81,7 +86,7 @@ Changelog
 
 
 2.0  - July 8, 2008
-~~~~~~~~~~~~~~~~~~~
+-------------------
 
 - Fix CSRF protection for managing server secrets via the Plone session
   plugin for PAS. Fixes http://dev.plone.org/plone/ticket/8176
@@ -89,7 +94,7 @@ Changelog
 
 
 1.2  - February 15, 2007
-~~~~~~~~~~~~~~~~~~~~~~~~
+------------------------
 
 - Use the binascii base64 methods to encode/decode the session cookie. This
   prevents newlines being inserted in long cookies.
@@ -97,7 +102,7 @@ Changelog
 
 
 1.1  - September 11, 2007
-~~~~~~~~~~~~~~~~~~~~~~~~~
+-------------------------
 
 - Use the userid instead of the login name in session identifiers. This
   has the side-effect of working around a bug in PAS which caused us to
@@ -107,7 +112,7 @@ Changelog
 
 
 1.0  - August 15, 2007
-~~~~~~~~~~~~~~~~~~~~~~
+----------------------
 
 - First stable release
   [wichert]
