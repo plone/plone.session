@@ -4,7 +4,9 @@ Changelog
 3.0b4 - Unreleased
 ------------------
 
-
+- Relicense as BSD following PF Board decision.
+  http://lists.plone.org/pipermail/membership/2010-April/001123.html
+  [elro]
 
 3.0b3 - 2010-04-09
 ------------------
