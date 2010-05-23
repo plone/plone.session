@@ -43,12 +43,15 @@ class SessionPlugin(BasePlugin):
 
     meta_type = "Plone Session Plugin"
     security = ClassSecurityInfo()
+
     cookie_name = "__ac"
     cookie_lifetime = 0
     cookie_domain = ''
     mod_auth_tkt = False
     timeout = 12*60*60 # 12h. Default is 2h in mod_auth_tkt
     external_ticket_name = 'ticket'
+    secure = False
+    _shared_secret = None
 
     # These mod_auth_tkt options are not yet implemented
     #ignoreIP = True # you always want this on the public internet
@@ -91,6 +94,12 @@ class SessionPlugin(BasePlugin):
                  "type": "string",
                  "mode": "w",
             },
+            {
+                "id": "secure",
+                "label": "Only Send Cookie Over HTTPS",
+                "type": "boolean",
+                "mode": "w",
+            },
             )
 
     manage_options = (
@@ -101,8 +110,6 @@ class SessionPlugin(BasePlugin):
         self._setId(id)
         self.title=title
         self.path=path
-
-    _shared_secret = None
 
     def _getSigningSecret(self):
         if self._shared_secret is not None:
@@ -118,7 +125,7 @@ class SessionPlugin(BasePlugin):
 
     def _setCookie(self, cookie, response):
         cookie=binascii.b2a_base64(cookie).rstrip()
-        options = dict(path=self.path, http_only=True)
+        options = dict(path=self.path, secure=self.secure, http_only=True)
         if self.cookie_domain:
             options['domain'] = self.cookie_domain
         if self.cookie_lifetime:

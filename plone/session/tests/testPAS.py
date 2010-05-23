@@ -6,10 +6,12 @@ from plone.session.tests.sessioncase import FunctionalPloneSessionTestCase
 
 class MockResponse:
 
-    def setCookie(self, name, value, path, expires=None, http_only=False):
+    def setCookie(self, name, value, path,
+                  expires=None, secure=False, http_only=False):
         self.cookie=value
         self.cookie_expires=expires
         self.cookie_http_only = http_only
+        self.secure = secure
 
 
 class TestSessionPlugin(FunctionalPloneSessionTestCase):
@@ -36,6 +38,17 @@ class TestSessionPlugin(FunctionalPloneSessionTestCase):
         session=self.folder.pas.session
         session._setupSession(self.userid, response)
         self.assertEqual(response.cookie_expires, None)
+
+    def testSecureCookies(self):
+        response=MockResponse()
+        session=self.folder.pas.session
+
+        session._setupSession(self.userid, response)
+        self.assertEqual(response.secure, False)
+
+        setattr(session, 'secure', True)
+        session._setupSession(self.userid, response)
+        self.assertEqual(response.secure, True)
 
     def testCookieHTTPOnly(self):
         response=MockResponse()
