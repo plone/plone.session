@@ -118,7 +118,7 @@ class SessionPlugin(BasePlugin):
 
     def _setCookie(self, cookie, response):
         cookie=binascii.b2a_base64(cookie).rstrip()
-        options = dict(path=self.path)
+        options = dict(path=self.path, http_only=True)
         if self.cookie_domain:
             options['domain'] = self.cookie_domain
         if self.cookie_lifetime:

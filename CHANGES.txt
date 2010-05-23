@@ -4,6 +4,9 @@ Changelog
 3.0b4 - Unreleased
 ------------------
 
+- Marked the session cookie as ``HTTPOnly``.
+  [hannosch]
+
 - PEP8 cleanup.
   [hannosch]
 
