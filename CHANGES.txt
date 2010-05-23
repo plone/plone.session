@@ -4,6 +4,9 @@ Changelog
 3.0b4 - Unreleased
 ------------------
 
+- PEP8 cleanup.
+  [hannosch]
+
 - Relicense as BSD following PF Board decision.
   http://lists.plone.org/pipermail/membership/2010-April/001123.html
   [elro]

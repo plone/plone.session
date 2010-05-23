@@ -1,11 +1,11 @@
 from DateTime import DateTime
 from zope.publisher.browser import TestRequest
 from plone.session.interfaces import ISessionPlugin
-import plone.session
 from plone.session.tests.sessioncase import FunctionalPloneSessionTestCase
 
 
 class MockResponse:
+
     def setCookie(self, name, value, path, expires=None):
         self.cookie=value
         self.cookie_expires=expires
@@ -71,7 +71,6 @@ class TestSessionPlugin(FunctionalPloneSessionTestCase):
                 "our_user", "password")
         self.assertNotEqual(request.response.getCookie(session.cookie_name),
                 None)
-
 
 
 def test_suite():

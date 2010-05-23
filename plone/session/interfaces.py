@@ -1,8 +1,8 @@
 from zope.interface import Interface
 
+
 class ISessionPlugin(Interface):
-    """
-    Session handling PAS plugin.
+    """Session handling PAS plugin.
     """
 
     def _setupSession(userid, response):
