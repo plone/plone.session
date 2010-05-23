@@ -1,7 +1,7 @@
 Changelog
 =========
 
-3.0b4 - Unreleased
+3.0b4 - 2010-05-23
 ------------------
 
 - Make the ``secure`` option of cookies configurable. This allows to restrict
