@@ -13,17 +13,16 @@ class MockResponse:
 
 
 class TestSessionPlugin(FunctionalPloneSessionTestCase):
+
     userid = 'jbloggs'
 
     def testInterfaces(self):
         session=self.folder.pas.session
         self.assertEqual(ISessionPlugin.providedBy(session), True)
 
-
     def makeRequest(self, cookie):
         session=self.folder.pas.session
-        return TestRequest(**{session.cookie_name : cookie})
-
+        return TestRequest(**{session.cookie_name: cookie})
 
     def testOneLineCookiesOnly(self):
         longid = "x"*256
@@ -32,20 +31,17 @@ class TestSessionPlugin(FunctionalPloneSessionTestCase):
         session._setupSession(longid, response)
         self.assertEqual(len(response.cookie.split()), 1)
 
-
     def testCookieLifetimeNoExpiration(self):
         response=MockResponse()
         session=self.folder.pas.session
         session._setupSession(self.userid, response)
         self.assertEqual(response.cookie_expires, None)
 
-
     def testCookieHTTPOnly(self):
         response=MockResponse()
         session=self.folder.pas.session
         session._setupSession(self.userid, response)
         self.assertEqual(response.cookie_http_only, True)
-
 
     def testCookieLifetimeWithExpirationSet(self):
         response=MockResponse()
@@ -54,7 +50,6 @@ class TestSessionPlugin(FunctionalPloneSessionTestCase):
         session._setupSession(self.userid, response)
         self.assertEqual(DateTime(response.cookie_expires).strftime('%Y%m%d'),
                         (DateTime()+100).strftime('%Y%m%d'))
-        
 
     def testExtraction(self):
         session=self.folder.pas.session
@@ -67,7 +62,6 @@ class TestSessionPlugin(FunctionalPloneSessionTestCase):
         request=self.makeRequest("test string")
         creds=session.extractCredentials(request)
         self.assertEqual(creds, {})
-
 
     def testCredentialsUpdate(self):
         session=self.folder.pas.session
