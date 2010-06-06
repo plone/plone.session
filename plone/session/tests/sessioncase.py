@@ -6,7 +6,6 @@ from Products.Five import zcml
 import plone.session
 import plone.session.tests
 from plone.session.plugins.session import SessionPlugin
-from plone.session.tests.layer import PloneSession
 
 from OFS.Folder import Folder
 
@@ -26,8 +25,6 @@ class FakePAS(Folder):
 
 
 class PloneSessionTestCase(ZopeTestCase.ZopeTestCase):
-
-    layer = PloneSession
 
     def afterSetUp(self):
         zcml.load_config('configure.zcml', plone.session)

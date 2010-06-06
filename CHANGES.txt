@@ -4,6 +4,8 @@ Changelog
 3.0b5 - unreleased
 ------------------
 
+- Removed dependency on GPL licensed Products.PloneTestCase.
+  [hannosch]
 
 3.0b4 - 2010-05-23
 ------------------
