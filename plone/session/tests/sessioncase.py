@@ -29,6 +29,7 @@ class FakePAS(Folder):
 class PloneSessionTestCase(ZopeTestCase.ZopeTestCase):
 
     def afterSetUp(self):
+        zcml.load_config('meta.zcml', plone.session)
         zcml.load_config('configure.zcml', plone.session)
         zcml.load_config('configure.zcml', plone.session.tests)
         self.folder._setObject("pas", FakePAS("pas"))

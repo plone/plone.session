@@ -4,6 +4,9 @@ Changelog
 3.0b5 - unreleased
 ------------------
 
+- Make sure to load the right meta ZCML.
+  [hannosch]
+
 - Avoid deprecation warnings under Zope 2.13.
   [hannosch]
 
