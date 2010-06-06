@@ -1,7 +1,10 @@
-from zope.configuration.xmlconfig import XMLConfig
-
 from Testing import ZopeTestCase
-from Products.Five import zcml
+
+# BBB for Zope 2.12
+try:
+    from Zope2.App import zcml
+except ImportError:
+    from Products.Five import zcml
 
 import plone.session
 import plone.session.tests
@@ -15,7 +18,6 @@ class FakePAS(Folder):
 
     def updateCredentials(self, request, response, userid, password):
         self.credentials=(userid, password)
-
 
     def _verifyUser(self, plugin, user_id=None, login=None):
         assert user_id is None
@@ -35,4 +37,3 @@ class PloneSessionTestCase(ZopeTestCase.ZopeTestCase):
 
 class FunctionalPloneSessionTestCase(ZopeTestCase.Functional, PloneSessionTestCase):
     pass
-
