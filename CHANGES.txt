@@ -1,7 +1,7 @@
 Changelog
 =========
 
-3.0b5 - unreleased
+3.0b5 - 2010-06-13
 ------------------
 
 - Make sure to load the right meta ZCML.
