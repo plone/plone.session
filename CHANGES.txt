@@ -1,9 +1,11 @@
 Changelog
 =========
 
-3.0b6 - unreleased
-------------------
+3.0 - unreleased
+----------------
 
+- Update package metadata.
+  [hannosch]
 
 3.0b5 - 2010-06-13
 ------------------
@@ -105,9 +107,8 @@ Changelog
   the secrets.
   [wichert]
 
-
-2.1  - February 4, 2009
------------------------
+2.1 - 2009-02-04
+----------------
 
 - Protect the setupSession call with the ManageUsers permission.
   Fixes possible privilege escalation.
@@ -117,25 +118,22 @@ Changelog
   http://dev.plone.org/plone/ticket/7248
   [wichert, garbas]
 
-
-2.0  - July 8, 2008
--------------------
+2.0 - 2008-07-08
+----------------
 
 - Fix CSRF protection for managing server secrets via the Plone session
   plugin for PAS. Fixes http://dev.plone.org/plone/ticket/8176
   [witsch]
 
-
-1.2  - February 15, 2007
-------------------------
+1.2 - 2007-02-15
+----------------
 
 - Use the binascii base64 methods to encode/decode the session cookie. This
   prevents newlines being inserted in long cookies.
   [wichert]
 
-
-1.1  - September 11, 2007
--------------------------
+1.1 - 2007-09-11
+----------------
 
 - Use the userid instead of the login name in session identifiers. This
   has the side-effect of working around a bug in PAS which caused us to
@@ -143,10 +141,8 @@ Changelog
   login name.
   [wichert]
 
-
-1.0  - August 15, 2007
-----------------------
+1.0 - 2007-08-15
+----------------
 
 - First stable release
   [wichert]
-

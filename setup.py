@@ -1,20 +1,23 @@
 from setuptools import setup, find_packages
 
-version = '3.0b6'
+version = '3.0'
 
 setup(name='plone.session',
       version=version,
       description="Session based authentication for Zope",
-      long_description=open("README.txt").read() + '\n' + open("CHANGES.txt").read(),
+      long_description=open("README.txt").read() + "\n" +
+                       open("CHANGES.txt").read(),
       classifiers=[
-        "Framework :: Plone",
-        "Framework :: Zope2",
-        "License :: OSI Approved :: BSD License",
-        "Programming Language :: Python",
-        "Topic :: System :: Systems Administration :: Authentication/Directory",
+          "Environment :: Web Environment",
+          "Framework :: Plone",
+          "Framework :: Zope2",
+          "License :: OSI Approved :: BSD License",
+          "Operating System :: OS Independent",
+          "Programming Language :: Python",
+          "Topic :: System :: Systems Administration :: Authentication/Directory",
         ],
       keywords='PAS session authentication Zope',
-      author='Wichert Akkerman, Laurence Rowe - Plone Foundation',
+      author='Plone Foundation',
       author_email='plone-developers@lists.sourceforge.net',
       url='http://pypi.python.org/pypi/plone.session',
       license='BSD',
