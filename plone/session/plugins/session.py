@@ -156,6 +156,17 @@ class SessionPlugin(BasePlugin):
             return None
 
         ticket=credentials["cookie"]
+        ticket_data = self._validateTicket(ticket)
+        (digest, userid, tokens, user_data, timestamp) = ticket_data
+        pas=self._getPAS()
+        info=pas._verifyUser(pas.plugins, user_id=userid)
+        if info is None:
+            return None
+
+        # XXX Should refresh the ticket if after timeout refresh.
+        return (info['id'], info['login'])
+
+    def _validateTicket(self, ticket):
         if self._shared_secret is not None:
             ticket_data = tktauth.validateTicket(self._shared_secret, ticket,
                 timeout=self.timeout, mod_auth_tkt=self.mod_auth_tkt)
@@ -171,17 +182,7 @@ class SessionPlugin(BasePlugin):
                     timeout=self.timeout, mod_auth_tkt=self.mod_auth_tkt)
                 if ticket_data is not None:
                     break
-        if ticket_data is None:
-            return None
-
-        (digest, userid, tokens, user_data, timestamp) = ticket_data
-        pas=self._getPAS()
-        info=pas._verifyUser(pas.plugins, user_id=userid)
-        if info is None:
-            return None
-
-        # XXX Should refresh the ticket if after timeout refresh.
-        return (info['id'], info['login'])
+        return ticket_data
 
     # ICredentialsUpdatePlugin implementation
     def updateCredentials(self, request, response, login, new_password):
@@ -285,6 +286,18 @@ class SessionPlugin(BasePlugin):
             came_from = pas.aq_parent.absolute_url()
         response.redirect(came_from)
         return None
+
+    security.declarePublic('validateTicket')
+    def validateTicket(self, ticket):
+        try:
+            decoded = binascii.a2b_base64(ticket)
+        except binascii.Error:
+            return False
+        try:
+            ticket_data = self._validateTicket(decoded)
+        except ValueError:
+            return False
+        return ticket_data is not None
 
 classImplements(SessionPlugin, ISessionPlugin,
                 IExtractionPlugin, IAuthenticationPlugin,
