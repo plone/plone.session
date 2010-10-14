@@ -4,6 +4,9 @@ Changelog
 3.0.1 - unreleased
 ------------------
 
+- Session refresh.
+  [elro]
+
 - ``SessionPlugin.validate(ticket)`` method.
   [elro]
 

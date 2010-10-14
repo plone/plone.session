@@ -191,7 +191,10 @@ def validateTicket(secret, ticket, ip='0.0.0.0', timeout=0, now=None, encoding='
     Successful validation returns (digest, userid, tokens, user_data, timestamp).
     On failure, return None.
     """
-    (digest, userid, tokens, user_data, timestamp) = data = splitTicket(ticket)
+    try:
+        (digest, userid, tokens, user_data, timestamp) = data = splitTicket(ticket)
+    except ValueError:
+        return None
     new_ticket = createTicket(secret, userid, tokens, user_data, ip, timestamp, encoding, mod_auth_tkt)
     if new_ticket[:32] == digest:
         if not timeout:

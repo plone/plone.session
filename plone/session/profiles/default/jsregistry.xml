@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<object name="portal_javascripts" meta_type="JavaScripts Registry">
+    <javascript
+        id="++resource++plone.session.refreshsupport.js"
+        authenticated="True"
+        />
+    <javascript
+        id="acl_users/session/refresh?session_refresh=true&amp;type=js&amp;minutes=5"
+        authenticated="True"
+        cacheable="False"
+        compression="none"
+        cookable="False"
+        />
+</object>

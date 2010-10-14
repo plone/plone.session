@@ -12,9 +12,15 @@ from plone.session import tktauth
 from plone.session.interfaces import ISessionPlugin
 from zope.component import getUtility, queryUtility
 
+from email.Utils import formatdate
 import binascii
-import datetime
+import time
 
+EMPTY_GIF = (
+    'GIF89a\x01\x00\x01\x00\xf0\x01\x00\xff\xff\xff'
+    '\x00\x00\x00!\xf9\x04\x01\n\x00\x00\x00'
+    ',\x00\x00\x00\x00\x01\x00\x01\x00\x00\x02\x02D\x01\x00;'
+    )
 
 manage_addSessionPluginForm = PageTemplateFile('session', globals())
 
@@ -32,9 +38,8 @@ def manage_addSessionPlugin(dispatcher, id, title=None, path='/',
 
 
 def cookie_expiration_date(days):
-    dt = datetime.datetime.utcnow() + datetime.timedelta(days)
-    # format string from http://docs.python.org/library/time.html
-    return dt.strftime("%a, %d %b %Y %H:%M:%S +0000")
+    expires = time.time() + (days * 24 * 60 * 60)
+    return formatdate(expires, usegmt=True)
 
 
 class SessionPlugin(BasePlugin):
@@ -49,6 +54,7 @@ class SessionPlugin(BasePlugin):
     cookie_domain = ''
     mod_auth_tkt = False
     timeout = 12*60*60 # 12h. Default is 2h in mod_auth_tkt
+    refresh_interval = -1
     external_ticket_name = 'ticket'
     secure = False
     _shared_secret = None
@@ -61,6 +67,12 @@ class SessionPlugin(BasePlugin):
             {
                  "id": "timeout",
                  "label": "Cookie validity timeout (in seconds)",
+                 "type": "int",
+                 "mode": "w",
+             },
+            {
+                 "id": "refresh_interval",
+                 "label": "Refresh interval (in seconds, -1 to disable refresh)",
                  "type": "int",
                  "mode": "w",
              },
@@ -118,9 +130,14 @@ class SessionPlugin(BasePlugin):
         return manager.secret()
 
     # ISessionPlugin implementation
-    def _setupSession(self, userid, response):
+    def _setupSession(self, userid, response, tokens=(), user_data=u''):
         cookie = tktauth.createTicket(
-            self._getSigningSecret(), userid, mod_auth_tkt=self.mod_auth_tkt)
+            secret=self._getSigningSecret(),
+            userid=userid,
+            tokens=tokens,
+            user_data=user_data,
+            mod_auth_tkt=self.mod_auth_tkt,
+            )
         self._setCookie(cookie, response)
 
     def _setCookie(self, cookie, response):
@@ -157,6 +174,8 @@ class SessionPlugin(BasePlugin):
 
         ticket=credentials["cookie"]
         ticket_data = self._validateTicket(ticket)
+        if ticket_data is None:
+            return None
         (digest, userid, tokens, user_data, timestamp) = ticket_data
         pas=self._getPAS()
         info=pas._verifyUser(pas.plugins, user_id=userid)
@@ -166,10 +185,12 @@ class SessionPlugin(BasePlugin):
         # XXX Should refresh the ticket if after timeout refresh.
         return (info['id'], info['login'])
 
-    def _validateTicket(self, ticket):
+    def _validateTicket(self, ticket, now=None):
+        if now is None:
+            now = time.time()
         if self._shared_secret is not None:
             ticket_data = tktauth.validateTicket(self._shared_secret, ticket,
-                timeout=self.timeout, mod_auth_tkt=self.mod_auth_tkt)
+                timeout=self.timeout, now=now, mod_auth_tkt=self.mod_auth_tkt)
         else:
             ticket_data = None
             manager = queryUtility(IKeyManager)
@@ -179,7 +200,7 @@ class SessionPlugin(BasePlugin):
                 if secret is None:
                     continue
                 ticket_data = tktauth.validateTicket(secret, ticket,
-                    timeout=self.timeout, mod_auth_tkt=self.mod_auth_tkt)
+                    timeout=self.timeout, now=now, mod_auth_tkt=self.mod_auth_tkt)
                 if ticket_data is not None:
                     break
         return ticket_data
@@ -298,6 +319,73 @@ class SessionPlugin(BasePlugin):
         except ValueError:
             return False
         return ticket_data is not None
+
+    def _refreshSession(self, request, now=None):
+        # Refresh a ticket. Does *not* check the user is in the use folder
+        if not self.cookie_name in request:
+            return None
+        try:
+            ticket = binascii.a2b_base64(request.get(self.cookie_name))
+        except binascii.Error:
+            return None
+        if now is None:
+            now = time.time()
+        ticket_data = self._validateTicket(ticket, now)
+        if ticket_data is None:
+            return None
+        (digest, userid, tokens, user_data, timestamp) = ticket_data
+        age = now - timestamp
+        refresh_every = self.timeout - (self.timeout_refresh * self.timeout)
+        remaining = refresh_every - age
+        # If people have cookie warnings, we may want to do something about that here.
+        ### if remaining > 0:
+        ###     return int(remaining)
+        self._setupSession(userid, request.RESPONSE, tokens, user_data)
+        return int(refresh_every)
+
+    def _refresh_content(self, REQUEST):
+        setHeader = REQUEST.RESPONSE.setHeader
+        if REQUEST.get('type') == 'gif':
+            setHeader('Content-Type', 'image/gif')
+            return EMPTY_GIF
+        else:
+            setHeader('Content-Type', 'text/javascript')
+            return ""        
+
+    def _refresh_allowed(self, REQUEST):
+        if self.refresh_interval < 0:
+            return False
+        referrer = REQUEST.get('HTTP_REFERER')
+        if not referrer:
+            return False
+        portal_url = self._getPAS().aq_inner.aq_parent.absolute_url()
+        if not portal_url.endswith('/'):
+            portal_url += '/'
+        referrer += '/'
+        # TODO: cross domain whitelist
+        if not referrer.startswith(portal_url):
+            return False
+        return True
+
+    security.declarePublic('refresh')
+    def refresh(self, REQUEST):
+        """Refresh the cookie"""
+        setHeader = REQUEST.RESPONSE.setHeader
+        # Disable HTTP 1.0 Caching
+        setHeader('Expires', formatdate(0, usegmt=True))
+        if not self._refresh_allowed(REQUEST):
+            setHeader('X-Refresh-Disallowed', 'true')
+            return self._refresh_content(REQUEST)
+        now = time.time()
+        remaining = self._refreshSession(REQUEST, now)
+        if remaining is None:
+            # We have an unauthenticated user
+            setHeader('Cache-Control', 'public, must-revalidate, max-age=%d, s-max-age=86400' % self.refresh_interval)
+            setHeader('Vary', 'Cookie') # this is likely 
+        else:
+            setHeader('Cache-Control', 'private, must-revalidate, proxy-revalidate, max-age=%d, s-max-age=0' % self.refresh_interval)
+        return self._refresh_content(REQUEST)
+
 
 classImplements(SessionPlugin, ISessionPlugin,
                 IExtractionPlugin, IAuthenticationPlugin,
