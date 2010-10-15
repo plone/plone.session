@@ -11,32 +11,32 @@ function sessionActivity() {
 }
 
 function startSessionRefresh(index) {
-    var src_last_refresh = new Date();
-    var src = this.src;
-    var match = src.match(new RegExp("[\\?|&]minutes=([^&#]*)"));
+    var url_last_refresh = new Date();
+    var url = this.href;
+    var match = url.match(new RegExp("[\\?|&]minutes=([^&#]*)"));
     var minutes = match ? parseFloat(match[1]) : null;
     minutes = minutes  ? minutes : 5.0;
 
-    if (console && console.info) {
-        console.info('plone.session.refreshsupport.js: Setting up ' + src +
-            ' to refresh every ' + minutes + ' minutes');
+    if (typeof(console) != "undefined" && console.info) {
+        console.info('Setting up ' + url +
+            ' to refresh every ' + minutes + ' minutes.');
     }
 
     function sessionRefresh() {
-        if (last_activity > src_last_refresh) {
-            src_last_refresh = new Date();
-            $.getScript(src);
-            if (console && console.info) {
-                console.info( '[' + src_last_refresh +
-                    '] plone.session.refreshsupport.js: Refreshing session: ' + src +
-                    '. Last Activity: ' + last_activity);
+        if (last_activity > url_last_refresh) {
+            url_last_refresh = new Date();
+            new Image().src = url;
+            if (typeof(console) != "undefined" && console.info) {
+                console.info( '[' + url_last_refresh.toTimeString()  +
+                    '] Refreshing session: ' + url +
+                    ' (Last Activity: ' + last_activity.toTimeString()  + ')');
             }
         } else {
-            if (console && console.info) {
+            if (typeof(console) != "undefined" && console.info) {
                 console.info(
-                    '[' + Date() +
-                    '] plone.session.refreshsupport.js: Skipped refresh: ' + src +
-                    ' Last Activity: ' + last_activity);
+                    '[' + new Date().toTimeString() +
+                    '] Skipped refresh: ' + url +
+                    ' (Last Activity: ' + last_activity.toTimeString()  + ')');
                 }
         }
     }
@@ -45,7 +45,7 @@ function startSessionRefresh(index) {
 
 $(document).ready(function () {
     $('body').bind('mouseover click keydown', sessionActivity);
-    $("head script[src*='?session_refresh=true']").each(startSessionRefresh);
+    $("head link[rel='stylesheet'][href*='?session_refresh=true']").each(startSessionRefresh);
 });
 
 })(jQuery);

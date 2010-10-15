@@ -10,7 +10,7 @@
     <include file="resources.zcml" />
 
     <include
-        zcml:condition="installed Products.GenericSetup"
+        zcml:condition="installed Products.CMFPlone"
         file="profiles.zcml"
         />
 

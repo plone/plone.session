@@ -54,7 +54,7 @@ class SessionPlugin(BasePlugin):
     cookie_domain = ''
     mod_auth_tkt = False
     timeout = 12*60*60 # 12h. Default is 2h in mod_auth_tkt
-    refresh_interval = -1
+    refresh_interval = 1*60*60 # -1 to disable
     external_ticket_name = 'ticket'
     secure = False
     _shared_secret = None
@@ -343,14 +343,22 @@ class SessionPlugin(BasePlugin):
         self._setupSession(userid, request.RESPONSE, tokens, user_data)
         return int(refresh_every)
 
-    def _refresh_content(self, REQUEST):
+    def _refresh_content(self, REQUEST, allowed=False):
         setHeader = REQUEST.RESPONSE.setHeader
-        if REQUEST.get('type') == 'gif':
+        type = REQUEST.get('type')
+        if type == 'gif':
             setHeader('Content-Type', 'image/gif')
             return EMPTY_GIF
-        else:
+        elif type == 'css':
+            setHeader('Content-Type', 'text/css')
+            return ""
+        elif type == 'js':
             setHeader('Content-Type', 'text/javascript')
-            return ""        
+            return ""
+        #if allowed:
+        #    return "still_logged_in = still_logged_in;\n"
+        #else:
+        #    return "still_logged_in = false;\n"
 
     def _refresh_allowed(self, REQUEST):
         if self.refresh_interval < 0:
@@ -384,7 +392,7 @@ class SessionPlugin(BasePlugin):
             setHeader('Vary', 'Cookie') # this is likely 
         else:
             setHeader('Cache-Control', 'private, must-revalidate, proxy-revalidate, max-age=%d, s-max-age=0' % self.refresh_interval)
-        return self._refresh_content(REQUEST)
+        return self._refresh_content(REQUEST, True)
 
 
 classImplements(SessionPlugin, ISessionPlugin,
