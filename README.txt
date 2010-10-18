@@ -56,11 +56,11 @@ PAS *credentials update* mechanism.
 Python 2.4 / Zope 2.10 / Plone 3
 --------------------------------
 
-To use this version of plone.session under Python 2.4, add the backported
-hmac_ module to your buildout (which will also bring in the backported
+To use this version of plone.session under Python 2.4, add the `backported
+hmac`_ module to your buildout (which will also bring in the backported
 hashlib_ module.)
 
-.. _hmac: http://pypi.python.org/pypi/hmac
+.. _`backported hmac`: http://pypi.python.org/pypi/hmac
 .. _hashlib: http://pypi.python.org/pypi/hashlib
 
 Configuration options
