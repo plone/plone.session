@@ -78,6 +78,9 @@ The following properties may be set through the Properties tab:
     folder has caching enabled, cookie validity may not be checked on every
     request.
 
+  Refresh interval (in seconds, -1 to disable refresh)
+    This controls the refresh CSS max-age (see below.)
+
   Use mod_auth_tkt compatabile hashing algorithm
     Compatibility with other implemenations, but at the cost of using a weaker
     hashing algorithm.
@@ -95,6 +98,41 @@ The following properties may be set through the Properties tab:
 
   Cookie path
     What path the cookie is set valid (defaults to ``/``.)
+
+Ticket refresh
+==============
+
+To enable short validity timeouts you must ensure that the cookie is regularly
+updated. One option is to put mod_auth_tkt in front of your site and set a
+``TktAuthTimeoutRefresh``. As of plone.session 3.1, an independent javascript
+solution is also supplied, installable as an optional add-on in Plone.
+
+Theory of operation
+-------------------
+
+The optional add-on installs a css resource which updates the cookie when
+loaded. This allows the cookie to be updated every time a page is loaded.
+While this CSS cannot cached by proxy servers, it may be cached for a time on
+the client. By controlling the ``max-age`` of the CSS resource, it is possible
+to control how often the browser actually fetches the CSS and hence how often
+the cookie is updated.
+
+With short timeouts (15 or 30 minutes say), a user may not have loaded a new
+page before their cookie becomes invalid. A javascript is included which polls
+the cookie refresh CSS periodically while the user is active on the page (key
+presses or mouse moves.) If the refresh CSS max-age has passed, then the
+browser will refetch the CSS and the cookie will be updated. The poll interval
+may be configured on the refresh CSS query string ``minutes`` parameter, with
+the default being 5 minutes.
+
+Caveat
+------
+
+This has been tested and shown to work on Internet Explorer 7, Firefox 4,
+Safari 5 and Chrome 6. Unfortunately Internet Explorer 6 does not seem to
+respect the caching headers for javascript fetched resources, so if you have a
+lot of IE6 users you may want to increase the poll interval to reduce server
+load.
 
 
 Single Sign On with IIS

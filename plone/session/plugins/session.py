@@ -389,7 +389,7 @@ class SessionPlugin(BasePlugin):
         if remaining is None:
             # We have an unauthenticated user
             setHeader('Cache-Control', 'public, must-revalidate, max-age=%d, s-max-age=86400' % self.refresh_interval)
-            setHeader('Vary', 'Cookie') # this is likely 
+            setHeader('Vary', 'Cookie')
         else:
             setHeader('Cache-Control', 'private, must-revalidate, proxy-revalidate, max-age=%d, s-max-age=0' % self.refresh_interval)
         return self._refresh_content(REQUEST, True)
