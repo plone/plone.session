@@ -7,7 +7,7 @@
   plone.session is a session plugin which does not use Zope sessions.
 </p>
 
-<form action="manage_addSessionPlugin" method="post" 
+<form action="manage_addSessionPlugin" method="post"
       enctype="multipart/form-data">
   <table cellspacing="0" cellpadding="2" border="0">
     <tr>
@@ -45,8 +45,8 @@
       </td>
       <td align="left" valign="top">
         <div class="form-element">
-          <input class="form-element" type="submit" name="submit" 
-                 value=" Add " /> 
+          <input class="form-element" type="submit" name="submit"
+                 value=" Add " />
         </div>
       </td>
     </tr>

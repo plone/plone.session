@@ -137,7 +137,7 @@ def mod_auth_tkt_digest(secret, data1, data2):
 
 def createTicket(secret, userid, tokens=(), user_data=u'', ip='0.0.0.0', timestamp=None, encoding='utf8', mod_auth_tkt=False):
     """
-    By default, use a more compatible 
+    By default, use a more compatible
     """
     if timestamp is None:
         timestamp = int(time.time())
@@ -159,7 +159,7 @@ def createTicket(secret, userid, tokens=(), user_data=u'', ip='0.0.0.0', timesta
         digest = hmac.new(secret, data1+data2, hashlib.sha256).digest()
 
     # digest + timestamp as an eight character hexadecimal + userid + !
-    ticket = "%s%08x%s!" % (digest, timestamp, userid) 
+    ticket = "%s%08x%s!" % (digest, timestamp, userid)
     if tokens:
         ticket += token_list + '!'
     ticket += user_data
