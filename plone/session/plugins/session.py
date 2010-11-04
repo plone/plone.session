@@ -378,6 +378,15 @@ class SessionPlugin(BasePlugin):
             setHeader('Cache-Control', 'private, must-revalidate, proxy-revalidate, max-age=%d, s-max-age=0' % self.refresh_interval)
         return self._refresh_content(REQUEST)
 
+    security.declarePublic('remove')
+    def remove(self, REQUEST):
+        """Remove the cookie"""
+        setHeader = REQUEST.RESPONSE.setHeader
+        # Disable HTTP 1.0 Caching
+        setHeader('Expires', formatdate(0, usegmt=True))
+        setHeader('Cache-Control', 'public, must-revalidate, max-age=0, s-max-age=86400')
+        return self._refresh_content(REQUEST)
+
 
 classImplements(SessionPlugin, ISessionPlugin,
                 IExtractionPlugin, IAuthenticationPlugin,
