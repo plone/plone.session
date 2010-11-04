@@ -343,7 +343,7 @@ class SessionPlugin(BasePlugin):
         self._setupSession(userid, request.RESPONSE, tokens, user_data)
         return int(refresh_every)
 
-    def _refresh_content(self, REQUEST, allowed=False):
+    def _refresh_content(self, REQUEST):
         setHeader = REQUEST.RESPONSE.setHeader
         type = REQUEST.get('type')
         if type == 'gif':
@@ -355,25 +355,10 @@ class SessionPlugin(BasePlugin):
         elif type == 'js':
             setHeader('Content-Type', 'text/javascript')
             return ""
-        #if allowed:
+        #if content:
         #    return "still_logged_in = still_logged_in;\n"
         #else:
         #    return "still_logged_in = false;\n"
-
-    def _refresh_allowed(self, REQUEST):
-        if self.refresh_interval < 0:
-            return False
-        referrer = REQUEST.get('HTTP_REFERER')
-        if not referrer:
-            return False
-        portal_url = self._getPAS().aq_inner.aq_parent.absolute_url()
-        if not portal_url.endswith('/'):
-            portal_url += '/'
-        referrer += '/'
-        # TODO: cross domain whitelist
-        if not referrer.startswith(portal_url):
-            return False
-        return True
 
     security.declarePublic('refresh')
     def refresh(self, REQUEST):
@@ -381,8 +366,7 @@ class SessionPlugin(BasePlugin):
         setHeader = REQUEST.RESPONSE.setHeader
         # Disable HTTP 1.0 Caching
         setHeader('Expires', formatdate(0, usegmt=True))
-        if not self._refresh_allowed(REQUEST):
-            setHeader('X-Refresh-Disallowed', 'true')
+        if self.refresh_interval < 0:
             return self._refresh_content(REQUEST)
         now = time.time()
         remaining = self._refreshSession(REQUEST, now)
@@ -392,7 +376,7 @@ class SessionPlugin(BasePlugin):
             setHeader('Vary', 'Cookie')
         else:
             setHeader('Cache-Control', 'private, must-revalidate, proxy-revalidate, max-age=%d, s-max-age=0' % self.refresh_interval)
-        return self._refresh_content(REQUEST, True)
+        return self._refresh_content(REQUEST)
 
 
 classImplements(SessionPlugin, ISessionPlugin,
