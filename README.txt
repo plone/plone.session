@@ -251,14 +251,11 @@ login with the your current Windows user name.
 
 Set the following configuration options through the Zope interface:
 
-- In `/Plone/acl_users/session`. On the `Manage secrets`
+- In `/Plone/acl_users/session`. On the `Manage secrets` tab set a shared
+  secret.
 
-- In `/Plone/acl_users/credentials_cookie_auth`. On the `Properties` tab set
-  `Login Form` to `http://LOGONSERVER/login.asp`
-
-- In `/Plone/portal_actions/user/login`. On the `Properties` tab set `URL
-  (Expression)` to
-  `python:portal.acl_users.credentials_cookie_auth.getProperty('login_path')`.
+- In `/Plone/portal_properties/site_properties` set `external_login_url` to
+  `http://LOGONSERVER/login.asp`.
 
 
 Note for developers testing this under Windows XP

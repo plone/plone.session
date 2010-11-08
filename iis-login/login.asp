@@ -15,8 +15,8 @@ Response.Expires = -1
 Response.AddHeader("Content-Type", "text/html; charset=utf-8")
 
 CAME_FROM_NAME = 'came_from'
-TICKET_NAME = 'ticket'
-NEXT_URL = PLONE_URL + '/acl_users/session/external_login'
+TICKET_NAME = '__ac'
+NEXT_URL = PLONE_URL + '/logged_in'
 
 userid = str(Request.ServerVariables("REMOTE_USER"))
 if not userid:
@@ -38,7 +38,7 @@ if not came_from or str(came_from) == 'None':
 # browser's history.
 
 FORM = string.Template('''
-<form action="$action" method="post" name="login_form">
+<form action="$action" method="post" name="external_login_form">
 <!-- userid: $userid -->
 <input type="hidden" name="$ticket_name" value="$ticket" />
 <input type="hidden" name="$came_from_name" value="$came_from" />
@@ -67,10 +67,10 @@ form_html = FORM.substitute(
 <%
 Response.write(form_html)
 %>
-<script language="javascript">
-form = document.login_form;
-form.style.display = 'none';
-form.submit();
+<script type="text/javascript">
+    external_login_form = document.external_login_form;
+    external_login_form.style.display = 'none';
+    external_login_form.submit();
 </script>
 </div>
 </body>
