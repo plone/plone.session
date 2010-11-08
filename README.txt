@@ -257,6 +257,9 @@ Set the following configuration options through the Zope interface:
 - In `/Plone/portal_properties/site_properties` set `external_login_url` to
   `http://LOGONSERVER/login.asp`.
 
+- In `/Plone/portal_actions/user/login`. On the `Properties` tab set `URL
+  (Expression)` to `${portal/portal_properties/site_properties/external_login_url}?next=${globals_view/navigationRootUrl}/logged_in`.
+
 
 Note for developers testing this under Windows XP
 -------------------------------------------------
