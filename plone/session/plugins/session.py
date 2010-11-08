@@ -281,6 +281,7 @@ class SessionPlugin(BasePlugin):
     security.declarePublic('external_login')
     def external_login(self, REQUEST):
         """Set the cookie from a form variable and redirect
+        Deprecated, just set the ticket as form data and use logged_in.
         """
         request = REQUEST
         response = REQUEST.RESPONSE
@@ -307,18 +308,6 @@ class SessionPlugin(BasePlugin):
             came_from = pas.aq_parent.absolute_url()
         response.redirect(came_from)
         return None
-
-    security.declarePublic('validateTicket')
-    def validateTicket(self, ticket):
-        try:
-            decoded = binascii.a2b_base64(ticket)
-        except binascii.Error:
-            return False
-        try:
-            ticket_data = self._validateTicket(decoded)
-        except ValueError:
-            return False
-        return ticket_data is not None
 
     def _refreshSession(self, request, now=None):
         # Refresh a ticket. Does *not* check the user is in the use folder
