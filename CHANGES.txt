@@ -1,7 +1,7 @@
 Changelog
 =========
 
-3.1 - unreleased
+3.1 - 2010-11-11
 ----------------
 
 - Remove ``SessionPlugin.validate(ticket)`` method, it was not required.
