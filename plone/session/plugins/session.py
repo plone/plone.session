@@ -32,7 +32,7 @@ def manage_addSessionPlugin(dispatcher, id, title=None, path='/',
     dispatcher._setObject(id, sp)
 
     if REQUEST is not None:
-        REQUEST.RESPONSE.redirect('%s/manage_workspace?'
+        REQUEST.response.redirect('%s/manage_workspace?'
                                'manage_tabs_message=Session+plugin+created.' %
                                dispatcher.absolute_url())
 
@@ -233,7 +233,7 @@ class SessionPlugin(BasePlugin):
         manager=getUtility(IKeyManager)
         manager.clear()
         manager.rotate()
-        response = REQUEST.RESPONSE
+        response = REQUEST.response
         response.redirect('%s/manage_secret?manage_tabs_message=%s' %
             (self.absolute_url(), 'All+secrets+cleared.'))
 
@@ -244,7 +244,7 @@ class SessionPlugin(BasePlugin):
         """
         manager=getUtility(IKeyManager)
         manager.rotate()
-        response = REQUEST.RESPONSE
+        response = REQUEST.response
         response.redirect('%s/manage_secret?manage_tabs_message=%s' %
             (self.absolute_url(), 'New+secret+created.'))
 
@@ -259,7 +259,7 @@ class SessionPlugin(BasePlugin):
         requires users to login again.
         """
         self._shared_secret = None
-        response = REQUEST.RESPONSE
+        response = REQUEST.response
         response.redirect('%s/manage_secret?manage_tabs_message=%s' %
             (self.absolute_url(), 'Shared+secret+removed.'))
 
@@ -269,7 +269,7 @@ class SessionPlugin(BasePlugin):
         """Set the shared secret.
         """
         secret = REQUEST.get('shared_secret')
-        response = REQUEST.RESPONSE
+        response = REQUEST.response
         if not secret:
             response.redirect('%s/manage_secret?manage_tabs_message=%s' %
                 (self.absolute_url(), 'Shared+secret+must+not+be+blank.'))
@@ -284,7 +284,7 @@ class SessionPlugin(BasePlugin):
         Deprecated, just set the ticket as form data and use logged_in.
         """
         request = REQUEST
-        response = REQUEST.RESPONSE
+        response = REQUEST.response
         if self._shared_secret is None:
             raise ValueError("No shared secret set")
         try:
@@ -323,17 +323,11 @@ class SessionPlugin(BasePlugin):
         if ticket_data is None:
             return None
         (digest, userid, tokens, user_data, timestamp) = ticket_data
-        age = now - timestamp
-        refresh_every = self.timeout - (self.timeout_refresh * self.timeout)
-        remaining = refresh_every - age
-        # If people have cookie warnings, we may want to do something about that here.
-        ### if remaining > 0:
-        ###     return int(remaining)
-        self._setupSession(userid, request.RESPONSE, tokens, user_data)
-        return int(refresh_every)
+        self._setupSession(userid, request.response, tokens, user_data)
+        return True
 
     def _refresh_content(self, REQUEST):
-        setHeader = REQUEST.RESPONSE.setHeader
+        setHeader = REQUEST.response.setHeader
         type = REQUEST.get('type')
         if type == 'gif':
             setHeader('Content-Type', 'image/gif')
@@ -352,14 +346,14 @@ class SessionPlugin(BasePlugin):
     security.declarePublic('refresh')
     def refresh(self, REQUEST):
         """Refresh the cookie"""
-        setHeader = REQUEST.RESPONSE.setHeader
+        setHeader = REQUEST.response.setHeader
         # Disable HTTP 1.0 Caching
         setHeader('Expires', formatdate(0, usegmt=True))
         if self.refresh_interval < 0:
             return self._refresh_content(REQUEST)
         now = time.time()
-        remaining = self._refreshSession(REQUEST, now)
-        if remaining is None:
+        refreshed = self._refreshSession(REQUEST, now)
+        if not refreshed:
             # We have an unauthenticated user
             setHeader('Cache-Control', 'public, must-revalidate, max-age=%d, s-max-age=86400' % self.refresh_interval)
             setHeader('Vary', 'Cookie')
@@ -370,7 +364,7 @@ class SessionPlugin(BasePlugin):
     security.declarePublic('remove')
     def remove(self, REQUEST):
         """Remove the cookie"""
-        setHeader = REQUEST.RESPONSE.setHeader
+        setHeader = REQUEST.response.setHeader
         # Disable HTTP 1.0 Caching
         setHeader('Expires', formatdate(0, usegmt=True))
         setHeader('Cache-Control', 'public, must-revalidate, max-age=0, s-max-age=86400')

@@ -87,6 +87,18 @@ class TestSessionPlugin(FunctionalPloneSessionTestCase):
         self.assertNotEqual(request.response.getCookie(session.cookie_name),
                 None)
 
+    def testRefresh(self):
+        session=self.folder.pas.session
+        request=self.makeRequest("test string")
+        session.updateCredentials(request, request.response,
+                "our_user", "password")
+        cookie=request.response.getCookie(session.cookie_name)['value']
+        request2=self.makeRequest(cookie)
+        request2.form['type'] = 'gif'
+        session.refresh(request2)
+        self.assertNotEqual(request2.response.getCookie(session.cookie_name),
+                None)
+
 
 def test_suite():
     from unittest import TestSuite, makeSuite
