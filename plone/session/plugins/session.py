@@ -278,37 +278,6 @@ class SessionPlugin(BasePlugin):
         response.redirect('%s/manage_secret?manage_tabs_message=%s' %
             (self.absolute_url(), 'New+shared+secret+set.'))
 
-    security.declarePublic('external_login')
-    def external_login(self, REQUEST):
-        """Set the cookie from a form variable and redirect
-        Deprecated, just set the ticket as form data and use logged_in.
-        """
-        request = REQUEST
-        response = REQUEST.response
-        if self._shared_secret is None:
-            raise ValueError("No shared secret set")
-        try:
-            ticket = binascii.a2b_base64(
-                request.form.get(self.external_ticket_name, None))
-        except (binascii.Error, TypeError):
-            raise ValueError("Badly formed ticket")
-        ticket_data = tktauth.validateTicket(self._shared_secret, ticket,
-            timeout=self.timeout, mod_auth_tkt=self.mod_auth_tkt)
-        if ticket_data is None:
-            raise ValueError("Invalid ticket")
-        (digest, userid, tokens, user_data, timestamp) = ticket_data
-        pas = self._getPAS()
-        info = pas._verifyUser(pas.plugins, user_id=userid)
-        if info is None:
-            return ValueError("Unknown user '%s'" % userid)
-        self._setCookie(ticket, response)
-        came_from = request.form.get('came_from', None)
-        if came_from is None:
-            # XXX we want the portal url but cannot depend on CMF
-            came_from = pas.aq_parent.absolute_url()
-        response.redirect(came_from)
-        return None
-
     def _refreshSession(self, request, now=None):
         # Refresh a ticket. Does *not* check the user is in the use folder
         if not self.cookie_name in request:

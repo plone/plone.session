@@ -4,6 +4,13 @@ Changelog
 3.2 - Unreleased
 ----------------
 
+- Remove ``external_login`` method, the normal ``logged_in`` script can be
+  used instead.
+  [elro]
+
+- Fix refresh.
+  [elro]
+
 3.1 - 2010-11-11
 ----------------
 
