@@ -1,7 +1,7 @@
 Changelog
 =========
 
-3.2 - Unreleased
+3.2 - 2010-12-14
 ----------------
 
 - Remove ``external_login`` method, the normal ``logged_in`` script can be
