@@ -169,7 +169,11 @@ def createTicket(secret, userid, tokens=(), user_data=u'', ip='0.0.0.0', timesta
 
 def splitTicket(ticket, encoding='utf8'):
     digest = ticket[:32]
-    timestamp = int(ticket[32:40], 16) # convert from hexadecimal
+    val = ticket[32:40]
+    if not val:
+        raise ValueError
+    timestamp = int(val, 16) # convert from hexadecimal+
+
     parts = ticket[40:].decode(encoding).split("!")
 
     if len(parts) == 2:
