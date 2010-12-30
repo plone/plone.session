@@ -4,7 +4,8 @@ Changelog
 3.3 - unreleased
 ----------------
 
-
+- Fix remove.
+  [elro]
 
 3.2 - 2010-12-14
 ----------------

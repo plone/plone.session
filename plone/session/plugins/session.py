@@ -333,6 +333,7 @@ class SessionPlugin(BasePlugin):
     security.declarePublic('remove')
     def remove(self, REQUEST):
         """Remove the cookie"""
+        self.resetCredentials(REQUEST, REQUEST.response)
         setHeader = REQUEST.response.setHeader
         # Disable HTTP 1.0 Caching
         setHeader('Expires', formatdate(0, usegmt=True))
