@@ -4,6 +4,9 @@ Changelog
 3.3 - unreleased
 ----------------
 
+- Update login.asp to match Plone 4.1 SSO login form functionality.
+  [elro]
+
 - Fix remove.
   [elro]
 

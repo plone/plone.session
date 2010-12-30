@@ -2,12 +2,16 @@
 #########################################
 # Configuration constants
 SECRET = 'abc123'
-PLONE_URL = 'http://localhost:8080/Plone'
+ALLOWED_SITES = [
+    'http://localhost:8080/Plone',
+]
+DEFAULT_NEXT = 'http://localhost:8080/Plone/logged_in'
 MOD_AUTH_TKT = False
 #########################################
 import tktauth
 import binascii
 import string
+from urlparse import urlparse
 
 Response.CacheControl = "no-cache"
 Response.AddHeader("Pragma", "no-cache")
@@ -16,7 +20,18 @@ Response.AddHeader("Content-Type", "text/html; charset=utf-8")
 
 CAME_FROM_NAME = 'came_from'
 TICKET_NAME = '__ac'
-NEXT_URL = PLONE_URL + '/logged_in'
+
+next_url = DEFAULT_NEXT
+next = Request.QueryString('next')
+if next and str(next) != 'None':
+    _, u_host, u_path, _, _, _ = urlparse(next)
+    for external_site in ALLOWED_SITES:
+        _, host, path, _, _, _ = urlparse(external_site)
+        if not path.endswith('/'):
+            path += '/'
+        if host == u_host and u_path.startswith(path):
+            next_url = next
+            break
 
 userid = str(Request.ServerVariables("REMOTE_USER"))
 if not userid:
@@ -34,11 +49,17 @@ came_from = Request.QueryString(CAME_FROM_NAME)
 if not came_from or str(came_from) == 'None':
     came_from = ''
 
+target = Request.QueryString('target')
+if target in ('_parent', '_top', '_blank', '_self'):
+    target_attr = 'target="%s"' % target
+else:
+    target_attr = ''
+
 # An automatic form post is used to prevent the ticket being stored in the
 # browser's history.
 
 FORM = string.Template('''
-<form action="$action" method="post" name="external_login_form">
+<form action="$action" method="post" name="external_login_form"$target_attr>
 <!-- userid: $userid -->
 <input type="hidden" name="$ticket_name" value="$ticket" />
 <input type="hidden" name="$came_from_name" value="$came_from" />
@@ -47,7 +68,8 @@ You do not have javascript enabled. Press button to log in:
 </form>
 ''')
 form_html = FORM.substitute(
-    action=NEXT_URL,
+    action=next_url,
+    target_attr=target_attr,
     ticket_name=TICKET_NAME,
     ticket=ticket,
     came_from_name=CAME_FROM_NAME,
