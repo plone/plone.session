@@ -63,6 +63,7 @@ hashlib_ module.)
 .. _`backported hmac`: http://pypi.python.org/pypi/hmac
 .. _hashlib: http://pypi.python.org/pypi/hashlib
 
+
 Configuration options
 =====================
 
@@ -99,6 +100,7 @@ The following properties may be set through the Properties tab:
   Cookie path
     What path the cookie is set valid (defaults to ``/``.)
 
+
 Ticket refresh
 ==============
 
@@ -134,6 +136,35 @@ respect the caching headers for javascript fetched resources, so if you have a
 lot of IE6 users you may want to increase the poll interval to reduce server
 load.
 
+
+Ticket removal
+==============
+
+When login sessions are shared across domains, it can be helpful to log users
+out of all domains when they log out of a Plone site. This may be configured
+in `portal_css` by adding a resource with the following settings
+
+  ID/URL
+    ``http://example.com/portal_path/acl_users/session/remove?type=css``
+    (adjusted to the url of the portal to be logged out.)
+
+  Condition
+    ``python:request.URL.endswith('/logged_out')``
+
+  Render type
+    link
+
+  Compression type
+    none
+
+  Merging allowed?
+    No
+
+  Caching allowed?
+    No
+
+  CSS Media
+    (blank)
 
 Single Sign On with IIS
 =======================
@@ -220,8 +251,11 @@ IIS script
 - You need to modify the `SECRET` constant found in the `login.asp` to the
   same shared secret set on plone.session's `Manage secrets` tab.
 
-- Modify the `SITE_URL` constant in `login.asp` ot the address our your Plone
-  site.
+- Modify the `ALLOWED_SITES` constant in `login.asp` to include the URLs of
+  your Plone sites.
+
+- Modify the `DEFAULT_NEXT` constant in `login.asp` to refer the the URL of
+  `logged_in` on one of your Plone sites.
 
 - Access http://LOGONSERVER/test.asp to confirm access permissions are
   correctly configured.
@@ -257,9 +291,15 @@ Set the following configuration options through the Zope interface:
 - In `/Plone/portal_properties/site_properties` set `external_login_url` to
   `http://LOGONSERVER/login.asp`.
 
+For Plone versions before 4.1:
+
 - In `/Plone/portal_actions/user/login`. On the `Properties` tab set `URL
   (Expression)` to `${portal/portal_properties/site_properties/external_login_url}?next=${globals_view/navigationRootUrl}/logged_in`.
 
+For Plone 4.1 and later you may instead set:
+
+- In `/Plone/portal_properties/site_properties` set `external_login_iframe` to
+  True.
 
 Note for developers testing this under Windows XP
 -------------------------------------------------
