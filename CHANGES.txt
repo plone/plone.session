@@ -1,7 +1,7 @@
 Changelog
 =========
 
-3.3 - unreleased
+3.3 - 2010-12-30
 ----------------
 
 - Update login.asp to match Plone 4.1 SSO login form functionality.
