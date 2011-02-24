@@ -4,7 +4,8 @@ Changelog
 3.4 - unreleased
 ----------------
 
-
+- Added metadata.xml to the default profile.
+  [vincentfretin]
 
 3.3 - 2010-12-30
 ----------------
