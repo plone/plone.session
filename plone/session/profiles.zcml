@@ -4,9 +4,9 @@
 
     <registerProfile
         name="default"
-        title="plone.session refresh support"
+        title="Session refresh support"
         directory="profiles/default"
-        description="Optional session refresh support"
+        description="Optional plone.session refresh support."
         provides="Products.GenericSetup.interfaces.EXTENSION"
         />
 
