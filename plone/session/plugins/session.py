@@ -78,7 +78,7 @@ class SessionPlugin(BasePlugin):
              },
             {
                  "id": "mod_auth_tkt",
-                 "label": "Use mod_auth_tkt compatabile hashing algorithm",
+                 "label": "Use mod_auth_tkt compatible hashing algorithm",
                  "type": "boolean",
                  "mode": "w",
              },

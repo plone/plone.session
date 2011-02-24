@@ -82,7 +82,7 @@ The following properties may be set through the Properties tab:
   Refresh interval (in seconds, -1 to disable refresh)
     This controls the refresh CSS max-age (see below.)
 
-  Use mod_auth_tkt compatabile hashing algorithm
+  Use mod_auth_tkt compatible hashing algorithm
     Compatibility with other implemenations, but at the cost of using a weaker
     hashing algorithm.
 
