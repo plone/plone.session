@@ -1,5 +1,6 @@
 from AccessControl.SecurityInfo import ClassSecurityInfo
 from AccessControl.requestmethod import postonly
+from App.config import getConfiguration
 from Products.PageTemplates.PageTemplateFile import PageTemplateFile
 from Products.PluggableAuthService.interfaces.plugins \
         import IExtractionPlugin, IAuthenticationPlugin, \
@@ -142,7 +143,12 @@ class SessionPlugin(BasePlugin):
 
     def _setCookie(self, cookie, response):
         cookie=binascii.b2a_base64(cookie).rstrip()
-        options = dict(path=self.path, secure=self.secure, http_only=True)
+        # disable secure cookie in development mode, to ease local testing
+        if getConfiguration().debug_mode:
+            secure = False
+        else:
+            secure = self.secure
+        options = dict(path=self.path, secure=secure, http_only=True)
         if self.cookie_domain:
             options['domain'] = self.cookie_domain
         if self.cookie_lifetime:

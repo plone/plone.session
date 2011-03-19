@@ -1,8 +1,11 @@
 Changelog
 =========
 
-3.5 - Unreleased
+3.5 - 2011-03-19
 ----------------
+
+- Disable secure cookie in development mode, to ease local testing.
+  [hannosch]
 
 3.4 - 2011-03-02
 ----------------
