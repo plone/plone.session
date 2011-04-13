@@ -129,6 +129,7 @@ import hashlib
 import hmac
 import time
 
+
 def mod_auth_tkt_digest(secret, data1, data2):
     digest0 = hashlib.md5(data1 + secret + data2).hexdigest()
     digest = hashlib.md5(digest0 + secret).hexdigest()
