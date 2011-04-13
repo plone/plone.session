@@ -1,8 +1,12 @@
 Changelog
 =========
 
+
 3.6 - unreleased
 ----------------
+
+- Add MANIFEST.in.
+  [WouterVH]
 
 
 3.5 - 2011-03-19
@@ -11,11 +15,13 @@ Changelog
 - Disable secure cookie in development mode, to ease local testing.
   [hannosch]
 
+
 3.4 - 2011-03-02
 ----------------
 
 - Added metadata.xml to the default profile.
   [vincentfretin]
+
 
 3.3 - 2010-12-30
 ----------------
@@ -25,6 +31,7 @@ Changelog
 
 - Fix remove.
   [elro]
+
 
 3.2 - 2010-12-14
 ----------------
@@ -36,11 +43,13 @@ Changelog
 - Fix refresh.
   [elro]
 
+
 3.1 - 2010-11-11
 ----------------
 
 - Remove ``SessionPlugin.validate(ticket)`` method, it was not required.
   [elro]
+
 
 3.1b1 - 2010-10-18
 ------------------
@@ -54,11 +63,13 @@ Changelog
 - Close <input> tags properly (chameleon compatibility)
   [swampmonkey]
 
+
 3.0 - 2010-07-18
 ----------------
 
 - Update package metadata.
   [hannosch]
+
 
 3.0b5 - 2010-06-13
 ------------------
@@ -71,6 +82,7 @@ Changelog
 
 - Removed dependency on GPL licensed Products.PloneTestCase.
   [hannosch]
+
 
 3.0b4 - 2010-05-23
 ------------------
@@ -94,6 +106,7 @@ Changelog
   http://lists.plone.org/pipermail/membership/2010-April/001123.html
   [elro]
 
+
 3.0b3 - 2010-04-09
 ------------------
 
@@ -105,6 +118,7 @@ Changelog
   server with Integrated Windows Authentication.
   [elro]
 
+
 3.0b2 - 2010-03-09
 ------------------
 
@@ -113,6 +127,7 @@ Changelog
 
 - Catch a ComponentLookupError in authenticateCredentials.
   [elro]
+
 
 3.0b1 - 2010-03-05
 ------------------
@@ -132,11 +147,13 @@ Changelog
 - Remove the source component indirection.
   [elro]
 
+
 3.0a2 - 2009-11-13
 ------------------
 
 - Remove hash management UI which had been accidentally re-merged.
   [davisagli]
+
 
 3.0a1 - 2009-04-04
 ------------------
@@ -156,9 +173,9 @@ Changelog
 - Fixed a component lookup call in the HashSession source.
   [davisagli, hannosch]
 
-- Update default (hash) session source to use plone.keyring to manage
-  the secrets.
+- Update default (hash) session source to use plone.keyring to manage the secrets.
   [wichert]
+
 
 2.1 - 2009-02-04
 ----------------
@@ -167,9 +184,10 @@ Changelog
   Fixes possible privilege escalation.
   [maurits]
 
-- Make the cookie lifetime configurable. Patch by Rok Garbas. Fixes
-  http://dev.plone.org/plone/ticket/7248
+- Make the cookie lifetime configurable. Patch by Rok Garbas.
+  Fixes http://dev.plone.org/plone/ticket/7248
   [wichert, garbas]
+
 
 2.0 - 2008-07-08
 ----------------
@@ -178,6 +196,7 @@ Changelog
   plugin for PAS. Fixes http://dev.plone.org/plone/ticket/8176
   [witsch]
 
+
 1.2 - 2007-02-15
 ----------------
 
@@ -185,14 +204,15 @@ Changelog
   prevents newlines being inserted in long cookies.
   [wichert]
 
+
 1.1 - 2007-09-11
 ----------------
 
-- Use the userid instead of the login name in session identifiers. This
-  has the side-effect of working around a bug in PAS which caused us to
-  mix up users when the login name used was an inexact match for another
-  login name.
+- Use the userid instead of the login name in session identifiers. This has the
+  side-effect of working around a bug in PAS which caused us to mix up users when
+  the login name used was an inexact match for another login name.
   [wichert]
+
 
 1.0 - 2007-08-15
 ----------------
