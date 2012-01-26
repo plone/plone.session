@@ -131,7 +131,7 @@ class SessionPlugin(BasePlugin):
         return manager.secret()
 
     # ISessionPlugin implementation
-    def _setupSession(self, userid, response, tokens=(), user_data=u''):
+    def _setupSession(self, userid, response, tokens=(), user_data=''):
         cookie = tktauth.createTicket(
             secret=self._getSigningSecret(),
             userid=userid,

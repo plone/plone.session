@@ -5,6 +5,9 @@ Changelog
 3.6 - unreleased
 ----------------
 
+- Handle encoded strings for userids.
+  [elro]
+
 - Add MANIFEST.in.
   [WouterVH]
 

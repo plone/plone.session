@@ -72,7 +72,7 @@ First the ticket has to be read from the cookie and unencoded:
 Splitting the data reveals the contents (note the unicode output):
 
   >>> splitTicket(tkt)
-  ('c7c7300ac5cf529656444123aca34529', u'jbloggs', (), u'', 1216720800)
+  ('c7c7300ac5cf529656444123aca34529', 'jbloggs', (), '', 1216720800)
 
 We will validate it an hour after it was created:
 
@@ -106,7 +106,7 @@ the future.
   Set-Cookie: auth_tkt=ZWVhMzYzMGU5ODE3N2JkYmYwZTdmODAzZTE2MzJiN2U0ODg1YWZh...
   >>> data = validateTicket(SECRET, tkt, timeout=TIMEOUT, now=NOW, mod_auth_tkt=True)
   >>> data
-  ('eea3630e98177bdbf0e7f803e1632b7e', u'jbloggs', (u'foo', u'bar'), u'Joe Bloggs', 1216720800)
+  ('eea3630e98177bdbf0e7f803e1632b7e', 'jbloggs', ('foo', 'bar'), 'Joe Bloggs', 1216720800)
 
 
 Using the more secure hashing scheme
@@ -136,16 +136,18 @@ def mod_auth_tkt_digest(secret, data1, data2):
     return digest
 
 
-def createTicket(secret, userid, tokens=(), user_data=u'', ip='0.0.0.0', timestamp=None, encoding='utf8', mod_auth_tkt=False):
+def createTicket(secret, userid, tokens=(), user_data='', ip='0.0.0.0', timestamp=None, encoding=None, mod_auth_tkt=False):
     """
     By default, use a more compatible
     """
     if timestamp is None:
         timestamp = int(time.time())
+    if encoding is not None:
+        userid = userid.encode(encoding)
+        tokens = [t.encode(encoding) for t in tokens]
+        user_data = user_data.encode(encoding)
 
-    userid = userid.encode(encoding)
-    token_list = ','.join(tokens).encode(encoding)
-    user_data = user_data.encode(encoding)
+    token_list = ','.join(tokens)
 
     # ip address is part of the format, set it to 0.0.0.0 to be ignored.
     # inet_aton packs the ip address into a 4 bytes in network byte order.
@@ -168,14 +170,17 @@ def createTicket(secret, userid, tokens=(), user_data=u'', ip='0.0.0.0', timesta
     return ticket
 
 
-def splitTicket(ticket, encoding='utf8'):
+def splitTicket(ticket, encoding=None):
     digest = ticket[:32]
     val = ticket[32:40]
+    remainder = ticket[40:]
     if not val:
         raise ValueError
     timestamp = int(val, 16) # convert from hexadecimal+
 
-    parts = ticket[40:].decode(encoding).split("!")
+    if encoding is not None:
+        remainder = remainder.decode(encoding)
+    parts = remainder.split("!")
 
     if len(parts) == 2:
         userid, user_data = parts
@@ -189,7 +194,7 @@ def splitTicket(ticket, encoding='utf8'):
     return (digest, userid, tokens, user_data, timestamp)
 
 
-def validateTicket(secret, ticket, ip='0.0.0.0', timeout=0, now=None, encoding='utf8', mod_auth_tkt=False):
+def validateTicket(secret, ticket, ip='0.0.0.0', timeout=0, now=None, encoding=None, mod_auth_tkt=False):
     """
     To validate, a new ticket is created from the data extracted from cookie
     and the shared secret. The two digests are compared and timestamp checked.
