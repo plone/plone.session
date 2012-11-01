@@ -153,7 +153,10 @@ def createTicket(secret, userid, tokens=(), user_data='', ip='0.0.0.0', timestam
     # inet_aton packs the ip address into a 4 bytes in network byte order.
     # pack is used to convert timestamp from an unsigned integer to 4 bytes
     # in network byte order.
-    data1 = inet_aton(ip) + pack("!I", timestamp)
+    # Unfortunately, some older versions of Python assume that longs are always
+    # 32 bits, so we need to trucate the result in case we are on a 64-bit
+    # naive system.
+    data1 = inet_aton(ip)[4] + pack("!I", timestamp)
     data2 = '\0'.join((userid, token_list, user_data))
     if mod_auth_tkt:
         digest = mod_auth_tkt_digest(secret, data1, data2)

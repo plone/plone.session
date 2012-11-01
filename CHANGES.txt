@@ -11,6 +11,10 @@ Changelog
 - Add MANIFEST.in.
   [WouterVH]
 
+- Fix for Python 2.4 under 64bit Mac OS generating incorrect mod_auth_tkt 
+  digests
+  [MatthewWilkes]
+
 
 3.5 - 2011-03-19
 ----------------
