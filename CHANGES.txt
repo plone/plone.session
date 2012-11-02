@@ -2,8 +2,8 @@ Changelog
 =========
 
 
-3.6 - unreleased
-----------------
+3.5.1 - 2012-11-02
+------------------
 
 - Handle encoded strings for userids.
   [elro]
