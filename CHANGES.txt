@@ -1,9 +1,12 @@
 Changelog
 =========
 
-3.6 - Unreleased
-----------------
+3.5.2 - Unreleased
+------------------
 
+- Use constant time comparison when validating tickets. This is part of the fix
+  for https://plone.org/products/plone/security/advisories/20121106/23
+  [davisagli]
 
 3.5.1 - 2012-11-02
 ------------------

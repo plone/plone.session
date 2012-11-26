@@ -130,6 +130,18 @@ import hmac
 import time
 
 
+def is_equal(val1, val2):
+    # constant time comparison
+    if not isinstance(val1, basestring) or not isinstance(val2, basestring):
+        return False
+    if len(val1) != len(val2):
+        return False
+    result = 0
+    for x, y in zip(val1, val2):
+        result |= ord(x) ^ ord(y)
+    return result == 0
+
+
 def mod_auth_tkt_digest(secret, data1, data2):
     digest0 = hashlib.md5(data1 + secret + data2).hexdigest()
     digest = hashlib.md5(digest0 + secret).hexdigest()
@@ -197,19 +209,16 @@ def splitTicket(ticket, encoding=None):
     return (digest, userid, tokens, user_data, timestamp)
 
 
-def validateTicket(secret, ticket, ip='0.0.0.0', timeout=0, now=None, encoding=None, mod_auth_tkt=False):
-    """
-    To validate, a new ticket is created from the data extracted from cookie
-    and the shared secret. The two digests are compared and timestamp checked.
-    Successful validation returns (digest, userid, tokens, user_data, timestamp).
-    On failure, return None.
-    """
+def validateTicket(secret, ticket, ip='0.0.0.0', timeout=0, now=None,
+                   encoding='utf8', mod_auth_tkt=False):
     try:
-        (digest, userid, tokens, user_data, timestamp) = data = splitTicket(ticket)
+        (digest, userid, tokens, user_data, timestamp) = data = \
+            splitTicket(ticket)
     except ValueError:
         return None
-    new_ticket = createTicket(secret, userid, tokens, user_data, ip, timestamp, encoding, mod_auth_tkt)
-    if new_ticket[:32] == digest:
+    new_ticket = createTicket(secret, userid, tokens,
+        user_data, ip, timestamp, encoding, mod_auth_tkt)
+    if is_equal(new_ticket[:32], digest):
         if not timeout:
             return data
         if now is None:
