@@ -210,7 +210,7 @@ def splitTicket(ticket, encoding=None):
 
 
 def validateTicket(secret, ticket, ip='0.0.0.0', timeout=0, now=None,
-                   encoding='utf8', mod_auth_tkt=False):
+                   encoding=None, mod_auth_tkt=False):
     try:
         (digest, userid, tokens, user_data, timestamp) = data = \
             splitTicket(ticket)
