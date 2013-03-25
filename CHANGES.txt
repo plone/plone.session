@@ -4,7 +4,8 @@ Changelog
 3.5.4 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Once the timeout is passed the cookie is expired.
+  [alecghica]
 
 
 3.5.3 (2013-03-05)
@@ -29,7 +30,7 @@ Changelog
 - Add MANIFEST.in.
   [WouterVH]
 
-- Fix for Python 2.4 under 64bit Mac OS generating incorrect mod_auth_tkt 
+- Fix for Python 2.4 under 64bit Mac OS generating incorrect mod_auth_tkt
   digests
   [MatthewWilkes]
 

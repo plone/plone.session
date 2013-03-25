@@ -330,6 +330,7 @@ class SessionPlugin(BasePlugin):
         refreshed = self._refreshSession(REQUEST, now)
         if not refreshed:
             # We have an unauthenticated user
+            REQUEST.response.expireCookie(self.cookie_name, path='/')
             setHeader('Cache-Control', 'public, must-revalidate, max-age=%d, s-max-age=86400' % self.refresh_interval)
             setHeader('Vary', 'Cookie')
         else:
