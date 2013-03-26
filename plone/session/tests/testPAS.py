@@ -2,16 +2,18 @@ from DateTime import DateTime
 from zope.publisher.browser import TestRequest
 from plone.session.interfaces import ISessionPlugin
 from plone.session.tests.sessioncase import FunctionalPloneSessionTestCase
+import os
 
 
 class MockResponse:
 
     def setCookie(self, name, value, path,
-                  expires=None, secure=False, http_only=False):
+                  expires=None, secure=False, domain=False, http_only=False):
         self.cookie=value
         self.cookie_expires=expires
         self.cookie_http_only = http_only
         self.secure = secure
+        self.domain = domain
 
 
 class TestSessionPlugin(FunctionalPloneSessionTestCase):
@@ -98,6 +100,22 @@ class TestSessionPlugin(FunctionalPloneSessionTestCase):
         session.refresh(request2)
         self.assertNotEqual(request2.response.getCookie(session.cookie_name),
                 None)
+
+    def testCookieDomain(self):
+        session=self.folder.pas.session
+        response=MockResponse()
+
+        session._setupSession(self.userid, response)
+        self.assertEqual(response.domain, False)
+        
+        session.cookie_domain = 'test1'
+        response=MockResponse()
+        session._setupSession(self.userid, response)
+        self.assertEqual(response.domain, 'test1')
+
+        os.environ['PLONE_COOKIE_DOMAIN'] = 'test2'
+        session._setupSession(self.userid, response)
+        self.assertEqual(response.domain, 'test2')
 
 
 def test_suite():

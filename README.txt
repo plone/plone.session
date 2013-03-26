@@ -95,7 +95,9 @@ The following properties may be set through the Properties tab:
 
   Cookie domain (blank for default)
     A cookie may be shared across www1.example.com and www2.example.com by
-    setting the cookie domain to ``.example.com``.
+    setting the cookie domain to ``.example.com``. To ease developing and 
+    debugging through tunnels, you can override this by setting a 
+    PLONE_COOKIE_DOMAIN system environmental variable.
 
   Cookie path
     What path the cookie is set valid (defaults to ``/``.)
