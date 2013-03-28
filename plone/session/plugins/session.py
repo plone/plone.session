@@ -230,7 +230,7 @@ class SessionPlugin(BasePlugin):
     # ICredentialsResetPlugin implementation
     def resetCredentials(self, request, response):
         response=self.REQUEST["RESPONSE"]
-        environ = getattr(config, 'environment', os.environ) 
+        environ = getattr(getConfiguration(), 'environment', os.environ) 
         cookie_domain = environ.get('PLONE_COOKIE_DOMAIN', self.cookie_domain)
         if cookie_domain:
             response.expireCookie(
