@@ -4,7 +4,8 @@ Changelog
 3.5.4 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Allow overriding the cookie_domain from the system environment
+  [tiberiuichim]
 
 
 3.5.3 (2013-03-05)

@@ -16,6 +16,7 @@ from zope.component import getUtility, queryUtility
 from email.Utils import formatdate
 import binascii
 import time
+import os
 
 EMPTY_GIF = (
     'GIF89a\x01\x00\x01\x00\xf0\x01\x00\xff\xff\xff'
@@ -144,13 +145,20 @@ class SessionPlugin(BasePlugin):
     def _setCookie(self, cookie, response):
         cookie=binascii.b2a_base64(cookie).rstrip()
         # disable secure cookie in development mode, to ease local testing
-        if getConfiguration().debug_mode:
+        config = getConfiguration()
+        if config.debug_mode:
             secure = False
         else:
             secure = self.secure
+
         options = dict(path=self.path, secure=secure, http_only=True)
-        if self.cookie_domain:
-            options['domain'] = self.cookie_domain
+
+        # Allow override based on system environment
+        # during tests, config.environment doesn't exist
+        environ = getattr(config, 'environment', os.environ) 
+        cookie_domain = environ.get('PLONE_COOKIE_DOMAIN', self.cookie_domain)
+        if cookie_domain:
+            options['domain'] = cookie_domain
         if self.cookie_lifetime:
             options['expires'] = cookie_expiration_date(self.cookie_lifetime)
         response.setCookie(self.cookie_name, cookie, **options)
@@ -222,9 +230,11 @@ class SessionPlugin(BasePlugin):
     # ICredentialsResetPlugin implementation
     def resetCredentials(self, request, response):
         response=self.REQUEST["RESPONSE"]
-        if self.cookie_domain:
+        environ = getattr(getConfiguration(), 'environment', os.environ) 
+        cookie_domain = environ.get('PLONE_COOKIE_DOMAIN', self.cookie_domain)
+        if cookie_domain:
             response.expireCookie(
-                self.cookie_name, path=self.path, domain=self.cookie_domain)
+                self.cookie_name, path=self.path, domain=cookie_domain)
         else:
             response.expireCookie(self.cookie_name, path=self.path)
 
