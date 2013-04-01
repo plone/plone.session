@@ -99,6 +99,20 @@ class TestSessionPlugin(FunctionalPloneSessionTestCase):
         self.assertNotEqual(request2.response.getCookie(session.cookie_name),
                 None)
 
+    def testCookieValidityTimeout(self):
+        session=self.folder.pas.session
+        request=self.makeRequest("test string")
+        session.updateCredentials(request, request.response,
+                "our_user", "password")
+        self.assertNotEqual(
+                    request.response.getCookie(session.cookie_name)['value'],
+                    'deleted')
+        session.timeout=1
+        session.refresh(request)
+        self.assertEqual(
+                    request.response.getCookie(session.cookie_name)['value'],
+                    'deleted')
+
 
 def test_suite():
     from unittest import TestSuite, makeSuite
