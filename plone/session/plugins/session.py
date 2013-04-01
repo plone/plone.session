@@ -181,14 +181,15 @@ class SessionPlugin(BasePlugin):
         ticket=credentials["cookie"]
         ticket_data = self._validateTicket(ticket)
         if ticket_data is None:
+            self.refresh(self.REQUEST)
             return None
         (digest, userid, tokens, user_data, timestamp) = ticket_data
         pas=self._getPAS()
         info=pas._verifyUser(pas.plugins, user_id=userid)
         if info is None:
+            self.refresh(self.REQUEST)
             return None
 
-        # XXX Should refresh the ticket if after timeout refresh.
         return (info['id'], info['login'])
 
     def _validateTicket(self, ticket, now=None):
@@ -320,7 +321,8 @@ class SessionPlugin(BasePlugin):
 
     security.declarePublic('refresh')
     def refresh(self, REQUEST):
-        """Refresh the cookie"""
+        """Refresh the cookie
+        """
         setHeader = REQUEST.response.setHeader
         # Disable HTTP 1.0 Caching
         setHeader('Expires', formatdate(0, usegmt=True))
@@ -339,7 +341,8 @@ class SessionPlugin(BasePlugin):
 
     security.declarePublic('remove')
     def remove(self, REQUEST):
-        """Remove the cookie"""
+        """Remove the cookie
+        """
         self.resetCredentials(REQUEST, REQUEST.response)
         setHeader = REQUEST.response.setHeader
         # Disable HTTP 1.0 Caching
