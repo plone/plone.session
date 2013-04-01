@@ -222,7 +222,6 @@ class SessionPlugin(BasePlugin):
 
     # ICredentialsResetPlugin implementation
     def resetCredentials(self, request, response):
-        response=self.REQUEST["RESPONSE"]
         if self.cookie_domain:
             response.expireCookie(
                 self.cookie_name, path=self.path, domain=self.cookie_domain)
@@ -332,7 +331,7 @@ class SessionPlugin(BasePlugin):
         refreshed = self._refreshSession(REQUEST, now)
         if not refreshed:
             # We have an unauthenticated user
-            REQUEST.response.expireCookie(self.cookie_name, path='/')
+            self.resetCredentials(REQUEST, REQUEST.response)
             setHeader('Cache-Control', 'public, must-revalidate, max-age=%d, s-max-age=86400' % self.refresh_interval)
             setHeader('Vary', 'Cookie')
         else:
