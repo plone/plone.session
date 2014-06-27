@@ -10,10 +10,13 @@ setup(name='plone.session',
       classifiers=[
           "Environment :: Web Environment",
           "Framework :: Plone",
+          "Framework :: Plone :: 4.3",
+          "Framework :: Plone :: 5.0",
           "Framework :: Zope2",
           "License :: OSI Approved :: BSD License",
           "Operating System :: OS Independent",
           "Programming Language :: Python",
+          "Programming Language :: Python :: 2.7",
           "Topic :: System :: Systems Administration :: Authentication/Directory",
         ],
       keywords='PAS session authentication Zope',
@@ -29,7 +32,6 @@ setup(name='plone.session',
         test=[
             'zope.configuration',
             'zope.publisher',
-            'Products.PloneTestCase',
         ]
       ),
       install_requires=[
