@@ -29,7 +29,7 @@ There are some downsides to this approach:
 
 A session cookie is used to track sessions; that means that as long as
 a user keeps his browser open (and does not explicitly log out) the session
-remains open until the timout limit is reached. This can be changed by setting
+remains open until the timeout limit is reached. This can be changed by setting
 the ``timeout`` property of the plugin to the number of seconds the cookie
 should remain valid *after the moment of login*. 
 
