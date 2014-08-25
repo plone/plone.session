@@ -3,7 +3,7 @@
 /*global jQuery: false*/
 
 (function($) {
-    
+
 var last_activity = new Date();
 
 function sessionActivity() {

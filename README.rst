@@ -14,7 +14,7 @@ scheme. You will need to use the same secret across all servers.
 This has several advantages over other session management systems:
 
 * passwords are not sent to the server in a cookie on every request, as
-  is done by the *Cookie Auth Helper* 
+  is done by the *Cookie Auth Helper*
 * it does not require any ZODB write for sessions, as is needed by the
   *Session Crumbler*. This allows it to scale very well.
 * it allows you to invalidate all existing authentication cookies for
@@ -31,7 +31,7 @@ A session cookie is used to track sessions; that means that as long as
 a user keeps his browser open (and does not explicitly log out) the session
 remains open until the timeout limit is reached. This can be changed by setting
 the ``timeout`` property of the plugin to the number of seconds the cookie
-should remain valid *after the moment of login*. 
+should remain valid *after the moment of login*.
 
 `tktauth.py` implements the core mod_auth_tkt functionality. It is
 self-contained and may be of useful to other frameworks.
@@ -51,7 +51,7 @@ PAS plugin, such as the standard *Cookie Auth Helper* to take care of
 authentication.
 
 After a user has been authenticated plone.session can take over via the
-PAS *credentials update* mechanism. 
+PAS *credentials update* mechanism.
 
 Python 2.4 / Zope 2.10 / Plone 3
 --------------------------------

@@ -29,7 +29,7 @@ Changelog
 - Add MANIFEST.in.
   [WouterVH]
 
-- Fix for Python 2.4 under 64bit Mac OS generating incorrect mod_auth_tkt 
+- Fix for Python 2.4 under 64bit Mac OS generating incorrect mod_auth_tkt
   digests
   [MatthewWilkes]
 
