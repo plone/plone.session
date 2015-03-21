@@ -1,7 +1,7 @@
 Changelog
 =========
 
-3.5.4 (unreleased)
+3.5.4 (2015-03-21)
 ------------------
 
 - Move tests from PloneTestCase to plone.app.testing.
