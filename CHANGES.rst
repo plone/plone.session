@@ -4,7 +4,8 @@ Changelog
 3.5.4 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Move tests from PloneTestCase to plone.app.testing.
+  [tomgross]
 
 
 3.5.3 (2013-03-05)
