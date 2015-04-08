@@ -99,6 +99,12 @@ class TestSessionPlugin(FunctionalPloneSessionTestCase):
         self.assertNotEqual(request2.response.getCookie(session.cookie_name),
                 None)
 
+    def testUnicodeUserid(self):
+        unicode_userid = unicode(self.userid)
+        response = MockResponse()
+        session = self.folder.pas.session
+        # This step would fail.
+        session._setupSession(unicode_userid, response)
 
 def test_suite():
     from unittest import TestSuite, makeSuite
