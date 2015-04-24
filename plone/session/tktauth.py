@@ -148,7 +148,7 @@ def mod_auth_tkt_digest(secret, data1, data2):
     return digest
 
 
-def createTicket(secret, userid, tokens=(), user_data='', ip='0.0.0.0', timestamp=None, encoding=None, mod_auth_tkt=False):
+def createTicket(secret, userid, tokens=(), user_data='', ip='0.0.0.0', timestamp=None, encoding='utf-8', mod_auth_tkt=False):
     """
     By default, use a more compatible
     """
@@ -158,6 +158,8 @@ def createTicket(secret, userid, tokens=(), user_data='', ip='0.0.0.0', timestam
         userid = userid.encode(encoding)
         tokens = [t.encode(encoding) for t in tokens]
         user_data = user_data.encode(encoding)
+    # if type(userid) == unicode:
+        # userid = userid.encode('utf-8')
 
     token_list = ','.join(tokens)
 

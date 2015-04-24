@@ -4,7 +4,8 @@ Changelog
 3.5.5 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Default encoding for createTicket to be compatible with unicode
+  user_id [puittenbroek]
 
 
 3.5.4 (2015-03-21)
