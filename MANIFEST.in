@@ -1,6 +1,7 @@
 include *.rst
 
-recursive-include docs *
-recursive-include plone *
+graft docs
+graft iis-login
+graft plone
 
 global-exclude *pyc
