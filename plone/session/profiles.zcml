@@ -1,13 +1,13 @@
 <configure
-    xmlns="http://namespaces.zope.org/genericsetup"
-    i18n_domain="plone">
+    i18n_domain="plone"
+    xmlns="http://namespaces.zope.org/genericsetup">
 
-    <registerProfile
-        name="default"
-        title="Session refresh support"
-        directory="profiles/default"
-        description="Optional plone.session refresh support."
-        provides="Products.GenericSetup.interfaces.EXTENSION"
-        />
+  <registerProfile
+      description="Optional plone.session refresh support."
+      directory="profiles/default"
+      name="default"
+      provides="Products.GenericSetup.interfaces.EXTENSION"
+      title="Session refresh support"
+  />
 
 </configure>
