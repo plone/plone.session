@@ -3,15 +3,17 @@
     xmlns:five="http://namespaces.zope.org/five"
     xmlns:zcml="http://namespaces.zope.org/zcml">
 
-    <five:registerPackage package="." initialize=".initialize" />
+  <five:registerPackage
+      initialize=".initialize"
+      package="."
+  />
 
-    <include package="plone.protect" />
+  <include package="plone.protect" />
+  <include file="resources.zcml" />
 
-    <include file="resources.zcml" />
-
-    <include
-        zcml:condition="installed Products.CMFPlone"
-        file="profiles.zcml"
-        />
+  <include
+      file="profiles.zcml"
+      zcml:condition="installed Products.CMFPlone"
+  />
 
 </configure>

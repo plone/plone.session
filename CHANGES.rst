@@ -4,7 +4,8 @@ Changelog
 3.5.6 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Cleanup: Pep8, plone style conventions, better readbility.
+  [jensens]
 
 
 3.5.5 (2015-04-29)

@@ -46,7 +46,9 @@ test 2008-07-22 11:00:
 We will create a mod_auth_tkt compatible ticket. In the simplest case no extra
 data is supplied.
 
-  >>> tkt = createTicket(SECRET, userid, timestamp=timestamp, mod_auth_tkt=True)
+  >>> tkt = createTicket(
+  ...     SECRET, userid, timestamp=timestamp, mod_auth_tkt=True
+  ... )
   >>> tkt
   'c7c7300ac5cf529656444123aca345294885afa0jbloggs!'
 
@@ -77,14 +79,18 @@ Splitting the data reveals the contents (note the unicode output):
 We will validate it an hour after it was created:
 
   >>> NOW = timestamp + 60*60
-  >>> data = validateTicket(SECRET, tkt, timeout=TIMEOUT, now=NOW, mod_auth_tkt=True)
+  >>> data = validateTicket(
+  ...     SECRET, tkt, timeout=TIMEOUT, now=NOW, mod_auth_tkt=True
+  ... )
   >>> data is not None
   True
 
 After the timeout the ticket is no longer valid
 
   >>> LATER = NOW + TIMEOUT
-  >>> data = validateTicket(SECRET, tkt, timeout=TIMEOUT, now=LATER, mod_auth_tkt=True)
+  >>> data = validateTicket(
+  ...     SECRET, tkt, timeout=TIMEOUT, now=LATER, mod_auth_tkt=True
+  ... )
   >>> data is not None
   False
 
@@ -98,13 +104,18 @@ the future.
 
   >>> user_data = 'Joe Bloggs'
   >>> tokens = ['foo', 'bar']
-  >>> tkt = createTicket(SECRET, userid, tokens, user_data, timestamp=timestamp, mod_auth_tkt=True)
+  >>> tkt = createTicket(
+  ...     SECRET, userid, tokens, user_data, timestamp=timestamp,
+  ...     mod_auth_tkt=True
+  ... )
   >>> tkt
   'eea3630e98177bdbf0e7f803e1632b7e4885afa0jbloggs!foo,bar!Joe Bloggs'
   >>> cookie['auth_tkt'] = binascii.b2a_base64(tkt).strip()
   >>> print cookie
   Set-Cookie: auth_tkt=ZWVhMzYzMGU5ODE3N2JkYmYwZTdmODAzZTE2MzJiN2U0ODg1YWZh...
-  >>> data = validateTicket(SECRET, tkt, timeout=TIMEOUT, now=NOW, mod_auth_tkt=True)
+  >>> data = validateTicket(
+  ...     SECRET, tkt, timeout=TIMEOUT, now=NOW, mod_auth_tkt=True
+  ... )
   >>> data
   ('eea3630e98177bdbf0e7f803e1632b7e', 'jbloggs', ('foo', 'bar'), 'Joe Bloggs', 1216720800)
 
@@ -148,7 +159,8 @@ def mod_auth_tkt_digest(secret, data1, data2):
     return digest
 
 
-def createTicket(secret, userid, tokens=(), user_data='', ip='0.0.0.0', timestamp=None, encoding='utf-8', mod_auth_tkt=False):
+def createTicket(secret, userid, tokens=(), user_data='', ip='0.0.0.0',
+                 timestamp=None, encoding='utf-8', mod_auth_tkt=False):
     """
     By default, use a more compatible
     """
@@ -193,7 +205,7 @@ def splitTicket(ticket, encoding=None):
     remainder = ticket[40:]
     if not val:
         raise ValueError
-    timestamp = int(val, 16) # convert from hexadecimal+
+    timestamp = int(val, 16)  # convert from hexadecimal+
 
     if encoding is not None:
         remainder = remainder.decode(encoding)
@@ -218,8 +230,16 @@ def validateTicket(secret, ticket, ip='0.0.0.0', timeout=0, now=None,
             splitTicket(ticket)
     except ValueError:
         return None
-    new_ticket = createTicket(secret, userid, tokens,
-        user_data, ip, timestamp, encoding, mod_auth_tkt)
+    new_ticket = createTicket(
+        secret,
+        userid,
+        tokens,
+        user_data,
+        ip,
+        timestamp,
+        encoding,
+        mod_auth_tkt
+    )
     if is_equal(new_ticket[:32], digest):
         if not timeout:
             return data
@@ -233,7 +253,9 @@ def validateTicket(secret, ticket, ip='0.0.0.0', timeout=0, now=None,
 # doctest runner
 def _test():
     import doctest
-    doctest.testmod(optionflags=doctest.ELLIPSIS + doctest.NORMALIZE_WHITESPACE)
+    doctest.testmod(
+        optionflags=doctest.ELLIPSIS + doctest.NORMALIZE_WHITESPACE
+    )
 
 if __name__ == "__main__":
     _test()
