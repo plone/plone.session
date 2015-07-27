@@ -1,7 +1,7 @@
 Changelog
 =========
 
-3.5.6 (unreleased)
+3.5.6 (2015-07-27)
 ------------------
 
 - Cleanup: Pep8, plone style conventions, better readbility.
