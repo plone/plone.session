@@ -4,7 +4,13 @@ Changelog
 3.5.7 (unreleased)
 ------------------
 
-- Nothing changed yet.
+New:
+
+- *add item here*
+
+Fixes:
+
+- *add item here*
 
 
 3.5.6 (2015-07-27)
