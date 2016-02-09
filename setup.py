@@ -27,7 +27,7 @@ setup(
     keywords='PAS session authentication Zope auth_tkt',
     author='Plone Foundation',
     author_email='plone-developers@lists.sourceforge.net',
-    url='http://pypi.python.org/pypi/plone.session',
+    url='https://pypi.python.org/pypi/plone.session',
     license='BSD',
     packages=find_packages(exclude=['ez_setup']),
     namespace_packages=['plone'],
