@@ -1,12 +1,12 @@
 Changelog
 =========
 
-3.5.7 (unreleased)
+3.6.0 (unreleased)
 ------------------
 
 New:
 
-- *add item here*
+- Added uninstall profile.  [maurits]
 
 Fixes:
 
