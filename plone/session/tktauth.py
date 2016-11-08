@@ -182,16 +182,16 @@ def createTicket(secret, userid, tokens=(), user_data='', ip='0.0.0.0',
     # Unfortunately, some older versions of Python assume that longs are always
     # 32 bits, so we need to trucate the result in case we are on a 64-bit
     # naive system.
-    data1 = inet_aton(ip)[:4] + pack("!I", timestamp)
+    data1 = inet_aton(ip)[:4] + pack('!I', timestamp)
     data2 = '\0'.join((userid, token_list, user_data))
     if mod_auth_tkt:
         digest = mod_auth_tkt_digest(secret, data1, data2)
     else:
         # a sha256 digest is the same length as an md5 hexdigest
-        digest = hmac.new(secret, data1+data2, hashlib.sha256).digest()
+        digest = hmac.new(secret, data1 + data2, hashlib.sha256).digest()
 
     # digest + timestamp as an eight character hexadecimal + userid + !
-    ticket = "%s%08x%s!" % (digest, timestamp, userid)
+    ticket = '%s%08x%s!' % (digest, timestamp, userid)
     if tokens:
         ticket += token_list + '!'
     ticket += user_data
@@ -257,5 +257,6 @@ def _test():
         optionflags=doctest.ELLIPSIS + doctest.NORMALIZE_WHITESPACE
     )
 
-if __name__ == "__main__":
+
+if __name__ == '__main__':
     _test()
