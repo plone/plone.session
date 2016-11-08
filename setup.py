@@ -3,26 +3,26 @@ from setuptools import find_packages
 from setuptools import setup
 
 version = '3.6.1.dev0'
-longdescription = open("README.rst").read()
+longdescription = open('README.rst').read()
 longdescription += '\n'
-longdescription += open("CHANGES.rst").read()
+longdescription += open('CHANGES.rst').read()
 
 setup(
     name='plone.session',
     version=version,
-    description="Session based auth tkt authentication for Zope",
+    description='Session based auth tkt authentication for Zope',
     long_description=longdescription,
     classifiers=[
-        "Environment :: Web Environment",
-        "Framework :: Plone :: 5.0",
-        "Framework :: Plone :: 5.1",
-        "Framework :: Plone",
-        "Framework :: Zope2",
-        "License :: OSI Approved :: BSD License",
-        "Operating System :: OS Independent",
-        "Programming Language :: Python :: 2.7",
-        "Programming Language :: Python",
-        "Topic :: System :: Systems Administration :: Authentication/Directory",  # noqa
+        'Environment :: Web Environment',
+        'Framework :: Plone :: 5.0',
+        'Framework :: Plone :: 5.1',
+        'Framework :: Plone',
+        'Framework :: Zope2',
+        'License :: OSI Approved :: BSD License',
+        'Operating System :: OS Independent',
+        'Programming Language :: Python :: 2.7',
+        'Programming Language :: Python',
+        'Topic :: System :: Systems Administration :: Authentication/Directory',  # noqa
     ],
     keywords='PAS session authentication Zope auth_tkt',
     author='Plone Foundation',

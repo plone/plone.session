@@ -14,7 +14,8 @@ New features:
 
 Bug fixes:
 
-- *add item here*
+- Hide uninstall profile in install listings.
+  [jensens]
 
 
 3.6.0 (2016-05-26)
