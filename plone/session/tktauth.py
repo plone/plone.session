@@ -188,7 +188,7 @@ def createTicket(secret, userid, tokens=(), user_data='', ip='0.0.0.0',
         digest = mod_auth_tkt_digest(secret, data1, data2)
     else:
         # a sha256 digest is the same length as an md5 hexdigest
-        digest = hmac.new(secret, data1+data2, hashlib.sha256).digest()
+        digest = hmac.new(secret, data1 + data2, hashlib.sha256).digest()
 
     # digest + timestamp as an eight character hexadecimal + userid + !
     ticket = "%s%08x%s!" % (digest, timestamp, userid)
@@ -256,6 +256,7 @@ def _test():
     doctest.testmod(
         optionflags=doctest.ELLIPSIS + doctest.NORMALIZE_WHITESPACE
     )
+
 
 if __name__ == "__main__":
     _test()
