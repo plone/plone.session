@@ -4,14 +4,6 @@ Changelog
 3.6.1 (unreleased)
 ------------------
 
-Breaking changes:
-
-- *add item here*
-
-New features:
-
-- *add item here*
-
 Bug fixes:
 
 - Hide uninstall profile in install listings.
