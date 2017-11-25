@@ -14,7 +14,14 @@ New features:
 
 Bug fixes:
 
-- *add item here*
+- Hardening default timeout of session.
+  This solves Plone security internal issue #126 (severity low, non-critical).
+  Session timeout is now the same as in mod_auth_tkt: 2h.
+  This follows the recommendation of the German BSI (federal office for security in the information technology).
+  See https://www.bsi.bund.de/SharedDocs/Downloads/DE/BSI/Internetsicherheit/isi_web_server_checkliste_Plone.pdf
+  For existing sites this can be adjusted at https://HOST/acl_users/session/manage_propertiesForm
+  The Plone Security Team follows the BSI and recommends administrators to change the setting in their existing Plone sites.
+  [jensens]
 
 
 3.6.1 (2016-12-02)
