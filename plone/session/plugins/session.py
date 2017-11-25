@@ -24,7 +24,7 @@ EMPTY_GIF = (
     'GIF89a\x01\x00\x01\x00\xf0\x01\x00\xff\xff\xff'
     '\x00\x00\x00!\xf9\x04\x01\n\x00\x00\x00'
     ',\x00\x00\x00\x00\x01\x00\x01\x00\x00\x02\x02D\x01\x00;'
-    )
+)
 
 manage_addSessionPluginForm = PageTemplateFile('session', globals())
 
@@ -67,8 +67,8 @@ class SessionPlugin(BasePlugin):
     cookie_lifetime = 0
     cookie_domain = ''
     mod_auth_tkt = False
-    timeout = 12*60*60  # 12h. Default is 2h in mod_auth_tkt
-    refresh_interval = 1*60*60  # -1 to disable
+    timeout = 12 * 60 * 60  # 12h. Default is 2h in mod_auth_tkt
+    refresh_interval = 1 * 60 * 60  # -1 to disable
     external_ticket_name = 'ticket'
     secure = False
     _shared_secret = None
@@ -83,30 +83,30 @@ class SessionPlugin(BasePlugin):
             "label": "Cookie validity timeout (in seconds)",
             "type": "int",
             "mode": "w",
-         },
+        },
         {
             "id": "refresh_interval",
             "label": "Refresh interval (in seconds, -1 to disable refresh)",
             "type": "int",
             "mode": "w",
-         },
+        },
         {
             "id": "mod_auth_tkt",
             "label": "Use mod_auth_tkt compatible hashing algorithm",
             "type": "boolean",
             "mode": "w",
-         },
-        {
-           "id": "cookie_name",
-           "label": "Cookie name",
-           "type": "string",
-           "mode": "w",
         },
         {
-           "id": "cookie_lifetime",
-           "label": "Cookie lifetime (in days)",
-           "type": "int",
-           "mode": "w",
+            "id": "cookie_name",
+            "label": "Cookie name",
+            "type": "string",
+            "mode": "w",
+        },
+        {
+            "id": "cookie_lifetime",
+            "label": "Cookie lifetime (in days)",
+            "type": "int",
+            "mode": "w",
         },
         {
             "id": "cookie_domain",
@@ -121,16 +121,16 @@ class SessionPlugin(BasePlugin):
             "mode": "w",
         },
         {
-           "id": "secure",
-           "label": "Only Send Cookie Over HTTPS",
-           "type": "boolean",
-           "mode": "w",
+            "id": "secure",
+            "label": "Only Send Cookie Over HTTPS",
+            "type": "boolean",
+            "mode": "w",
         },
     )
 
     manage_options = (
         dict(label='Manage secrets', action='manage_secret'),
-        ) + BasePlugin.manage_options
+    ) + BasePlugin.manage_options
 
     def __init__(self, id, title=None, path="/"):
         self._setId(id)
@@ -151,7 +151,7 @@ class SessionPlugin(BasePlugin):
             tokens=tokens,
             user_data=user_data,
             mod_auth_tkt=self.mod_auth_tkt,
-            )
+        )
         self._setCookie(cookie, response)
 
     def _setCookie(self, cookie, response):
