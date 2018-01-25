@@ -4,6 +4,8 @@ from zope.publisher.browser import TestRequest
 from plone.session.interfaces import ISessionPlugin
 from plone.session.tests.sessioncase import FunctionalPloneSessionTestCase
 
+import six
+
 
 class MockResponse(object):
 
@@ -101,7 +103,7 @@ class TestSessionPlugin(FunctionalPloneSessionTestCase):
                 None)
 
     def testUnicodeUserid(self):
-        unicode_userid = unicode(self.userid)
+        unicode_userid = six.text_type(self.userid)
         response = MockResponse()
         session = self.folder.pas.session
         # This step would fail.
