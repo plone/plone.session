@@ -23,6 +23,9 @@ Bug fixes:
   The Plone Security Team follows the BSI and recommends administrators to change the setting in their existing Plone sites.
   [jensens]
 
+- Add Python 2 / 3 compatibility
+  [vincero]
+
 
 3.6.1 (2016-12-02)
 ------------------

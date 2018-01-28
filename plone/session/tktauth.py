@@ -58,7 +58,7 @@ module here, your web framework may supply it's own mechanism.
   >>> import Cookie, binascii
   >>> cookie = Cookie.SimpleCookie()
   >>> cookie['auth_tkt'] = binascii.b2a_base64(tkt).strip()
-  >>> print cookie
+  >>> print(cookie)
   Set-Cookie: auth_tkt=YzdjNzMwMGFjNWNmNTI5NjU2NDQ0MTIzYWNhMzQ1Mjk0ODg1YWZh...
 
 
@@ -71,7 +71,7 @@ First the ticket has to be read from the cookie and unencoded:
   >>> tkt
   'c7c7300ac5cf529656444123aca345294885afa0jbloggs!'
 
-Splitting the data reveals the contents (note the unicode output):
+Splitting the data reveals the contents (note the six.text_type output):
 
   >>> splitTicket(tkt)
   ('c7c7300ac5cf529656444123aca34529', 'jbloggs', (), '', 1216720800)
@@ -111,7 +111,7 @@ the future.
   >>> tkt
   'eea3630e98177bdbf0e7f803e1632b7e4885afa0jbloggs!foo,bar!Joe Bloggs'
   >>> cookie['auth_tkt'] = binascii.b2a_base64(tkt).strip()
-  >>> print cookie
+  >>> print(cookie)
   Set-Cookie: auth_tkt=ZWVhMzYzMGU5ODE3N2JkYmYwZTdmODAzZTE2MzJiN2U0ODg1YWZh...
   >>> data = validateTicket(
   ...     SECRET, tkt, timeout=TIMEOUT, now=NOW, mod_auth_tkt=True
@@ -138,12 +138,13 @@ from socket import inet_aton
 from struct import pack
 import hashlib
 import hmac
+import six
 import time
 
 
 def is_equal(val1, val2):
     # constant time comparison
-    if not isinstance(val1, basestring) or not isinstance(val2, basestring):
+    if not isinstance(val1, six.string_types) or not isinstance(val2, six.string_types):
         return False
     if len(val1) != len(val2):
         return False
