@@ -30,7 +30,7 @@ class TestSessionPlugin(FunctionalPloneSessionTestCase):
         return TestRequest(**{session.cookie_name: cookie})
 
     def testOneLineCookiesOnly(self):
-        longid = "x"*256
+        longid = "x" * 256
         response = MockResponse()
         session = self.folder.pas.session
         session._setupSession(longid, response)
@@ -64,8 +64,10 @@ class TestSessionPlugin(FunctionalPloneSessionTestCase):
         session = self.folder.pas.session
         session.cookie_lifetime = 100
         session._setupSession(self.userid, response)
-        self.assertEqual(DateTime(response.cookie_expires).strftime('%Y%m%d'),
-                         (DateTime()+100).strftime('%Y%m%d'))
+        self.assertEqual(
+            DateTime(response.cookie_expires).strftime('%Y%m%d'),
+            (DateTime() + 100).strftime('%Y%m%d'),
+        )
 
     def testExtraction(self):
         session = self.folder.pas.session
@@ -85,22 +87,34 @@ class TestSessionPlugin(FunctionalPloneSessionTestCase):
         session.updateCredentials(request, request.response, "bla", "password")
         self.assertEqual(request.response.getCookie(session.cookie_name), None)
 
-        session.updateCredentials(request, request.response,
-                "our_user", "password")
-        self.assertNotEqual(request.response.getCookie(session.cookie_name),
-                None)
+        session.updateCredentials(
+            request,
+            request.response,
+            "our_user",
+            "password"
+        )
+        self.assertNotEqual(
+            request.response.getCookie(session.cookie_name),
+            None
+        )
 
     def testRefresh(self):
         session = self.folder.pas.session
         request = self.makeRequest("test string")
-        session.updateCredentials(request, request.response,
-                "our_user", "password")
+        session.updateCredentials(
+            request,
+            request.response,
+            "our_user",
+            "password"
+        )
         cookie = request.response.getCookie(session.cookie_name)['value']
         request2 = self.makeRequest(cookie)
         request2.form['type'] = 'gif'
         session.refresh(request2)
-        self.assertNotEqual(request2.response.getCookie(session.cookie_name),
-                None)
+        self.assertNotEqual(
+            request2.response.getCookie(session.cookie_name),
+            None
+        )
 
     def testUnicodeUserid(self):
         unicode_userid = six.text_type(self.userid)
@@ -115,6 +129,7 @@ class TestSessionPlugin(FunctionalPloneSessionTestCase):
         session = self.folder.pas.session
         # This step would fail.
         session._setupSession(unicode_userid, response)
+
 
 def test_suite():
     from unittest import TestSuite, makeSuite

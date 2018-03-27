@@ -13,4 +13,5 @@ class HiddenProfiles(object):
         """
         return [
             u'plone.session:uninstall',
+            u'plone.session:remove-legacy-resources',
         ]

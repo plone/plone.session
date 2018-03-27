@@ -1,7 +1,7 @@
 Changelog
 =========
 
-3.6.3 (unreleased)
+3.7.0 (unreleased)
 ------------------
 
 Breaking changes:
@@ -10,11 +10,17 @@ Breaking changes:
 
 New features:
 
-- *add item here*
+- Use Resource Registry for JS/CSS registration
+  [jensens]
 
 Bug fixes:
 
-- *add item here*
+- Fixes #11: Pseudo CSS-file is not loaded anymore in merged lagacy bundle.
+  Now optional JS based auto-refresh support is working again.
+  [jensens]
+
+- Modernize README.
+  [jensens]
 
 
 3.6.2 (2018-02-02)

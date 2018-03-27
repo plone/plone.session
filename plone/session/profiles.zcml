@@ -19,6 +19,14 @@
       title="Session refresh support [uninstall]"
   />
 
+  <gs:registerProfile
+      description="Remove plone.session legacy portal_css/portal_js registration"
+      directory="profiles/remove-legacy-resources"
+      name="remove-legacy-resources"
+      provides="Products.GenericSetup.interfaces.EXTENSION"
+      title="Session refresh support: Remove legacy resources"
+  />
+
   <utility
       name="plone.session"
       factory=".profiles.HiddenProfiles"

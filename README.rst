@@ -46,15 +46,6 @@ This means it can not be used stand-alone: you need to have another PAS plugin, 
 
 After a user has been authenticated *plone.session* can take over via the PAS *credentials update* mechanism.
 
-Python 2.4 / Zope 2.10 / Plone 3
---------------------------------
-
-To use this version of *plone.session* under Python 2.4, add the `backported hmac`_ module to your buildout
-(which will also bring in the backported hashlib_ module).
-
-.. _`backported hmac`: http://pypi.python.org/pypi/hmac
-.. _hashlib: http://pypi.python.org/pypi/hashlib
-
 
 Configuration options
 =====================
@@ -108,41 +99,12 @@ A javascript is included which polls the cookie refresh CSS periodically while t
 If the refresh CSS max-age has passed, then the browser will refetch the CSS and the cookie will be updated.
 The poll interval may be configured on the refresh CSS query string ``minutes`` parameter, with the default being 5 minutes.
 
-Caveat
-------
-
-This has been tested and shown to work on Internet Explorer 7, Firefox 4, Safari 5 and Chrome 6.
-Unfortunately Internet Explorer 6 does not seem to respect the caching headers for javascript fetched resources.
-So if you have a lot of IE6 users you may want to increase the poll interval to reduce server load.
-
 
 Ticket removal
 ==============
 
 When login sessions are shared across domains, it can be helpful to log users out of all domains when they log out of a Plone site.
-This may be configured in ``portal_css`` by adding a resource with the following settings
-
-ID/URL
-    ``http://example.com/portal_path/acl_users/session/remove?type=css``
-    (adjusted to the url of the portal to be logged out.)
-
-Condition
-    ``python:request.URL.endswith('/logged_out')``
-
-Render type
-    link
-
-Compression type
-    none
-
-Merging allowed?
-    No
-
-Caching allowed?
-    No
-
-CSS Media
-    (blank)
+Load the pseudo CSS ``http://example.com/portal_path/acl_users/session/remove?type=css`` on the ``/logged_out`` page for ticket removal.
 
 
 Single Sign On with IIS
@@ -160,11 +122,9 @@ Requirements
 - The server must be a member of the Windows domain you want to authenticate users for.
   It does not need to be an Active Directory server itself.
 
-- You site should use LDAPMultiPlugins_ to use the same Active Directory as a user source
-  (i.e. use plone.app.ldap_ to set this up with Plone).
+- You site should use pas.plugins.ldap_ to use the same Active Directory as a user source.
 
-.. _LDAPMultiPlugins: http://pypi.python.org/pypi/Products.LDAPMultiPlugins
-.. _plone.app.ldap: http://pypi.python.org/pypi/plone.app.ldap
+.. _pas.plugins.ldap: http://pypi.python.org/pypi/pas.plugins.ldap
 
 
 Python
@@ -179,7 +139,7 @@ Python
 - Follow these `instructions on how to configure Python for IIS <http://support.microsoft.com/kb/276494>`_.
   In bullet point 2.d. use::
 
-    Executable: "C:\Python26\python.exe -u %s %s"
+    Executable: "C:\Python27\python.exe -u %s %s"
 
   instead.
   This will ensure files are opened in universal newline mode.
@@ -244,13 +204,6 @@ Set the following configuration options through the Zope interface:
 - In ``/Plone/acl_users/session``. On the ``Manage secrets`` tab set a shared secret.
 
 - In ``/Plone/portal_properties/site_properties`` set ``external_login_url`` to ``http://LOGONSERVER/login.asp``.
-
-For Plone versions before 4.1:
-
-- In ``/Plone/portal_actions/user/login``.
-  On the ``Properties`` tab set ``URL (Expression)`` to ``${portal/portal_properties/site_properties/external_login_url}?next=${globals_view/navigationRootUrl}/logged_in``.
-
-For Plone 4.1 and later you may instead set:
 
 - In ``/Plone/portal_properties/site_properties`` set ``external_login_iframe`` to true.
 
