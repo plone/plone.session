@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<registry>
+  <!--
+  =============================
+  JS/CSS Registry Configuration
+  =============================
+  -->
+  <records
+      interface="Products.CMFPlone.interfaces.IBundleRegistry"
+      prefix="plone.bundles/plone-session-pseudo-css">
+    <!-- This is a pseudo CSS generating a link in the Head .
+         The way to trigger the session refresh should be refactored at some point.
+    -->
+    <value key="enabled">True</value>
+    <value key="csscompilation">acl_users/session/refresh?session_refresh=true&amp;type=css&amp;minutes=5</value>
+    <value key="last_compilation">2018-03-27 00:00:00</value>
+    <value key="compile">False</value>
+    <value key="expression">python: member is not None</value>
+  </records>
+
+  <records
+      interface="Products.CMFPlone.interfaces.IBundleRegistry"
+      prefix="plone.bundles/plone-session-js">
+    <value key="enabled">True</value>
+    <value key="jscompilation">++resource++plone.session.refreshsupport.js</value>
+    <value key="last_compilation">2018-03-27 00:00:00</value>
+    <value key="compile">False</value>
+    <value key="depends">plone-logged-in</value>
+    <value key="merge_with">logged-in</value>
+  </records>
+</registry>

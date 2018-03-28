@@ -10,6 +10,10 @@
 
   <include package="plone.protect" />
   <include file="resources.zcml" />
+  <include
+      file="upgrades.zcml"
+      zcml:condition="installed Products.CMFPlone"
+  />
 
   <include
       file="profiles.zcml"

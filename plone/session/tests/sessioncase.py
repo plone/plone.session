@@ -17,11 +17,11 @@ class FakePAS(Folder):
     plugins = None
 
     def updateCredentials(self, request, response, userid, password):
-        self.credentials=(userid, password)
+        self.credentials = (userid, password)
 
     def _verifyUser(self, plugin, user_id=None, login=None):
         assert user_id is None
-        if login=='our_user':
+        if login == 'our_user':
             return dict(id=login, login=login, pluginid="session")
         return None
 
@@ -36,5 +36,8 @@ class PloneSessionTestCase(ZopeTestCase.ZopeTestCase):
         self.folder.pas._setObject("session", SessionPlugin("session"))
 
 
-class FunctionalPloneSessionTestCase(ZopeTestCase.Functional, PloneSessionTestCase):
+class FunctionalPloneSessionTestCase(
+    ZopeTestCase.Functional,
+    PloneSessionTestCase
+):
     pass
