@@ -160,21 +160,25 @@ def mod_auth_tkt_digest(secret, data1, data2):
     return digest
 
 
-def createTicket(secret, userid, tokens=(), user_data='', ip='0.0.0.0',
+def safe_utf8(value):
+    if isinstance(value, six.text_type):
+        value = value.encode('utf-8')
+    return value
+
+
+def createTicket(secret, userid, tokens=(), user_data=b'', ip='0.0.0.0',
                  timestamp=None, encoding='utf-8', mod_auth_tkt=False):
     """
     By default, use a more compatible
     """
     if timestamp is None:
         timestamp = int(time.time())
-    if encoding is not None:
-        userid = userid.encode(encoding)
-        tokens = [t.encode(encoding) for t in tokens]
-        user_data = user_data.encode(encoding)
-    # if type(userid) == unicode:
-        # userid = userid.encode('utf-8')
+    secret = safe_utf8(secret)
+    userid = safe_utf8(userid)
+    tokens = [safe_utf8(t) for t in tokens]
+    user_data = safe_utf8(user_data)
 
-    token_list = ','.join(tokens)
+    token_list = b','.join(tokens)
 
     # ip address is part of the format, set it to 0.0.0.0 to be ignored.
     # inet_aton packs the ip address into a 4 bytes in network byte order.
@@ -184,7 +188,7 @@ def createTicket(secret, userid, tokens=(), user_data='', ip='0.0.0.0',
     # 32 bits, so we need to trucate the result in case we are on a 64-bit
     # naive system.
     data1 = inet_aton(ip)[:4] + pack('!I', timestamp)
-    data2 = '\0'.join((userid, token_list, user_data))
+    data2 = b'\0'.join((userid, token_list, user_data))
     if mod_auth_tkt:
         digest = mod_auth_tkt_digest(secret, data1, data2)
     else:
@@ -192,9 +196,9 @@ def createTicket(secret, userid, tokens=(), user_data='', ip='0.0.0.0',
         digest = hmac.new(secret, data1 + data2, hashlib.sha256).digest()
 
     # digest + timestamp as an eight character hexadecimal + userid + !
-    ticket = '%s%08x%s!' % (digest, timestamp, userid)
+    ticket = b'%s%08x%s!' % (digest, timestamp, userid)
     if tokens:
-        ticket += token_list + '!'
+        ticket += token_list + b'!'
     ticket += user_data
 
     return ticket
@@ -210,14 +214,14 @@ def splitTicket(ticket, encoding=None):
 
     if encoding is not None:
         remainder = remainder.decode(encoding)
-    parts = remainder.split("!")
+    parts = remainder.split(b"!")
 
     if len(parts) == 2:
         userid, user_data = parts
         tokens = ()
     elif len(parts) == 3:
         userid, token_list, user_data = parts
-        tokens = tuple(token_list.split(','))
+        tokens = tuple(token_list.split(b','))
     else:
         raise ValueError
 
