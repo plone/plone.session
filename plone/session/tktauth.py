@@ -144,7 +144,8 @@ import time
 
 def is_equal(val1, val2):
     # constant time comparison
-    if not isinstance(val1, six.string_types) or not isinstance(val2, six.string_types):
+    if not isinstance(val1, (six.string_types, six.binary_type)) or \
+       not isinstance(val2, (six.string_types, six.binary_type)):
         return False
     if len(val1) != len(val2):
         return False
