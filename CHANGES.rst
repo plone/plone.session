@@ -4,10 +4,6 @@ Changelog
 3.7.0 (unreleased)
 ------------------
 
-Breaking changes:
-
-- *add item here*
-
 New features:
 
 - Use Resource Registry for JS/CSS registration
