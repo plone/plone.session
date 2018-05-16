@@ -134,6 +134,8 @@ The HMAC SHA-256 hash must be packed raw to fit into the first 32 bytes.
 
 """
 
+from Products.CMFPlone.utils import safe_encode
+from Products.CMFPlone.utils import safe_unicode
 from socket import inet_aton
 from struct import pack
 import hashlib
@@ -144,14 +146,18 @@ import time
 
 def is_equal(val1, val2):
     # constant time comparison
-    if not isinstance(val1, (six.string_types, six.binary_type)) or \
-       not isinstance(val2, (six.string_types, six.binary_type)):
+    if not isinstance(val1, six.binary_type) or \
+       not isinstance(val2, six.binary_type):
         return False
     if len(val1) != len(val2):
         return False
     result = 0
-    for x, y in zip(val1, val2):
-        result |= ord(x) ^ ord(y)
+    if six.PY2:
+        for x, y in zip(val1, val2):
+            result |= ord(x) ^ ord(y)
+    else:
+        for x, y in zip(val1, val2):
+            result |= x ^ y
     return result == 0
 
 
@@ -161,23 +167,17 @@ def mod_auth_tkt_digest(secret, data1, data2):
     return digest
 
 
-def safe_utf8(value):
-    if isinstance(value, six.text_type):
-        value = value.encode('utf-8')
-    return value
-
-
-def createTicket(secret, userid, tokens=(), user_data=b'', ip='0.0.0.0',
+def createTicket(secret, userid, tokens=(), user_data='', ip='0.0.0.0',
                  timestamp=None, encoding='utf-8', mod_auth_tkt=False):
     """
     By default, use a more compatible
     """
     if timestamp is None:
         timestamp = int(time.time())
-    secret = safe_utf8(secret)
-    userid = safe_utf8(userid)
-    tokens = [safe_utf8(t) for t in tokens]
-    user_data = safe_utf8(user_data)
+    secret = safe_encode(secret)
+    userid = safe_encode(userid)
+    tokens = [safe_encode(t) for t in tokens]
+    user_data = safe_encode(user_data)
 
     token_list = b','.join(tokens)
 
@@ -213,16 +213,18 @@ def splitTicket(ticket, encoding=None):
         raise ValueError
     timestamp = int(val, 16)  # convert from hexadecimal+
 
-    if encoding is not None:
-        remainder = remainder.decode(encoding)
-    parts = remainder.split(b"!")
+    if six.PY3:
+        remainder = safe_unicode(remainder)
+    elif encoding is not None:
+        remainder = safe_unicode(remainder, encoding)
+    parts = remainder.split('!')
 
     if len(parts) == 2:
         userid, user_data = parts
         tokens = ()
     elif len(parts) == 3:
         userid, token_list, user_data = parts
-        tokens = tuple(token_list.split(b','))
+        tokens = tuple(token_list.split(','))
     else:
         raise ValueError
 
