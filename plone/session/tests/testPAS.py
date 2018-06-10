@@ -4,6 +4,7 @@ from zope.publisher.browser import TestRequest
 from plone.session.interfaces import ISessionPlugin
 from plone.session.tests.sessioncase import FunctionalPloneSessionTestCase
 
+import base64
 import six
 
 
@@ -71,11 +72,16 @@ class TestSessionPlugin(FunctionalPloneSessionTestCase):
 
     def testExtraction(self):
         session = self.folder.pas.session
-
-        request = self.makeRequest("test string".encode("base64"))
+        # We will preapre a request that is equal in Py2 and Py3
+        if six.PY2:
+            request_body = base64.encodestring(b"test string")
+        else:
+            request_body = base64.encodebytes(b"test string").decode()
+        self.assertEqual(request_body, 'dGVzdCBzdHJpbmc=\n')
+        request = self.makeRequest(request_body)
         creds = session.extractCredentials(request)
         self.assertEqual(creds["source"], "plone.session")
-        self.assertEqual(creds["cookie"], "test string")
+        self.assertEqual(creds["cookie"], b"test string")
 
         request = self.makeRequest("test string")
         creds = session.extractCredentials(request)
