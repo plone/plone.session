@@ -135,14 +135,24 @@ The HMAC SHA-256 hash must be packed raw to fit into the first 32 bytes.
 
 """
 
-from Products.CMFPlone.utils import safe_encode
 from Products.CMFPlone.utils import safe_unicode
 from socket import inet_aton
 from struct import pack
+
 import hashlib
 import hmac
 import six
 import time
+
+try:
+    from Products.CMFPlone.utils import safe_encode
+except ImportError:
+    def safe_encode(value, encoding='utf-8'):
+        """Convert unicode to the specified encoding.
+        """
+        if isinstance(value, six.text_type):
+            value = value.encode(encoding)
+        return value
 
 
 def is_equal(val1, val2):
