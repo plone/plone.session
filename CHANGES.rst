@@ -14,7 +14,7 @@ New features:
 
 Bug fixes:
 
-- *add item here*
+- Python3 compatibility [ale-rt, pbauer]
 
 
 3.7.0 (2018-04-03)
