@@ -16,6 +16,7 @@ setup(
         'Environment :: Web Environment',
         'Framework :: Plone :: 5.0',
         'Framework :: Plone :: 5.1',
+        'Framework :: Plone :: 5.2',
         'Framework :: Plone',
         'Framework :: Zope2',
         'License :: OSI Approved :: BSD License',
