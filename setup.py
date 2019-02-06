@@ -19,6 +19,7 @@ setup(
         'Framework :: Plone :: 5.2',
         'Framework :: Plone',
         'Framework :: Zope2',
+        'Framework :: Zope :: 4',
         'License :: OSI Approved :: BSD License',
         'Operating System :: OS Independent',
         'Programming Language :: Python :: 2.7',
