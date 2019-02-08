@@ -1,7 +1,11 @@
 include *.rst
+include pyproject.toml
 
 graft docs
 graft iis-login
 graft plone
 
 global-exclude *pyc
+
+recursive-exclude news *
+exclude news
