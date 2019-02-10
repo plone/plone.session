@@ -2,10 +2,11 @@
 from DateTime import DateTime
 from zope.publisher.browser import TestRequest
 from plone.session.interfaces import ISessionPlugin
-from plone.session.tests.sessioncase import FunctionalPloneSessionTestCase
+from plone.session.testing import PLONE_SEESION_FUNCTIONAL_TESTING
 
 import base64
 import six
+import unittest
 
 
 class MockResponse(object):
@@ -18,9 +19,13 @@ class MockResponse(object):
         self.secure = secure
 
 
-class TestSessionPlugin(FunctionalPloneSessionTestCase):
+class TestSessionPlugin(unittest.TestCase):
 
+    layer = PLONE_SEESION_FUNCTIONAL_TESTING
     userid = 'jbloggs'
+
+    def setUp(self):
+        self.folder = self.layer['app']['test_folder_1_']
 
     def testInterfaces(self):
         session = self.folder.pas.session
@@ -136,9 +141,3 @@ class TestSessionPlugin(FunctionalPloneSessionTestCase):
         # This step would fail.
         session._setupSession(unicode_userid, response)
 
-
-def test_suite():
-    from unittest import TestSuite, makeSuite
-    suite = TestSuite()
-    suite.addTest(makeSuite(TestSessionPlugin))
-    return suite
