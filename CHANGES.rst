@@ -8,6 +8,15 @@ Changelog
 
 .. towncrier release notes start
 
+3.7.2 (2019-02-13)
+------------------
+
+Bug fixes:
+
+
+- Remove last traces of ZopeTestCase. [gforcada] (#14)
+
+
 3.7.1 (2018-09-28)
 ------------------
 
