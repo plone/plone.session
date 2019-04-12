@@ -1,0 +1,1 @@
+Fix nameclash resulting in ImportWarning by renaming ``profiles.py`` to ``hiddenprofiles.py``. [jensens]
