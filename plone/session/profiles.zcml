@@ -29,7 +29,7 @@
 
   <utility
       name="plone.session"
-      factory=".profiles.HiddenProfiles"
+      factory=".hiddenprofiles.HiddenProfiles"
     />
 
 </configure>
