@@ -8,6 +8,15 @@ Changelog
 
 .. towncrier release notes start
 
+3.7.3 (2019-04-29)
+------------------
+
+Bug fixes:
+
+
+- Fix nameclash resulting in ImportWarning by renaming ``profiles.py`` to ``hiddenprofiles.py``. [jensens] (#16)
+
+
 3.7.2 (2019-02-13)
 ------------------
 
