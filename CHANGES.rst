@@ -14,6 +14,7 @@ Changelog
 Bug fixes:
 
 
+- Fix session plugin for Python 3 + Plone 5.2 + Volto. [rodfersou] (#18)
 - Fix nameclash resulting in ImportWarning by renaming ``profiles.py`` to ``hiddenprofiles.py``. [jensens] (#16)
 
 
