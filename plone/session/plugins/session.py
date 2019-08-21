@@ -18,6 +18,7 @@ from zope.component import queryUtility
 from zope.interface import implementer
 
 import binascii
+import six
 import time
 
 EMPTY_GIF = (
@@ -176,9 +177,12 @@ class SessionPlugin(BasePlugin):
             return creds
 
         try:
-            creds["cookie"] = binascii.a2b_base64(
+            cookie = binascii.a2b_base64(
                 request.get(self.cookie_name)
             )
+            if six.PY3 and isinstance(cookie, bytes):
+                cookie = cookie.decode('utf-8')
+            creds["cookie"] = cookie
         except binascii.Error:
             # If we have a cookie which is not properly base64 encoded it
             # can not be ours.

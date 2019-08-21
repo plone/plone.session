@@ -86,7 +86,11 @@ class TestSessionPlugin(unittest.TestCase):
         request = self.makeRequest(request_body)
         creds = session.extractCredentials(request)
         self.assertEqual(creds["source"], "plone.session")
-        self.assertEqual(creds["cookie"], b"test string")
+
+        if six.PY2:
+            self.assertEqual(creds["cookie"], b"test string")
+        else:
+            self.assertEqual(creds["cookie"], "test string")
 
         request = self.makeRequest("test string")
         creds = session.extractCredentials(request)
