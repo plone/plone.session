@@ -13,6 +13,7 @@ setup(
     description='Session based auth tkt authentication for Zope',
     long_description=longdescription,
     classifiers=[
+        'Development Status :: 5 - Production/Stable',
         'Environment :: Web Environment',
         'Framework :: Plone :: 5.0',
         'Framework :: Plone :: 5.1',
