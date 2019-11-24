@@ -6,6 +6,7 @@ from email.utils import formatdate
 from plone.keyring.interfaces import IKeyManager
 from plone.session import tktauth
 from plone.session.interfaces import ISessionPlugin
+from Products.CMFPlone.utils import safe_unicode
 from Products.PageTemplates.PageTemplateFile import PageTemplateFile
 from Products.PluggableAuthService.interfaces.plugins import IAuthenticationPlugin  # noqa
 from Products.PluggableAuthService.interfaces.plugins import ICredentialsResetPlugin  # noqa
@@ -180,8 +181,8 @@ class SessionPlugin(BasePlugin):
             cookie = binascii.a2b_base64(
                 request.get(self.cookie_name)
             )
-            if six.PY3 and isinstance(cookie, bytes):
-                cookie = cookie.decode('utf-8')
+            if not six.PY2 and isinstance(cookie, bytes):
+                cookie = safe_unicode(cookie)
             creds["cookie"] = cookie
         except binascii.Error:
             # If we have a cookie which is not properly base64 encoded it
