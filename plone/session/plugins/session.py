@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from AccessControl.requestmethod import postonly
 from AccessControl.SecurityInfo import ClassSecurityInfo
+from AccessControl.SecurityManagement import getSecurityManager
 from App.config import getConfiguration
 from email.utils import formatdate
 from plone.keyring.interfaces import IKeyManager
@@ -240,9 +241,21 @@ class SessionPlugin(BasePlugin):
     def updateCredentials(self, request, response, login, new_password):
         pas = self._getPAS()
         info = pas._verifyUser(pas.plugins, login=login)
-        if info is not None:
-            # Only setup a session for users in our own user folder.
-            self._setupSession(info["id"], response)
+        if info is None:
+            # User is not in our own user folder, so we do not setup a session.
+            return
+        user_id = info["id"]
+        # Only setup a session when the current user is the requested user.
+        # Otherwise you are logged in as Manager Jane, reset the password of Joe,
+        # and are afterwards logged in as Joe.
+        # See https://github.com/plone/Products.PlonePAS/issues/57
+        authenticated_user = getSecurityManager().getUser()
+        if authenticated_user is not None:
+            authenticated_id = authenticated_user.getId()
+            # For anonymous, the id is empty
+            if authenticated_id and authenticated_id != user_id:
+                return
+        self._setupSession(user_id, response)
 
     # ICredentialsResetPlugin implementation
     def resetCredentials(self, request, response):

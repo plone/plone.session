@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from DateTime import DateTime
+from plone.app.testing import logout
 from zope.publisher.browser import TestRequest
 from plone.session.interfaces import ISessionPlugin
 from plone.session.testing import PLONE_SEESION_FUNCTIONAL_TESTING
@@ -92,24 +93,46 @@ class TestSessionPlugin(unittest.TestCase):
         creds = session.extractCredentials(request)
         self.assertEqual(creds, {})
 
-    def testCredentialsUpdate(self):
+    def testCredentialsUpdateUnknownUser(self):
+        # We are logged in as test user, which we do not want.
+        logout()
         session = self.folder.pas.session
         request = self.makeRequest("test string")
+        # The fake PAS in the tests only knows about "our_user",
+        # so updating an unknown user does nothing.
         session.updateCredentials(request, request.response, "bla", "password")
-        self.assertEqual(request.response.getCookie(session.cookie_name), None)
+        self.assertIsNone(request.response.getCookie(session.cookie_name))
 
+    def testCredentialsUpdateAnonymous(self):
+        # We are logged in as test user, which we do not want.
+        logout()
+        session = self.folder.pas.session
+        request = self.makeRequest("test string")
         session.updateCredentials(
             request,
             request.response,
             "our_user",
             "password"
         )
-        self.assertNotEqual(
+        self.assertIsNotNone(
             request.response.getCookie(session.cookie_name),
-            None
         )
 
+    def testCredentialsUpdateOtherUser(self):
+        # We are logged in as test user, which we DO want in this test.
+        # The session should not be updated then.
+        session = self.folder.pas.session
+        request = self.makeRequest("test string")
+        session.updateCredentials(
+            request,
+            request.response,
+            "our_user",
+            "password"
+        )
+        self.assertIsNone(request.response.getCookie(session.cookie_name))
+
     def testRefresh(self):
+        logout()
         session = self.folder.pas.session
         request = self.makeRequest("test string")
         session.updateCredentials(
@@ -122,10 +145,7 @@ class TestSessionPlugin(unittest.TestCase):
         request2 = self.makeRequest(cookie)
         request2.form['type'] = 'gif'
         session.refresh(request2)
-        self.assertNotEqual(
-            request2.response.getCookie(session.cookie_name),
-            None
-        )
+        self.assertIsNotNone(request2.response.getCookie(session.cookie_name))
 
     def testUnicodeUserid(self):
         unicode_userid = six.text_type(self.userid)

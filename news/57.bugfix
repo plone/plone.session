@@ -1,0 +1,2 @@
+Only setup a session when the current user is the requested user.
+[maurits]
