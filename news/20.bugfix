@@ -1,0 +1,2 @@
+Fix hard dependency indirection with Products.CMFPlone (plone.session must not import from it).
+[jensens]

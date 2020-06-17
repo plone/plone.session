@@ -135,7 +135,6 @@ The HMAC SHA-256 hash must be packed raw to fit into the first 32 bytes.
 
 """
 
-from Products.CMFPlone.utils import safe_unicode
 from socket import inet_aton
 from struct import pack
 
@@ -144,16 +143,39 @@ import hmac
 import six
 import time
 
-try:
-    from Products.CMFPlone.utils import safe_encode
-except ImportError:
-    def safe_encode(value, encoding='utf-8'):
-        """Convert unicode to the specified encoding.
-        """
-        if isinstance(value, six.text_type):
-            value = value.encode(encoding)
+
+def safe_encode(value, encoding='utf-8'):
+    """Convert unicode to the specified encoding.
+
+    copied from Products.CMFPlone.utils b/c this package does not depend on it
+    """
+    if isinstance(value, six.text_type):
+        value = value.encode(encoding)
+    return value
+
+def safe_text(value, encoding='utf-8'):
+    """Converts a value to text, even it is already a text string.
+
+    copied from Products.CMFPlone.utils b/c this package does not depend on it
+    """
+    if six.PY2:
+        if isinstance(value, unicode):
+            return value
+        elif isinstance(value, basestring):
+            try:
+                value = unicode(value, encoding)
+            except (UnicodeDecodeError):
+                value = value.decode('utf-8', 'replace')
         return value
 
+    if isinstance(value, str):
+        return value
+    elif isinstance(value, bytes):
+        try:
+            value = str(value, encoding)
+        except (UnicodeDecodeError):
+            value = value.decode('utf-8', 'replace')
+    return value
 
 def is_equal(val1, val2):
     # constant time comparison
@@ -232,9 +254,9 @@ def splitTicket(ticket, encoding=None):
     timestamp = int(val, 16)  # convert from hexadecimal+
 
     if six.PY3:
-        remainder = safe_unicode(remainder)
+        remainder = safe_text(remainder)
     elif encoding is not None:
-        remainder = safe_unicode(remainder, encoding)
+        remainder = safe_text(remainder, encoding)
     parts = remainder.split('!')
 
     if len(parts) == 2:
