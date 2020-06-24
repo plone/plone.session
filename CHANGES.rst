@@ -8,6 +8,18 @@ Changelog
 
 .. towncrier release notes start
 
+3.7.5 (2020-06-24)
+------------------
+
+Bug fixes:
+
+
+- Fix hard dependency indirection with Products.CMFPlone (plone.session must not import from it).
+  [jensens] (#20)
+- Only setup a session when the current user is the requested user.
+  [maurits] (#57)
+
+
 3.7.4 (2020-04-22)
 ------------------
 
