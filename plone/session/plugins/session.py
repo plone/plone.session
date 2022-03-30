@@ -5,6 +5,7 @@ from AccessControl.SecurityManagement import getSecurityManager
 from App.config import getConfiguration
 from email.utils import formatdate
 from plone.keyring.interfaces import IKeyManager
+from plone.keyring.keyring import Keyring
 from plone.session import tktauth
 from plone.session.interfaces import ISessionPlugin
 from Products.PageTemplates.PageTemplateFile import PageTemplateFile
@@ -73,6 +74,7 @@ class SessionPlugin(BasePlugin):
     external_ticket_name = 'ticket'
     secure = False
     _shared_secret = None
+    secret_prefix = "_plone.session_"
 
     # These mod_auth_tkt options are not yet implemented (by intent)
     # ignoreIP = True # you always want this on the public internet
@@ -138,16 +140,23 @@ class SessionPlugin(BasePlugin):
         self.title = title
         self.path = path
 
-    def _getSigningSecret(self):
+    def _getSecretKey(self, userid):
+        return "{}{}".format(self.secret_prefix, userid)
+
+    def _getSigningSecret(self, userid):
         if self._shared_secret is not None:
             return self._shared_secret
         manager = getUtility(IKeyManager)
-        return manager.secret()
+        secret_key = self._getSecretKey(userid)
+        if secret_key not in manager:
+            manager[secret_key] = Keyring(1)
+            manager[secret_key].fill()
+        return manager.secret(ring=secret_key)
 
     # ISessionPlugin implementation
     def _setupSession(self, userid, response, tokens=(), user_data=''):
         cookie = tktauth.createTicket(
-            secret=self._getSigningSecret(),
+            secret=self._getSigningSecret(userid),
             userid=userid,
             tokens=tokens,
             user_data=user_data,
@@ -186,7 +195,6 @@ class SessionPlugin(BasePlugin):
             return creds
 
         creds["source"] = "plone.session"  # XXX should this be the id?
-
         return creds
 
     # IAuthenticationPlugin implementation
@@ -208,8 +216,11 @@ class SessionPlugin(BasePlugin):
         return (info['id'], info['login'])
 
     def _validateTicket(self, ticket, now=None):
+        _, userid, _, _, _ = tktauth.splitTicket(ticket)
+
         if now is None:
             now = time.time()
+
         if self._shared_secret is not None:
             ticket_data = tktauth.validateTicket(
                 self._shared_secret,
@@ -223,7 +234,14 @@ class SessionPlugin(BasePlugin):
             manager = queryUtility(IKeyManager)
             if manager is None:
                 return None
-            for secret in manager[u"_system"]:
+
+            secret_key = self._getSecretKey(userid)
+            if secret_key in manager:
+                secrets = manager[secret_key]
+            else:
+                secrets = manager[u"_system"]
+
+            for secret in secrets:
                 if secret is None:
                     continue
                 ticket_data = tktauth.validateTicket(
@@ -259,6 +277,13 @@ class SessionPlugin(BasePlugin):
 
     # ICredentialsResetPlugin implementation
     def resetCredentials(self, request, response):
+        ticket = binascii.a2b_base64(request.get(self.cookie_name))
+        _, userid, _, _, _ = tktauth.splitTicket(ticket)
+        secret_key = self._getSecretKey(userid)
+        manager = getUtility(IKeyManager)
+        if manager[secret_key]:
+            manager.clear(ring=secret_key)
+            manager.rotate(ring=secret_key)
         response = self.REQUEST["RESPONSE"]
         if self.cookie_domain:
             response.expireCookie(
@@ -275,8 +300,10 @@ class SessionPlugin(BasePlugin):
         sessions and requires users to login again.
         """
         manager = getUtility(IKeyManager)
-        manager.clear()
-        manager.rotate()
+        for ring in manager:
+            if ring.startswith(self.secret_prefix) or ring == "_system":
+                manager.clear(ring=ring)
+                manager.rotate(ring=ring)
         response = REQUEST.response
         response.redirect(
             '%s/manage_secret?manage_tabs_message=%s' %
@@ -289,7 +316,9 @@ class SessionPlugin(BasePlugin):
         """Create a new (signing) secret.
         """
         manager = getUtility(IKeyManager)
-        manager.rotate()
+        for ring in manager:
+            if ring.startswith(self.secret_prefix) or ring == "_system":
+                manager.rotate(ring=ring)
         response = REQUEST.response
         response.redirect(
             '%s/manage_secret?manage_tabs_message=%s' %
