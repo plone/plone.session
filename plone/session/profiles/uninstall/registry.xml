@@ -3,13 +3,7 @@
 
   <records
       interface="Products.CMFPlone.interfaces.IBundleRegistry"
-      prefix="plone.bundles/session-refresh-pseudo-css"
-      remove="true">
-  </records>
-
-  <records
-      interface="Products.CMFPlone.interfaces.IBundleRegistry"
-      prefix="plone.bundles/session-refresh-js"
+      prefix="plone.bundles/plone-session"
       remove="true">
   </records>
 
