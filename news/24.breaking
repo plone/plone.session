@@ -1,4 +1,0 @@
-Register single resource bundle for Plone 6 for our optional refresh support.
-An upgrade step for this is in plone.app.upgrade, otherwise we leave partial bundles behind.
-Removed our own upgrade step and profile, as they are not needed when migrating from Plone 5.2.
-[maurits]

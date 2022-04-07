@@ -8,6 +8,18 @@ Changelog
 
 .. towncrier release notes start
 
+4.0.0a1 (2022-04-08)
+--------------------
+
+Breaking changes:
+
+
+- Register single resource bundle for Plone 6 for our optional refresh support.
+  An upgrade step for this is in plone.app.upgrade, otherwise we leave partial bundles behind.
+  Removed our own upgrade step and profile, as they are not needed when migrating from Plone 5.2.
+  [maurits] (#24)
+
+
 3.7.5 (2020-06-24)
 ------------------
 
