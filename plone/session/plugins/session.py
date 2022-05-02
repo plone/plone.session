@@ -8,7 +8,6 @@ from plone.keyring.interfaces import IKeyManager
 from plone.keyring.keyring import Keyring
 from plone.session import tktauth
 from plone.session.interfaces import ISessionPlugin
-from plone.protect.interfaces import IDisableCSRFProtection
 from Products.PageTemplates.PageTemplateFile import PageTemplateFile
 from Products.PluggableAuthService.interfaces.plugins import IAuthenticationPlugin  # noqa
 from Products.PluggableAuthService.interfaces.plugins import ICredentialsResetPlugin  # noqa
@@ -295,10 +294,6 @@ class SessionPlugin(BasePlugin):
     # ICredentialsResetPlugin implementation
     def resetCredentials(self, request, response):
         if self.per_user_keyring:
-            # Prevent plone.protect from redirecting to @@confirm-action
-            # instead of logging-out.
-            # Caused by invalidating the user keyring.
-            alsoProvides(request, IDisableCSRFProtection)
             # Sometimes (found during testing) the __ac cookie is not
             # set by this plugin, and fails the base64 decode.
             # Using extractCredentials again as it safely gets the decoded
