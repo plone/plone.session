@@ -1,2 +1,0 @@
-Update the plone-session bundle to depend on the plone bundle instead of the jquery bundle, which no longer exists.
-[davisagli]

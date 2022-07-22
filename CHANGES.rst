@@ -8,6 +8,16 @@ Changelog
 
 .. towncrier release notes start
 
+4.0.0b1 (2022-07-22)
+--------------------
+
+Bug fixes:
+
+
+- Update the plone-session bundle to depend on the plone bundle instead of the jquery bundle, which no longer exists.
+  [davisagli] (#27)
+
+
 4.0.0a1 (2022-04-08)
 --------------------
 
