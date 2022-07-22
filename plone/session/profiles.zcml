@@ -11,6 +11,14 @@
       title="Session refresh support"
   />
 
+  <gs:upgradeDepends
+    source="1002"
+    destination="1003"
+    profile="plone.session:default"
+    title="Update plone-session bundle dependencies."
+    import_steps="plone.app.registry"
+  />
+
   <gs:registerProfile
       description="Optional plone.session refresh support. [uninstall]"
       directory="profiles/uninstall"
