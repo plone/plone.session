@@ -4,5 +4,5 @@
        but the upgrade to 1002 is done in plone.app.upgrade,
        for Plone 6.0.0a4.  There we have code to properly remove
        old bundles with old settings. -->
-  <version>1002</version>
+  <version>1003</version>
 </metadata>
