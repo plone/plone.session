@@ -13,10 +13,11 @@ import unittest
 class MockResponse(object):
 
     def setCookie(self, name, value, path,
-                  expires=None, secure=False, http_only=False):
+                  expires=None, secure=False, http_only=False, same_site=None):
         self.cookie = value
         self.cookie_expires = expires
         self.cookie_http_only = http_only
+        self.cookie_same_site = same_site
         self.secure = secure
 
 
@@ -65,6 +66,12 @@ class TestSessionPlugin(unittest.TestCase):
         session = self.folder.pas.session
         session._setupSession(self.userid, response)
         self.assertEqual(response.cookie_http_only, True)
+
+    def testCookieSameSite(self):
+        response = MockResponse()
+        session = self.folder.pas.session
+        session._setupSession(self.userid, response)
+        self.assertEqual(response.cookie_same_site, "Lax")
 
     def testCookieLifetimeWithExpirationSet(self):
         response = MockResponse()
