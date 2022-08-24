@@ -181,8 +181,7 @@ def safe_text(value, encoding='utf-8'):
 
 def is_equal(val1, val2):
     # constant time comparison
-    if not isinstance(val1, six.binary_type) or \
-       not isinstance(val2, six.binary_type):
+    if not isinstance(val1, six.binary_type) or not isinstance(val2, six.binary_type):
         return False
     if len(val1) != len(val2):
         return False
@@ -206,8 +205,16 @@ def mod_auth_tkt_digest(secret, data1, data2):
     return digest
 
 
-def createTicket(secret, userid, tokens=(), user_data='', ip='0.0.0.0',
-                 timestamp=None, encoding='utf-8', mod_auth_tkt=False):
+def createTicket(
+    secret,
+    userid,
+    tokens=(),
+    user_data='',
+    ip='0.0.0.0',
+    timestamp=None,
+    encoding='utf-8',
+    mod_auth_tkt=False,
+):
     """
     By default, use a more compatible
     """
@@ -273,22 +280,15 @@ def splitTicket(ticket, encoding=None):
     return (digest, userid, tokens, user_data, timestamp)
 
 
-def validateTicket(secret, ticket, ip='0.0.0.0', timeout=0, now=None,
-                   encoding=None, mod_auth_tkt=False):
+def validateTicket(
+    secret, ticket, ip='0.0.0.0', timeout=0, now=None, encoding=None, mod_auth_tkt=False
+):
     try:
-        (digest, userid, tokens, user_data, timestamp) = data = \
-            splitTicket(ticket)
+        (digest, userid, tokens, user_data, timestamp) = data = splitTicket(ticket)
     except ValueError:
         return None
     new_ticket = createTicket(
-        secret,
-        userid,
-        tokens,
-        user_data,
-        ip,
-        timestamp,
-        encoding,
-        mod_auth_tkt
+        secret, userid, tokens, user_data, ip, timestamp, encoding, mod_auth_tkt
     )
     if is_equal(new_ticket[:32], digest):
         if not timeout:
@@ -305,6 +305,7 @@ def _test():
     from plone.session.tests.testDocTests import Py23DocChecker
 
     import doctest
+
     doctest.testmod(
         optionflags=doctest.ELLIPSIS + doctest.NORMALIZE_WHITESPACE,
         checker=Py23DocChecker(),

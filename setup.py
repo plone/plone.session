@@ -39,19 +39,19 @@ setup(
     include_package_data=True,
     zip_safe=False,
     extras_require=dict(
-      test=[
-          'zope.configuration',
-          'zope.publisher',
-      ]
+        test=[
+            'zope.configuration',
+            'zope.publisher',
+        ]
     ),
     install_requires=[
-      'plone.keyring',
-      'plone.protect',
-      'Products.PluggableAuthService',
-      'setuptools',
-      'six',
-      'zope.component',
-      'zope.interface',
-      'Zope2',
+        'plone.keyring',
+        'plone.protect',
+        'Products.PluggableAuthService',
+        'setuptools',
+        'six',
+        'zope.component',
+        'zope.interface',
+        'Zope2',
     ],
 )

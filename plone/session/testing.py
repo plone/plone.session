@@ -63,7 +63,8 @@ PLONE_SESSION_INTEGRATION_TESTING = IntegrationTesting(
     bases=(PLONE_SESSION_FIXTURE,), name='PloneSessionLayer:Integration'
 )
 PLONE_SEESION_FUNCTIONAL_TESTING = FunctionalTesting(
-    bases=(PLONE_SESSION_FIXTURE,), name='PloneSessionLayer:Functional',
+    bases=(PLONE_SESSION_FIXTURE,),
+    name='PloneSessionLayer:Functional',
 )
 
 optionflags = (

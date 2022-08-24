@@ -13,6 +13,7 @@ def initialize(context):
         permission=add_user_folders,
         constructors=(
             session.manage_addSessionPluginForm,
-            session.manage_addSessionPlugin),
-        visibility=None
+            session.manage_addSessionPlugin,
+        ),
+        visibility=None,
     )

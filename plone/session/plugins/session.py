@@ -9,15 +9,9 @@ from plone.keyring.keyring import Keyring
 from plone.session import tktauth
 from plone.session.interfaces import ISessionPlugin
 from Products.PageTemplates.PageTemplateFile import PageTemplateFile
-from Products.PluggableAuthService.interfaces.plugins import (
-    IAuthenticationPlugin,
-)
-from Products.PluggableAuthService.interfaces.plugins import (
-    ICredentialsResetPlugin,
-)
-from Products.PluggableAuthService.interfaces.plugins import (
-    ICredentialsUpdatePlugin,
-)
+from Products.PluggableAuthService.interfaces.plugins import IAuthenticationPlugin
+from Products.PluggableAuthService.interfaces.plugins import ICredentialsResetPlugin
+from Products.PluggableAuthService.interfaces.plugins import ICredentialsUpdatePlugin
 from Products.PluggableAuthService.interfaces.plugins import IExtractionPlugin
 from Products.PluggableAuthService.permissions import ManageUsers
 from Products.PluggableAuthService.plugins.BasePlugin import BasePlugin
@@ -38,8 +32,7 @@ EMPTY_GIF = (
 manage_addSessionPluginForm = PageTemplateFile('session', globals())
 
 
-def manage_addSessionPlugin(dispatcher, id, title=None, path='/',
-                            REQUEST=None):
+def manage_addSessionPlugin(dispatcher, id, title=None, path='/', REQUEST=None):
     """Add a session plugin."""
     sp = SessionPlugin(id, title=title, path=path)
     dispatcher._setObject(id, sp)
@@ -63,11 +56,10 @@ def cookie_expiration_date(days):
     IExtractionPlugin,
     IAuthenticationPlugin,
     ICredentialsResetPlugin,
-    ICredentialsUpdatePlugin
+    ICredentialsUpdatePlugin,
 )
 class SessionPlugin(BasePlugin):
-    """Session authentication plugin.
-    """
+    """Session authentication plugin."""
 
     meta_type = "Plone Session Plugin"
     security = ClassSecurityInfo()
@@ -208,9 +200,7 @@ class SessionPlugin(BasePlugin):
             return creds
 
         try:
-            creds["cookie"] = binascii.a2b_base64(
-                request.get(self.cookie_name)
-            )
+            creds["cookie"] = binascii.a2b_base64(request.get(self.cookie_name))
         except binascii.Error:
             # If we have a cookie which is not properly base64 encoded it
             # can not be ours.
@@ -249,7 +239,7 @@ class SessionPlugin(BasePlugin):
                 ticket,
                 timeout=self.timeout,
                 now=now,
-                mod_auth_tkt=self.mod_auth_tkt
+                mod_auth_tkt=self.mod_auth_tkt,
             )
         else:
             ticket_data = None
@@ -271,7 +261,7 @@ class SessionPlugin(BasePlugin):
                     ticket,
                     timeout=self.timeout,
                     now=now,
-                    mod_auth_tkt=self.mod_auth_tkt
+                    mod_auth_tkt=self.mod_auth_tkt,
                 )
                 if ticket_data is not None:
                     break
@@ -315,7 +305,8 @@ class SessionPlugin(BasePlugin):
         response = self.REQUEST["RESPONSE"]
         if self.cookie_domain:
             response.expireCookie(
-                self.cookie_name, path=self.path, domain=self.cookie_domain)
+                self.cookie_name, path=self.path, domain=self.cookie_domain
+            )
         else:
             response.expireCookie(self.cookie_name, path=self.path)
 
@@ -334,36 +325,34 @@ class SessionPlugin(BasePlugin):
                 manager.rotate(ring=ring)
         response = REQUEST.response
         response.redirect(
-            '%s/manage_secret?manage_tabs_message=%s' %
-            (self.absolute_url(), 'All+secrets+cleared.')
+            '%s/manage_secret?manage_tabs_message=%s'
+            % (self.absolute_url(), 'All+secrets+cleared.')
         )
 
     @security.protected(ManageUsers)
     @postonly
     def manage_createNewSecret(self, REQUEST):
-        """Create a new (signing) secret.
-        """
+        """Create a new (signing) secret."""
         manager = getUtility(IKeyManager)
         for ring in manager:
             if ring.startswith(self.secret_prefix) or ring == "_system":
                 manager.rotate(ring=ring)
         response = REQUEST.response
         response.redirect(
-            '%s/manage_secret?manage_tabs_message=%s' %
-            (self.absolute_url(), 'New+secret+created.')
+            '%s/manage_secret?manage_tabs_message=%s'
+            % (self.absolute_url(), 'New+secret+created.')
         )
 
     @security.protected(ManageUsers)
     @postonly
     def manage_togglePerUserKeyring(self, REQUEST):
-        """Toggle per-user keyrings.
-        """
+        """Toggle per-user keyrings."""
         self.per_user_keyring = not self.per_user_keyring
         response = REQUEST.response
         action = "enabled" if self.per_user_keyring else "disabled"
         response.redirect(
-            '%s/manage_secret?manage_tabs_message=%s' %
-            (self.absolute_url(), 'Per-user+keyrings+%s.' % (action, ))
+            '%s/manage_secret?manage_tabs_message=%s'
+            % (self.absolute_url(), 'Per-user+keyrings+%s.' % (action,))
         )
 
     @security.protected(ManageUsers)
@@ -379,27 +368,26 @@ class SessionPlugin(BasePlugin):
         self._shared_secret = None
         response = REQUEST.response
         response.redirect(
-            '%s/manage_secret?manage_tabs_message=%s' %
-            (self.absolute_url(), 'Shared+secret+removed.')
+            '%s/manage_secret?manage_tabs_message=%s'
+            % (self.absolute_url(), 'Shared+secret+removed.')
         )
 
     @security.protected(ManageUsers)
     @postonly
     def manage_setSharedSecret(self, REQUEST):
-        """Set the shared secret.
-        """
+        """Set the shared secret."""
         secret = REQUEST.get('shared_secret')
         response = REQUEST.response
         if not secret:
             response.redirect(
-                '%s/manage_secret?manage_tabs_message=%s' %
-                (self.absolute_url(), 'Shared+secret+must+not+be+blank.')
+                '%s/manage_secret?manage_tabs_message=%s'
+                % (self.absolute_url(), 'Shared+secret+must+not+be+blank.')
             )
             return
         self._shared_secret = secret
         response.redirect(
-            '%s/manage_secret?manage_tabs_message=%s' %
-            (self.absolute_url(), 'New+shared+secret+set.')
+            '%s/manage_secret?manage_tabs_message=%s'
+            % (self.absolute_url(), 'New+shared+secret+set.')
         )
 
     def _refreshSession(self, request, now=None):
@@ -446,15 +434,16 @@ class SessionPlugin(BasePlugin):
             # We have an unauthenticated user
             setHeader(
                 'Cache-Control',
-                'public, must-revalidate, max-age=%d, s-max-age=86400' %
-                self.refresh_interval
+                'public, must-revalidate, max-age=%d, s-max-age=86400'
+                % self.refresh_interval,
             )
             setHeader('Vary', 'Cookie')
         else:
             setHeader(
                 'Cache-Control',
                 'private, must-revalidate, proxy-revalidate, max-age=%d, '
-                's-max-age=0' % self.refresh_interval)
+                's-max-age=0' % self.refresh_interval,
+            )
         return self._refresh_content(REQUEST)
 
     @security.public
@@ -465,7 +454,6 @@ class SessionPlugin(BasePlugin):
         # Disable HTTP 1.0 Caching
         setHeader('Expires', formatdate(0, usegmt=True))
         setHeader(
-            'Cache-Control',
-            'public, must-revalidate, max-age=0, s-max-age=86400'
+            'Cache-Control', 'public, must-revalidate, max-age=0, s-max-age=86400'
         )
         return self._refresh_content(REQUEST)

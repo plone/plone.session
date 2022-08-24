@@ -11,7 +11,6 @@ optionflags = doctest.ELLIPSIS
 
 
 class Py23DocChecker(doctest.OutputChecker):
-
     def check_output(self, want, got, optionflags):
         if six.PY2:
             want = re.sub("b'(.*?)'", "'\\1'", want)

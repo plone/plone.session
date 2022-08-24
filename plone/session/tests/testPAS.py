@@ -11,9 +11,16 @@ import unittest
 
 
 class MockResponse(object):
-
-    def setCookie(self, name, value, path,
-                  expires=None, secure=False, http_only=False, same_site=None):
+    def setCookie(
+        self,
+        name,
+        value,
+        path,
+        expires=None,
+        secure=False,
+        http_only=False,
+        same_site=None,
+    ):
         self.cookie = value
         self.cookie_expires = expires
         self.cookie_http_only = http_only
@@ -115,12 +122,7 @@ class TestSessionPlugin(unittest.TestCase):
         logout()
         session = self.folder.pas.session
         request = self.makeRequest("test string")
-        session.updateCredentials(
-            request,
-            request.response,
-            "our_user",
-            "password"
-        )
+        session.updateCredentials(request, request.response, "our_user", "password")
         self.assertIsNotNone(
             request.response.getCookie(session.cookie_name),
         )
@@ -130,24 +132,14 @@ class TestSessionPlugin(unittest.TestCase):
         # The session should not be updated then.
         session = self.folder.pas.session
         request = self.makeRequest("test string")
-        session.updateCredentials(
-            request,
-            request.response,
-            "our_user",
-            "password"
-        )
+        session.updateCredentials(request, request.response, "our_user", "password")
         self.assertIsNone(request.response.getCookie(session.cookie_name))
 
     def testRefresh(self):
         logout()
         session = self.folder.pas.session
         request = self.makeRequest("test string")
-        session.updateCredentials(
-            request,
-            request.response,
-            "our_user",
-            "password"
-        )
+        session.updateCredentials(request, request.response, "our_user", "password")
         cookie = request.response.getCookie(session.cookie_name)['value']
         request2 = self.makeRequest(cookie)
         request2.form['type'] = 'gif'
