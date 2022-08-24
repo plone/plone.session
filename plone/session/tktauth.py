@@ -300,8 +300,9 @@ def validateTicket(secret, ticket, ip='0.0.0.0', timeout=0, now=None,
 
 # doctest runner
 def _test():
-    import doctest
     from plone.session.tests.testDocTests import Py23DocChecker
+
+    import doctest
     doctest.testmod(
         optionflags=doctest.ELLIPSIS + doctest.NORMALIZE_WHITESPACE,
         checker=Py23DocChecker(),

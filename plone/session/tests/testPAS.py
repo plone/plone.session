@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 from DateTime import DateTime
 from plone.app.testing import logout
-from zope.publisher.browser import TestRequest
 from plone.session.interfaces import ISessionPlugin
 from plone.session.testing import PLONE_SEESION_FUNCTIONAL_TESTING
+from zope.publisher.browser import TestRequest
 
 import base64
 import six
