@@ -162,7 +162,7 @@ class SessionPlugin(BasePlugin):
             secure = False
         else:
             secure = self.secure
-        options = dict(path=self.path, secure=secure, http_only=True)
+        options = dict(path=self.path, secure=secure, http_only=True, same_site="Lax")
         if self.cookie_domain:
             options['domain'] = self.cookie_domain
         if self.cookie_lifetime:
