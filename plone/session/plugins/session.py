@@ -24,23 +24,23 @@ import time
 
 
 EMPTY_GIF = (
-    'GIF89a\x01\x00\x01\x00\xf0\x01\x00\xff\xff\xff'
-    '\x00\x00\x00!\xf9\x04\x01\n\x00\x00\x00'
-    ',\x00\x00\x00\x00\x01\x00\x01\x00\x00\x02\x02D\x01\x00;'
+    "GIF89a\x01\x00\x01\x00\xf0\x01\x00\xff\xff\xff"
+    "\x00\x00\x00!\xf9\x04\x01\n\x00\x00\x00"
+    ",\x00\x00\x00\x00\x01\x00\x01\x00\x00\x02\x02D\x01\x00;"
 )
 
-manage_addSessionPluginForm = PageTemplateFile('session', globals())
+manage_addSessionPluginForm = PageTemplateFile("session", globals())
 
 
-def manage_addSessionPlugin(dispatcher, id, title=None, path='/', REQUEST=None):
+def manage_addSessionPlugin(dispatcher, id, title=None, path="/", REQUEST=None):
     """Add a session plugin."""
     sp = SessionPlugin(id, title=title, path=path)
     dispatcher._setObject(id, sp)
 
     if REQUEST is not None:
         REQUEST.response.redirect(
-            '{0}/manage_workspace?'
-            'manage_tabs_message=Session+plugin+created.'.format(
+            "{0}/manage_workspace?"
+            "manage_tabs_message=Session+plugin+created.".format(
                 dispatcher.absolute_url()
             )
         )
@@ -66,11 +66,11 @@ class SessionPlugin(BasePlugin):
 
     cookie_name = "__ac"
     cookie_lifetime = 0
-    cookie_domain = ''
+    cookie_domain = ""
     mod_auth_tkt = False
     timeout = 2 * 60 * 60  # 2h - same as default in mod_auth_tkt
     refresh_interval = 1 * 60 * 60  # -1 to disable
-    external_ticket_name = 'ticket'
+    external_ticket_name = "ticket"
     secure = False
     _shared_secret = None
     secret_prefix = "_plone.session_"
@@ -134,7 +134,7 @@ class SessionPlugin(BasePlugin):
             "label": (
                 "Create a keyring for each user. "
                 "Enables server-side logout."
-                "Toggle this from the \"Manage secrets\" tab."
+                'Toggle this from the "Manage secrets" tab.'
             ),
             "type": "boolean",
             "mode": "r",
@@ -142,7 +142,7 @@ class SessionPlugin(BasePlugin):
     )
 
     manage_options = (
-        dict(label='Manage secrets', action='manage_secret'),
+        dict(label="Manage secrets", action="manage_secret"),
     ) + BasePlugin.manage_options
 
     def __init__(self, id, title=None, path="/"):
@@ -168,7 +168,7 @@ class SessionPlugin(BasePlugin):
         return manager.secret()
 
     # ISessionPlugin implementation
-    def _setupSession(self, userid, response, tokens=(), user_data=''):
+    def _setupSession(self, userid, response, tokens=(), user_data=""):
         cookie = tktauth.createTicket(
             secret=self._getSigningSecret(userid),
             userid=userid,
@@ -187,9 +187,9 @@ class SessionPlugin(BasePlugin):
             secure = self.secure
         options = dict(path=self.path, secure=secure, http_only=True, same_site="Lax")
         if self.cookie_domain:
-            options['domain'] = self.cookie_domain
+            options["domain"] = self.cookie_domain
         if self.cookie_lifetime:
-            options['expires'] = cookie_expiration_date(self.cookie_lifetime)
+            options["expires"] = cookie_expiration_date(self.cookie_lifetime)
         response.setCookie(self.cookie_name, cookie, **options)
 
     # IExtractionPlugin implementation
@@ -225,7 +225,7 @@ class SessionPlugin(BasePlugin):
             return None
 
         # XXX Should refresh the ticket if after timeout refresh.
-        return (info['id'], info['login'])
+        return (info["id"], info["login"])
 
     def _validateTicket(self, ticket, now=None):
         _, userid, _, _, _ = tktauth.splitTicket(ticket)
@@ -251,7 +251,7 @@ class SessionPlugin(BasePlugin):
             if secret_key in manager:
                 secrets = manager[secret_key]
             else:
-                secrets = manager[u"_system"]
+                secrets = manager["_system"]
 
             for secret in secrets:
                 if secret is None:
@@ -325,8 +325,8 @@ class SessionPlugin(BasePlugin):
                 manager.rotate(ring=ring)
         response = REQUEST.response
         response.redirect(
-            '%s/manage_secret?manage_tabs_message=%s'
-            % (self.absolute_url(), 'All+secrets+cleared.')
+            "%s/manage_secret?manage_tabs_message=%s"
+            % (self.absolute_url(), "All+secrets+cleared.")
         )
 
     @security.protected(ManageUsers)
@@ -339,8 +339,8 @@ class SessionPlugin(BasePlugin):
                 manager.rotate(ring=ring)
         response = REQUEST.response
         response.redirect(
-            '%s/manage_secret?manage_tabs_message=%s'
-            % (self.absolute_url(), 'New+secret+created.')
+            "%s/manage_secret?manage_tabs_message=%s"
+            % (self.absolute_url(), "New+secret+created.")
         )
 
     @security.protected(ManageUsers)
@@ -351,8 +351,8 @@ class SessionPlugin(BasePlugin):
         response = REQUEST.response
         action = "enabled" if self.per_user_keyring else "disabled"
         response.redirect(
-            '%s/manage_secret?manage_tabs_message=%s'
-            % (self.absolute_url(), 'Per-user+keyrings+%s.' % (action,))
+            "%s/manage_secret?manage_tabs_message=%s"
+            % (self.absolute_url(), "Per-user+keyrings+%s." % (action,))
         )
 
     @security.protected(ManageUsers)
@@ -368,26 +368,26 @@ class SessionPlugin(BasePlugin):
         self._shared_secret = None
         response = REQUEST.response
         response.redirect(
-            '%s/manage_secret?manage_tabs_message=%s'
-            % (self.absolute_url(), 'Shared+secret+removed.')
+            "%s/manage_secret?manage_tabs_message=%s"
+            % (self.absolute_url(), "Shared+secret+removed.")
         )
 
     @security.protected(ManageUsers)
     @postonly
     def manage_setSharedSecret(self, REQUEST):
         """Set the shared secret."""
-        secret = REQUEST.get('shared_secret')
+        secret = REQUEST.get("shared_secret")
         response = REQUEST.response
         if not secret:
             response.redirect(
-                '%s/manage_secret?manage_tabs_message=%s'
-                % (self.absolute_url(), 'Shared+secret+must+not+be+blank.')
+                "%s/manage_secret?manage_tabs_message=%s"
+                % (self.absolute_url(), "Shared+secret+must+not+be+blank.")
             )
             return
         self._shared_secret = secret
         response.redirect(
-            '%s/manage_secret?manage_tabs_message=%s'
-            % (self.absolute_url(), 'New+shared+secret+set.')
+            "%s/manage_secret?manage_tabs_message=%s"
+            % (self.absolute_url(), "New+shared+secret+set.")
         )
 
     def _refreshSession(self, request, now=None):
@@ -409,15 +409,15 @@ class SessionPlugin(BasePlugin):
 
     def _refresh_content(self, REQUEST):
         setHeader = REQUEST.response.setHeader
-        type = REQUEST.get('type')
-        if type == 'gif':
-            setHeader('Content-Type', 'image/gif')
+        type = REQUEST.get("type")
+        if type == "gif":
+            setHeader("Content-Type", "image/gif")
             return EMPTY_GIF
-        elif type == 'css':
-            setHeader('Content-Type', 'text/css')
+        elif type == "css":
+            setHeader("Content-Type", "text/css")
             return ""
-        elif type == 'js':
-            setHeader('Content-Type', 'text/javascript')
+        elif type == "js":
+            setHeader("Content-Type", "text/javascript")
             return ""
 
     @security.public
@@ -425,7 +425,7 @@ class SessionPlugin(BasePlugin):
         """Refresh the cookie"""
         setHeader = REQUEST.response.setHeader
         # Disable HTTP 1.0 Caching
-        setHeader('Expires', formatdate(0, usegmt=True))
+        setHeader("Expires", formatdate(0, usegmt=True))
         if self.refresh_interval < 0:
             return self._refresh_content(REQUEST)
         now = time.time()
@@ -433,16 +433,16 @@ class SessionPlugin(BasePlugin):
         if not refreshed:
             # We have an unauthenticated user
             setHeader(
-                'Cache-Control',
-                'public, must-revalidate, max-age=%d, s-max-age=86400'
+                "Cache-Control",
+                "public, must-revalidate, max-age=%d, s-max-age=86400"
                 % self.refresh_interval,
             )
-            setHeader('Vary', 'Cookie')
+            setHeader("Vary", "Cookie")
         else:
             setHeader(
-                'Cache-Control',
-                'private, must-revalidate, proxy-revalidate, max-age=%d, '
-                's-max-age=0' % self.refresh_interval,
+                "Cache-Control",
+                "private, must-revalidate, proxy-revalidate, max-age=%d, "
+                "s-max-age=0" % self.refresh_interval,
             )
         return self._refresh_content(REQUEST)
 
@@ -452,8 +452,8 @@ class SessionPlugin(BasePlugin):
         self.resetCredentials(REQUEST, REQUEST.response)
         setHeader = REQUEST.response.setHeader
         # Disable HTTP 1.0 Caching
-        setHeader('Expires', formatdate(0, usegmt=True))
+        setHeader("Expires", formatdate(0, usegmt=True))
         setHeader(
-            'Cache-Control', 'public, must-revalidate, max-age=0, s-max-age=86400'
+            "Cache-Control", "public, must-revalidate, max-age=0, s-max-age=86400"
         )
         return self._refresh_content(REQUEST)

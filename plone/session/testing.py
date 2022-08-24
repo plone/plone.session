@@ -12,10 +12,10 @@ from plone.session.plugins.session import SessionPlugin
 import doctest
 
 
-folder_name = 'test_folder_1_'
-user_name = 'test_user_1_'
-user_password = 'secret'
-user_role = 'test_role_1_'
+folder_name = "test_folder_1_"
+user_name = "test_user_1_"
+user_password = "secret"
+user_role = "test_role_1_"
 standard_permissions = [access_contents_information, view]
 
 
@@ -27,7 +27,7 @@ class FakePAS(Folder):
 
     def _verifyUser(self, plugin, user_id=None, login=None):
         assert user_id is None
-        if login == 'our_user':
+        if login == "our_user":
             return dict(id=login, login=login, pluginid="session")
         return None
 
@@ -39,7 +39,7 @@ class PloneSessionLayer(PloneSandboxLayer):
         import plone.session
         import plone.session.tests
 
-        self.loadZCML(package=plone.session, name='meta.zcml')
+        self.loadZCML(package=plone.session, name="meta.zcml")
         self.loadZCML(package=plone.session)
         self.loadZCML(package=plone.session.tests)
 
@@ -60,11 +60,11 @@ class PloneSessionLayer(PloneSandboxLayer):
 PLONE_SESSION_FIXTURE = PloneSessionLayer()
 
 PLONE_SESSION_INTEGRATION_TESTING = IntegrationTesting(
-    bases=(PLONE_SESSION_FIXTURE,), name='PloneSessionLayer:Integration'
+    bases=(PLONE_SESSION_FIXTURE,), name="PloneSessionLayer:Integration"
 )
 PLONE_SEESION_FUNCTIONAL_TESTING = FunctionalTesting(
     bases=(PLONE_SESSION_FIXTURE,),
-    name='PloneSessionLayer:Functional',
+    name="PloneSessionLayer:Functional",
 )
 
 optionflags = (

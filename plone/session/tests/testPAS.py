@@ -31,10 +31,10 @@ class MockResponse(object):
 class TestSessionPlugin(unittest.TestCase):
 
     layer = PLONE_SEESION_FUNCTIONAL_TESTING
-    userid = 'jbloggs'
+    userid = "jbloggs"
 
     def setUp(self):
-        self.folder = self.layer['app']['test_folder_1_']
+        self.folder = self.layer["app"]["test_folder_1_"]
 
     def testInterfaces(self):
         session = self.folder.pas.session
@@ -64,7 +64,7 @@ class TestSessionPlugin(unittest.TestCase):
         session._setupSession(self.userid, response)
         self.assertEqual(response.secure, False)
 
-        setattr(session, 'secure', True)
+        setattr(session, "secure", True)
         session._setupSession(self.userid, response)
         self.assertEqual(response.secure, True)
 
@@ -86,8 +86,8 @@ class TestSessionPlugin(unittest.TestCase):
         session.cookie_lifetime = 100
         session._setupSession(self.userid, response)
         self.assertEqual(
-            DateTime(response.cookie_expires).strftime('%Y%m%d'),
-            (DateTime() + 100).strftime('%Y%m%d'),
+            DateTime(response.cookie_expires).strftime("%Y%m%d"),
+            (DateTime() + 100).strftime("%Y%m%d"),
         )
 
     def testExtraction(self):
@@ -97,7 +97,7 @@ class TestSessionPlugin(unittest.TestCase):
             request_body = base64.encodestring(b"test string")
         else:
             request_body = base64.encodebytes(b"test string").decode()
-        self.assertEqual(request_body, 'dGVzdCBzdHJpbmc=\n')
+        self.assertEqual(request_body, "dGVzdCBzdHJpbmc=\n")
         request = self.makeRequest(request_body)
         creds = session.extractCredentials(request)
         self.assertEqual(creds["source"], "plone.session")
@@ -140,9 +140,9 @@ class TestSessionPlugin(unittest.TestCase):
         session = self.folder.pas.session
         request = self.makeRequest("test string")
         session.updateCredentials(request, request.response, "our_user", "password")
-        cookie = request.response.getCookie(session.cookie_name)['value']
+        cookie = request.response.getCookie(session.cookie_name)["value"]
         request2 = self.makeRequest(cookie)
-        request2.form['type'] = 'gif'
+        request2.form["type"] = "gif"
         session.refresh(request2)
         self.assertIsNotNone(request2.response.getCookie(session.cookie_name))
 
@@ -154,7 +154,7 @@ class TestSessionPlugin(unittest.TestCase):
         session._setupSession(unicode_userid, response)
 
     def testSpecialCharUserid(self):
-        unicode_userid = u"ãbcdéfghijk"
+        unicode_userid = "ãbcdéfghijk"
         response = MockResponse()
         session = self.folder.pas.session
         # This step would fail.

@@ -144,7 +144,7 @@ import six
 import time
 
 
-def safe_encode(value, encoding='utf-8'):
+def safe_encode(value, encoding="utf-8"):
     """Convert unicode to the specified encoding.
 
     copied from Products.CMFPlone.utils b/c this package does not depend on it
@@ -154,7 +154,7 @@ def safe_encode(value, encoding='utf-8'):
     return value
 
 
-def safe_text(value, encoding='utf-8'):
+def safe_text(value, encoding="utf-8"):
     """Converts a value to text, even it is already a text string.
 
     copied from Products.CMFPlone.utils b/c this package does not depend on it
@@ -166,7 +166,7 @@ def safe_text(value, encoding='utf-8'):
             try:
                 value = unicode(value, encoding)
             except (UnicodeDecodeError):
-                value = value.decode('utf-8', 'replace')
+                value = value.decode("utf-8", "replace")
         return value
 
     if isinstance(value, str):
@@ -175,7 +175,7 @@ def safe_text(value, encoding='utf-8'):
         try:
             value = str(value, encoding)
         except (UnicodeDecodeError):
-            value = value.decode('utf-8', 'replace')
+            value = value.decode("utf-8", "replace")
     return value
 
 
@@ -209,10 +209,10 @@ def createTicket(
     secret,
     userid,
     tokens=(),
-    user_data='',
-    ip='0.0.0.0',
+    user_data="",
+    ip="0.0.0.0",
     timestamp=None,
-    encoding='utf-8',
+    encoding="utf-8",
     mod_auth_tkt=False,
 ):
     """
@@ -225,7 +225,7 @@ def createTicket(
     tokens = [safe_encode(t) for t in tokens]
     user_data = safe_encode(user_data)
 
-    token_list = b','.join(tokens)
+    token_list = b",".join(tokens)
 
     # ip address is part of the format, set it to 0.0.0.0 to be ignored.
     # inet_aton packs the ip address into a 4 bytes in network byte order.
@@ -234,8 +234,8 @@ def createTicket(
     # Unfortunately, some older versions of Python assume that longs are always
     # 32 bits, so we need to trucate the result in case we are on a 64-bit
     # naive system.
-    data1 = inet_aton(ip)[:4] + pack('!I', timestamp)
-    data2 = b'\0'.join((userid, token_list, user_data))
+    data1 = inet_aton(ip)[:4] + pack("!I", timestamp)
+    data2 = b"\0".join((userid, token_list, user_data))
     if mod_auth_tkt:
         digest = mod_auth_tkt_digest(secret, data1, data2)
     else:
@@ -246,9 +246,9 @@ def createTicket(
         digest = digest.encode()
 
     # digest + timestamp as an eight character hexadecimal + userid + !
-    ticket = b'%s%08x%s!' % (digest, timestamp, userid)
+    ticket = b"%s%08x%s!" % (digest, timestamp, userid)
     if tokens:
-        ticket += token_list + b'!'
+        ticket += token_list + b"!"
     ticket += user_data
 
     return ticket
@@ -266,14 +266,14 @@ def splitTicket(ticket, encoding=None):
         remainder = safe_text(remainder)
     elif encoding is not None:
         remainder = safe_text(remainder, encoding)
-    parts = remainder.split('!')
+    parts = remainder.split("!")
 
     if len(parts) == 2:
         userid, user_data = parts
         tokens = ()
     elif len(parts) == 3:
         userid, token_list, user_data = parts
-        tokens = tuple(token_list.split(','))
+        tokens = tuple(token_list.split(","))
     else:
         raise ValueError
 
@@ -281,7 +281,7 @@ def splitTicket(ticket, encoding=None):
 
 
 def validateTicket(
-    secret, ticket, ip='0.0.0.0', timeout=0, now=None, encoding=None, mod_auth_tkt=False
+    secret, ticket, ip="0.0.0.0", timeout=0, now=None, encoding=None, mod_auth_tkt=False
 ):
     try:
         (digest, userid, tokens, user_data, timestamp) = data = splitTicket(ticket)
@@ -312,5 +312,5 @@ def _test():
     )
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     _test()

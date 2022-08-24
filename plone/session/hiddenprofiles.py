@@ -11,5 +11,5 @@ class HiddenProfiles(object):
 
         """
         return [
-            'plone.session:uninstall',
+            "plone.session:uninstall",
         ]
