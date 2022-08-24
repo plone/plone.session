@@ -55,9 +55,9 @@ data is supplied.
 The cookie itself should be base64 encoded. We will use the built-in Cookie
 module here, your web framework may supply it's own mechanism.
 
-  >>> from six.moves import http_cookies
+  >>> from http import cookies
   >>> import binascii
-  >>> cookie = http_cookies.SimpleCookie()
+  >>> cookie = cookies.SimpleCookie()
   >>> cookie['auth_tkt'] = binascii.b2a_base64(tkt).strip().decode()
   >>> print(cookie)
   Set-Cookie: auth_tkt=YzdjNzMwMGFjNWNmNTI5NjU2NDQ0MTIzYWNhMzQ1Mjk0ODg1YWZh...
@@ -72,7 +72,7 @@ First the ticket has to be read from the cookie and unencoded:
   >>> tkt
   b'c7c7300ac5cf529656444123aca345294885afa0jbloggs!'
 
-Splitting the data reveals the contents (note the six.text_type output):
+Splitting the data reveals the contents (note the str output):
 
   >>> splitTicket(tkt)
   (b'c7c7300ac5cf529656444123aca34529', 'jbloggs', (), '', 1216720800)
@@ -140,74 +140,65 @@ from struct import pack
 
 import hashlib
 import hmac
-import six
 import time
 
 
-def safe_encode(value, encoding='utf-8'):
+def safe_encode(value, encoding="utf-8"):
     """Convert unicode to the specified encoding.
 
     copied from Products.CMFPlone.utils b/c this package does not depend on it
     """
-    if isinstance(value, six.text_type):
+    if isinstance(value, str):
         value = value.encode(encoding)
     return value
 
 
-def safe_text(value, encoding='utf-8'):
+def safe_text(value, encoding="utf-8"):
     """Converts a value to text, even it is already a text string.
 
     copied from Products.CMFPlone.utils b/c this package does not depend on it
     """
-    if six.PY2:
-        if isinstance(value, unicode):
-            return value
-        elif isinstance(value, basestring):
-            try:
-                value = unicode(value, encoding)
-            except (UnicodeDecodeError):
-                value = value.decode('utf-8', 'replace')
-        return value
-
     if isinstance(value, str):
         return value
     elif isinstance(value, bytes):
         try:
             value = str(value, encoding)
         except (UnicodeDecodeError):
-            value = value.decode('utf-8', 'replace')
+            value = value.decode("utf-8", "replace")
     return value
 
 
 def is_equal(val1, val2):
     # constant time comparison
-    if not isinstance(val1, six.binary_type) or \
-       not isinstance(val2, six.binary_type):
+    if not isinstance(val1, bytes) or not isinstance(val2, bytes):
         return False
     if len(val1) != len(val2):
         return False
     result = 0
-    if six.PY2:
-        for x, y in zip(val1, val2):
-            result |= ord(x) ^ ord(y)
-    else:
-        for x, y in zip(val1, val2):
-            result |= x ^ y
+    for x, y in zip(val1, val2):
+        result |= x ^ y
     return result == 0
 
 
 def mod_auth_tkt_digest(secret, data1, data2):
     digest0 = hashlib.md5(data1 + secret + data2).hexdigest()
-    if not six.PY2:
-        # In Python 3 hashlib.md5(value).hexdigest() wants a bites value
-        # and returns text
-        digest0 = digest0.encode()
+    # In Python 3 hashlib.md5(value).hexdigest() wants a bites value
+    # and returns text
+    digest0 = digest0.encode()
     digest = hashlib.md5(digest0 + secret).hexdigest()
     return digest
 
 
-def createTicket(secret, userid, tokens=(), user_data='', ip='0.0.0.0',
-                 timestamp=None, encoding='utf-8', mod_auth_tkt=False):
+def createTicket(
+    secret,
+    userid,
+    tokens=(),
+    user_data="",
+    ip="0.0.0.0",
+    timestamp=None,
+    encoding="utf-8",
+    mod_auth_tkt=False,
+):
     """
     By default, use a more compatible
     """
@@ -218,7 +209,7 @@ def createTicket(secret, userid, tokens=(), user_data='', ip='0.0.0.0',
     tokens = [safe_encode(t) for t in tokens]
     user_data = safe_encode(user_data)
 
-    token_list = b','.join(tokens)
+    token_list = b",".join(tokens)
 
     # ip address is part of the format, set it to 0.0.0.0 to be ignored.
     # inet_aton packs the ip address into a 4 bytes in network byte order.
@@ -227,21 +218,21 @@ def createTicket(secret, userid, tokens=(), user_data='', ip='0.0.0.0',
     # Unfortunately, some older versions of Python assume that longs are always
     # 32 bits, so we need to trucate the result in case we are on a 64-bit
     # naive system.
-    data1 = inet_aton(ip)[:4] + pack('!I', timestamp)
-    data2 = b'\0'.join((userid, token_list, user_data))
+    data1 = inet_aton(ip)[:4] + pack("!I", timestamp)
+    data2 = b"\0".join((userid, token_list, user_data))
     if mod_auth_tkt:
         digest = mod_auth_tkt_digest(secret, data1, data2)
     else:
         # a sha256 digest is the same length as an md5 hexdigest
         digest = hmac.new(secret, data1 + data2, hashlib.sha256).digest()
 
-    if not isinstance(digest, six.binary_type):
+    if not isinstance(digest, bytes):
         digest = digest.encode()
 
     # digest + timestamp as an eight character hexadecimal + userid + !
-    ticket = b'%s%08x%s!' % (digest, timestamp, userid)
+    ticket = b"%s%08x%s!" % (digest, timestamp, userid)
     if tokens:
-        ticket += token_list + b'!'
+        ticket += token_list + b"!"
     ticket += user_data
 
     return ticket
@@ -255,40 +246,30 @@ def splitTicket(ticket, encoding=None):
         raise ValueError
     timestamp = int(val, 16)  # convert from hexadecimal+
 
-    if six.PY3:
-        remainder = safe_text(remainder)
-    elif encoding is not None:
-        remainder = safe_text(remainder, encoding)
-    parts = remainder.split('!')
+    remainder = safe_text(remainder)
+    parts = remainder.split("!")
 
     if len(parts) == 2:
         userid, user_data = parts
         tokens = ()
     elif len(parts) == 3:
         userid, token_list, user_data = parts
-        tokens = tuple(token_list.split(','))
+        tokens = tuple(token_list.split(","))
     else:
         raise ValueError
 
     return (digest, userid, tokens, user_data, timestamp)
 
 
-def validateTicket(secret, ticket, ip='0.0.0.0', timeout=0, now=None,
-                   encoding=None, mod_auth_tkt=False):
+def validateTicket(
+    secret, ticket, ip="0.0.0.0", timeout=0, now=None, encoding=None, mod_auth_tkt=False
+):
     try:
-        (digest, userid, tokens, user_data, timestamp) = data = \
-            splitTicket(ticket)
+        (digest, userid, tokens, user_data, timestamp) = data = splitTicket(ticket)
     except ValueError:
         return None
     new_ticket = createTicket(
-        secret,
-        userid,
-        tokens,
-        user_data,
-        ip,
-        timestamp,
-        encoding,
-        mod_auth_tkt
+        secret, userid, tokens, user_data, ip, timestamp, encoding, mod_auth_tkt
     )
     if is_equal(new_ticket[:32], digest):
         if not timeout:
@@ -302,14 +283,10 @@ def validateTicket(secret, ticket, ip='0.0.0.0', timeout=0, now=None,
 
 # doctest runner
 def _test():
-    from plone.session.tests.testDocTests import Py23DocChecker
-
     import doctest
-    doctest.testmod(
-        optionflags=doctest.ELLIPSIS + doctest.NORMALIZE_WHITESPACE,
-        checker=Py23DocChecker(),
-    )
+
+    doctest.testmod(optionflags=doctest.ELLIPSIS + doctest.NORMALIZE_WHITESPACE)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     _test()
