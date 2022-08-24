@@ -283,14 +283,9 @@ def validateTicket(
 
 # doctest runner
 def _test():
-    from plone.session.tests.testDocTests import Py23DocChecker
-
     import doctest
 
-    doctest.testmod(
-        optionflags=doctest.ELLIPSIS + doctest.NORMALIZE_WHITESPACE,
-        checker=Py23DocChecker(),
-    )
+    doctest.testmod(optionflags=doctest.ELLIPSIS + doctest.NORMALIZE_WHITESPACE)
 
 
 if __name__ == "__main__":
