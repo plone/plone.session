@@ -9,19 +9,25 @@ from plone.keyring.keyring import Keyring
 from plone.session import tktauth
 from plone.session.interfaces import ISessionPlugin
 from Products.PageTemplates.PageTemplateFile import PageTemplateFile
-from Products.PluggableAuthService.interfaces.plugins import IAuthenticationPlugin  # noqa
-from Products.PluggableAuthService.interfaces.plugins import ICredentialsResetPlugin  # noqa
-from Products.PluggableAuthService.interfaces.plugins import ICredentialsUpdatePlugin  # noqa
+from Products.PluggableAuthService.interfaces.plugins import (
+    IAuthenticationPlugin,
+)
+from Products.PluggableAuthService.interfaces.plugins import (
+    ICredentialsResetPlugin,
+)
+from Products.PluggableAuthService.interfaces.plugins import (
+    ICredentialsUpdatePlugin,
+)
 from Products.PluggableAuthService.interfaces.plugins import IExtractionPlugin
 from Products.PluggableAuthService.permissions import ManageUsers
 from Products.PluggableAuthService.plugins.BasePlugin import BasePlugin
 from zope.component import getUtility
 from zope.component import queryUtility
 from zope.interface import implementer
-from zope.interface import alsoProvides
 
 import binascii
 import time
+
 
 EMPTY_GIF = (
     'GIF89a\x01\x00\x01\x00\xf0\x01\x00\xff\xff\xff'

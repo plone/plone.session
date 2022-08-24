@@ -1,10 +1,11 @@
 # coding=utf-8
-import doctest
-import unittest
-import six
-import re
-
 from plone.session import tktauth
+
+import doctest
+import re
+import six
+import unittest
+
 
 optionflags = doctest.ELLIPSIS
 
