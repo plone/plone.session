@@ -5,6 +5,7 @@ from AccessControl.SecurityManagement import getSecurityManager
 from App.config import getConfiguration
 from email.utils import formatdate
 from plone.keyring.interfaces import IKeyManager
+from plone.keyring.keyring import Keyring
 from plone.session import tktauth
 from plone.session.interfaces import ISessionPlugin
 from Products.PageTemplates.PageTemplateFile import PageTemplateFile
@@ -17,6 +18,7 @@ from Products.PluggableAuthService.plugins.BasePlugin import BasePlugin
 from zope.component import getUtility
 from zope.component import queryUtility
 from zope.interface import implementer
+from zope.interface import alsoProvides
 
 import binascii
 import time
@@ -73,6 +75,8 @@ class SessionPlugin(BasePlugin):
     external_ticket_name = 'ticket'
     secure = False
     _shared_secret = None
+    secret_prefix = "_plone.session_"
+    per_user_keyring = False
 
     # These mod_auth_tkt options are not yet implemented (by intent)
     # ignoreIP = True # you always want this on the public internet
@@ -127,6 +131,16 @@ class SessionPlugin(BasePlugin):
             "type": "boolean",
             "mode": "w",
         },
+        {
+            "id": "per_user_keyring",
+            "label": (
+                "Create a keyring for each user. "
+                "Enables server-side logout."
+                "Toggle this from the \"Manage secrets\" tab."
+            ),
+            "type": "boolean",
+            "mode": "r",
+        },
     )
 
     manage_options = (
@@ -138,16 +152,27 @@ class SessionPlugin(BasePlugin):
         self.title = title
         self.path = path
 
-    def _getSigningSecret(self):
+    def _getSecretKey(self, userid):
+        return "{}{}".format(self.secret_prefix, userid)
+
+    def _getSigningSecret(self, userid):
         if self._shared_secret is not None:
             return self._shared_secret
         manager = getUtility(IKeyManager)
+        if self.per_user_keyring:
+            # Setup a new keyring for the logged-in user.
+            # This will be invalidated on logout.
+            secret_key = self._getSecretKey(userid)
+            if secret_key not in manager:
+                manager[secret_key] = Keyring(1)
+                manager[secret_key].fill()
+            return manager.secret(ring=secret_key)
         return manager.secret()
 
     # ISessionPlugin implementation
     def _setupSession(self, userid, response, tokens=(), user_data=''):
         cookie = tktauth.createTicket(
-            secret=self._getSigningSecret(),
+            secret=self._getSigningSecret(userid),
             userid=userid,
             tokens=tokens,
             user_data=user_data,
@@ -186,7 +211,6 @@ class SessionPlugin(BasePlugin):
             return creds
 
         creds["source"] = "plone.session"  # XXX should this be the id?
-
         return creds
 
     # IAuthenticationPlugin implementation
@@ -208,8 +232,11 @@ class SessionPlugin(BasePlugin):
         return (info['id'], info['login'])
 
     def _validateTicket(self, ticket, now=None):
+        _, userid, _, _, _ = tktauth.splitTicket(ticket)
+
         if now is None:
             now = time.time()
+
         if self._shared_secret is not None:
             ticket_data = tktauth.validateTicket(
                 self._shared_secret,
@@ -223,7 +250,14 @@ class SessionPlugin(BasePlugin):
             manager = queryUtility(IKeyManager)
             if manager is None:
                 return None
-            for secret in manager[u"_system"]:
+
+            secret_key = self._getSecretKey(userid)
+            if secret_key in manager:
+                secrets = manager[secret_key]
+            else:
+                secrets = manager[u"_system"]
+
+            for secret in secrets:
                 if secret is None:
                     continue
                 ticket_data = tktauth.validateTicket(
@@ -259,6 +293,19 @@ class SessionPlugin(BasePlugin):
 
     # ICredentialsResetPlugin implementation
     def resetCredentials(self, request, response):
+        if self.per_user_keyring:
+            # Sometimes (found during testing) the __ac cookie is not
+            # set by this plugin, and fails the base64 decode.
+            # Using extractCredentials again as it safely gets the decoded
+            # cookie.
+            creds = self.extractCredentials(request)
+            if "cookie" in creds:
+                _, userid, _, _, _ = tktauth.splitTicket(creds["cookie"])
+                secret_key = self._getSecretKey(userid)
+                manager = getUtility(IKeyManager)
+                if manager[secret_key]:
+                    manager.clear(ring=secret_key)
+                    manager.rotate(ring=secret_key)
         response = self.REQUEST["RESPONSE"]
         if self.cookie_domain:
             response.expireCookie(
@@ -275,8 +322,10 @@ class SessionPlugin(BasePlugin):
         sessions and requires users to login again.
         """
         manager = getUtility(IKeyManager)
-        manager.clear()
-        manager.rotate()
+        for ring in manager:
+            if ring.startswith(self.secret_prefix) or ring == "_system":
+                manager.clear(ring=ring)
+                manager.rotate(ring=ring)
         response = REQUEST.response
         response.redirect(
             '%s/manage_secret?manage_tabs_message=%s' %
@@ -289,11 +338,26 @@ class SessionPlugin(BasePlugin):
         """Create a new (signing) secret.
         """
         manager = getUtility(IKeyManager)
-        manager.rotate()
+        for ring in manager:
+            if ring.startswith(self.secret_prefix) or ring == "_system":
+                manager.rotate(ring=ring)
         response = REQUEST.response
         response.redirect(
             '%s/manage_secret?manage_tabs_message=%s' %
             (self.absolute_url(), 'New+secret+created.')
+        )
+
+    @security.protected(ManageUsers)
+    @postonly
+    def manage_togglePerUserKeyring(self, REQUEST):
+        """Toggle per-user keyrings.
+        """
+        self.per_user_keyring = not self.per_user_keyring
+        response = REQUEST.response
+        action = "enabled" if self.per_user_keyring else "disabled"
+        response.redirect(
+            '%s/manage_secret?manage_tabs_message=%s' %
+            (self.absolute_url(), 'Per-user+keyrings+%s.' % (action, ))
         )
 
     @security.protected(ManageUsers)

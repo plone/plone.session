@@ -168,3 +168,44 @@ class TestSessionPlugin(unittest.TestCase):
         # This step would fail.
         session._setupSession(unicode_userid, response)
 
+    def testCookieInvalidAfterLogout(self):
+        response = MockResponse()
+        session = self.folder.pas.session
+        session.per_user_keyring = True
+        session._setupSession(self.userid, response)
+
+        cookie = response.cookie
+        request = self.makeRequest(cookie)
+
+        creds = session.extractCredentials(request)
+        auth = session._validateTicket(creds["cookie"])
+        self.assertIsNotNone(auth)
+
+        logout()
+        session.resetCredentials(request, response)
+
+        creds = session.extractCredentials(request)
+        auth = session._validateTicket(creds["cookie"])
+        self.assertIsNone(auth)
+
+    def testCookieValidAfterLogout(self):
+        """Disable per-user keyrings and test that the session
+        is still valid after logout (the usual Plone behavior)."""
+        response = MockResponse()
+        session = self.folder.pas.session
+        session.per_user_keyring = False
+        session._setupSession(self.userid, response)
+
+        cookie = response.cookie
+        request = self.makeRequest(cookie)
+
+        creds = session.extractCredentials(request)
+        auth = session._validateTicket(creds["cookie"])
+        self.assertIsNotNone(auth)
+
+        logout()
+        session.resetCredentials(request, response)
+
+        creds = session.extractCredentials(request)
+        auth = session._validateTicket(creds["cookie"])
+        self.assertIsNotNone(auth)
