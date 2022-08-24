@@ -6,7 +6,6 @@ from plone.session.testing import PLONE_SEESION_FUNCTIONAL_TESTING
 from zope.publisher.browser import TestRequest
 
 import base64
-import six
 import unittest
 
 
@@ -93,10 +92,7 @@ class TestSessionPlugin(unittest.TestCase):
     def testExtraction(self):
         session = self.folder.pas.session
         # We will preapre a request that is equal in Py2 and Py3
-        if six.PY2:
-            request_body = base64.encodestring(b"test string")
-        else:
-            request_body = base64.encodebytes(b"test string").decode()
+        request_body = base64.encodebytes(b"test string").decode()
         self.assertEqual(request_body, "dGVzdCBzdHJpbmc=\n")
         request = self.makeRequest(request_body)
         creds = session.extractCredentials(request)
@@ -147,11 +143,10 @@ class TestSessionPlugin(unittest.TestCase):
         self.assertIsNotNone(request2.response.getCookie(session.cookie_name))
 
     def testUnicodeUserid(self):
-        unicode_userid = six.text_type(self.userid)
         response = MockResponse()
         session = self.folder.pas.session
         # This step would fail.
-        session._setupSession(unicode_userid, response)
+        session._setupSession(self.userid, response)
 
     def testSpecialCharUserid(self):
         unicode_userid = "ãbcdéfghijk"

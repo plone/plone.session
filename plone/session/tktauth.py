@@ -55,9 +55,9 @@ data is supplied.
 The cookie itself should be base64 encoded. We will use the built-in Cookie
 module here, your web framework may supply it's own mechanism.
 
-  >>> from six.moves import http_cookies
+  >>> from http import cookies
   >>> import binascii
-  >>> cookie = http_cookies.SimpleCookie()
+  >>> cookie = cookies.SimpleCookie()
   >>> cookie['auth_tkt'] = binascii.b2a_base64(tkt).strip().decode()
   >>> print(cookie)
   Set-Cookie: auth_tkt=YzdjNzMwMGFjNWNmNTI5NjU2NDQ0MTIzYWNhMzQ1Mjk0ODg1YWZh...
@@ -72,7 +72,7 @@ First the ticket has to be read from the cookie and unencoded:
   >>> tkt
   b'c7c7300ac5cf529656444123aca345294885afa0jbloggs!'
 
-Splitting the data reveals the contents (note the six.text_type output):
+Splitting the data reveals the contents (note the str output):
 
   >>> splitTicket(tkt)
   (b'c7c7300ac5cf529656444123aca34529', 'jbloggs', (), '', 1216720800)
@@ -140,7 +140,6 @@ from struct import pack
 
 import hashlib
 import hmac
-import six
 import time
 
 
@@ -149,7 +148,7 @@ def safe_encode(value, encoding="utf-8"):
 
     copied from Products.CMFPlone.utils b/c this package does not depend on it
     """
-    if isinstance(value, six.text_type):
+    if isinstance(value, str):
         value = value.encode(encoding)
     return value
 
@@ -159,16 +158,6 @@ def safe_text(value, encoding="utf-8"):
 
     copied from Products.CMFPlone.utils b/c this package does not depend on it
     """
-    if six.PY2:
-        if isinstance(value, unicode):
-            return value
-        elif isinstance(value, basestring):
-            try:
-                value = unicode(value, encoding)
-            except (UnicodeDecodeError):
-                value = value.decode("utf-8", "replace")
-        return value
-
     if isinstance(value, str):
         return value
     elif isinstance(value, bytes):
@@ -181,26 +170,21 @@ def safe_text(value, encoding="utf-8"):
 
 def is_equal(val1, val2):
     # constant time comparison
-    if not isinstance(val1, six.binary_type) or not isinstance(val2, six.binary_type):
+    if not isinstance(val1, bytes) or not isinstance(val2, bytes):
         return False
     if len(val1) != len(val2):
         return False
     result = 0
-    if six.PY2:
-        for x, y in zip(val1, val2):
-            result |= ord(x) ^ ord(y)
-    else:
-        for x, y in zip(val1, val2):
-            result |= x ^ y
+    for x, y in zip(val1, val2):
+        result |= x ^ y
     return result == 0
 
 
 def mod_auth_tkt_digest(secret, data1, data2):
     digest0 = hashlib.md5(data1 + secret + data2).hexdigest()
-    if not six.PY2:
-        # In Python 3 hashlib.md5(value).hexdigest() wants a bites value
-        # and returns text
-        digest0 = digest0.encode()
+    # In Python 3 hashlib.md5(value).hexdigest() wants a bites value
+    # and returns text
+    digest0 = digest0.encode()
     digest = hashlib.md5(digest0 + secret).hexdigest()
     return digest
 
@@ -242,7 +226,7 @@ def createTicket(
         # a sha256 digest is the same length as an md5 hexdigest
         digest = hmac.new(secret, data1 + data2, hashlib.sha256).digest()
 
-    if not isinstance(digest, six.binary_type):
+    if not isinstance(digest, bytes):
         digest = digest.encode()
 
     # digest + timestamp as an eight character hexadecimal + userid + !
@@ -262,10 +246,7 @@ def splitTicket(ticket, encoding=None):
         raise ValueError
     timestamp = int(val, 16)  # convert from hexadecimal+
 
-    if six.PY3:
-        remainder = safe_text(remainder)
-    elif encoding is not None:
-        remainder = safe_text(remainder, encoding)
+    remainder = safe_text(remainder)
     parts = remainder.split("!")
 
     if len(parts) == 2:

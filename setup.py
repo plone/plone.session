@@ -49,7 +49,6 @@ setup(
         "plone.protect",
         "Products.PluggableAuthService",
         "setuptools",
-        "six",
         "zope.component",
         "zope.interface",
         "Zope2",
