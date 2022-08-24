@@ -23,7 +23,6 @@ from Products.PluggableAuthService.permissions import ManageUsers
 from Products.PluggableAuthService.plugins.BasePlugin import BasePlugin
 from zope.component import getUtility
 from zope.component import queryUtility
-from zope.interface import alsoProvides
 from zope.interface import implementer
 
 import binascii

@@ -133,7 +133,7 @@ The HMAC SHA-256 hash must be packed raw to fit into the first 32 bytes.
   >>> data is not None
   True
 
-"""
+"""  # noqa: E501
 
 from socket import inet_aton
 from struct import pack
@@ -152,6 +152,7 @@ def safe_encode(value, encoding='utf-8'):
     if isinstance(value, six.text_type):
         value = value.encode(encoding)
     return value
+
 
 def safe_text(value, encoding='utf-8'):
     """Converts a value to text, even it is already a text string.
@@ -176,6 +177,7 @@ def safe_text(value, encoding='utf-8'):
         except (UnicodeDecodeError):
             value = value.decode('utf-8', 'replace')
     return value
+
 
 def is_equal(val1, val2):
     # constant time comparison
