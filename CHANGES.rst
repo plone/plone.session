@@ -8,6 +8,16 @@ Changelog
 
 .. towncrier release notes start
 
+4.0.0b2 (2022-08-31)
+--------------------
+
+New features:
+
+
+- Creating per-user keyrings in order to have session invalidation on log-out (server-side logout). [david-batranu] (#26)
+- Cookie attribute SameSite is set to "Lax". (#29)
+
+
 4.0.0b1 (2022-07-22)
 --------------------
 
