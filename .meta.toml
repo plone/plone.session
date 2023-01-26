@@ -1,0 +1,8 @@
+# Generated from:
+# https://github.com/plone/meta/tree/master/config/default
+[meta]
+template = "default"
+commit-id = "66442993"
+
+[codespell]
+additional-ignores = "bund"
