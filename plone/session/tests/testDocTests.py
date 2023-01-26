@@ -1,4 +1,3 @@
-# coding=utf-8
 from plone.session import tktauth
 
 import doctest

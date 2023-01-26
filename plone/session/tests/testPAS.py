@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from DateTime import DateTime
 from plone.app.testing import logout
 from plone.session.interfaces import ISessionPlugin
@@ -9,7 +8,7 @@ import base64
 import unittest
 
 
-class MockResponse(object):
+class MockResponse:
     def setCookie(
         self,
         name,
