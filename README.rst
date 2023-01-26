@@ -64,7 +64,7 @@ Refresh interval (in seconds, -1 to disable refresh)
     This controls the refresh CSS max-age (see below.)
 
 Use mod_auth_tkt compatible hashing algorithm
-    Compatibility with other implemenations, but at the cost of using a weaker hashing algorithm.
+    Compatibility with other implementations, but at the cost of using a weaker hashing algorithm.
 
 Cookie name
     Which cookie to use. This must also be set on the ``credentials_cookie_auth`` plugin.
@@ -214,7 +214,7 @@ Note for developers testing this under Windows XP
 
 - The IIS management console can be located at::
 
-    Start -> Control Panel -> Adminstrative Tools -> Internet Information Services
+    Start -> Control Panel -> Administrative Tools -> Internet Information Services
 
 - The pywin32 installer setup IIS sufficiently for me not to need to follow the *instructions on how to configure Python for IIS*.
 

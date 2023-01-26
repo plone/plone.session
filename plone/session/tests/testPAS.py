@@ -90,7 +90,7 @@ class TestSessionPlugin(unittest.TestCase):
 
     def testExtraction(self):
         session = self.folder.pas.session
-        # We will preapre a request that is equal in Py2 and Py3
+        # We will prepare a request that is equal in Py2 and Py3
         request_body = base64.encodebytes(b"test string").decode()
         self.assertEqual(request_body, "dGVzdCBzdHJpbmc=\n")
         request = self.makeRequest(request_body)

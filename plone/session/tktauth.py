@@ -4,9 +4,9 @@ mod_auth_tkt style cookie authentication
 ========================================
 
 This module implements the session cookie format from mod_auth_tkt_. For
-compatability with other implementations, pass ``mod_auth_tkt=True`` to the
+compatibility with other implementations, pass ``mod_auth_tkt=True`` to the
 ``createTicket`` and ``validateTicket`` functions. This invokes the MD5_ based
-double hashing scheme in the original mod_auth_tkt. If such compatability is
+double hashing scheme in the original mod_auth_tkt. If such compatibility is
 not required, a more secure HMAC_ SHA-256_ cryptographic hash may be used
 (which is the default.)
 
@@ -216,7 +216,7 @@ def createTicket(
     # pack is used to convert timestamp from an unsigned integer to 4 bytes
     # in network byte order.
     # Unfortunately, some older versions of Python assume that longs are always
-    # 32 bits, so we need to trucate the result in case we are on a 64-bit
+    # 32 bits, so we need to truncate the result in case we are on a 64-bit
     # naive system.
     data1 = inet_aton(ip)[:4] + pack("!I", timestamp)
     data2 = b"\0".join((userid, token_list, user_data))
