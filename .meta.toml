@@ -2,7 +2,7 @@
 # https://github.com/plone/meta/tree/master/config/default
 [meta]
 template = "default"
-commit-id = "66442993"
+commit-id = "26c2ecc2"
 
 [codespell]
 additional-ignores = "bund"
