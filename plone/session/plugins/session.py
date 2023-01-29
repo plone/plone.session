@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from AccessControl.requestmethod import postonly
 from AccessControl.SecurityInfo import ClassSecurityInfo
 from AccessControl.SecurityManagement import getSecurityManager
@@ -39,7 +38,7 @@ def manage_addSessionPlugin(dispatcher, id, title=None, path="/", REQUEST=None):
 
     if REQUEST is not None:
         REQUEST.response.redirect(
-            "{0}/manage_workspace?"
+            "{}/manage_workspace?"
             "manage_tabs_message=Session+plugin+created.".format(
                 dispatcher.absolute_url()
             )
@@ -151,7 +150,7 @@ class SessionPlugin(BasePlugin):
         self.path = path
 
     def _getSecretKey(self, userid):
-        return "{}{}".format(self.secret_prefix, userid)
+        return f"{self.secret_prefix}{userid}"
 
     def _getSigningSecret(self, userid):
         if self._shared_secret is not None:
@@ -352,7 +351,7 @@ class SessionPlugin(BasePlugin):
         action = "enabled" if self.per_user_keyring else "disabled"
         response.redirect(
             "%s/manage_secret?manage_tabs_message=%s"
-            % (self.absolute_url(), "Per-user+keyrings+%s." % (action,))
+            % (self.absolute_url(), f"Per-user+keyrings+{action}.")
         )
 
     @security.protected(ManageUsers)

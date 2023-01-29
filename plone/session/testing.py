@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from AccessControl.Permissions import access_contents_information
 from AccessControl.Permissions import view
 from OFS.Folder import Folder

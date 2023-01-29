@@ -106,7 +106,7 @@ New features:
 
 Bug fixes:
 
-- Fixes #11: Pseudo CSS-file is not loaded anymore in merged lagacy bundle.
+- Fixes #11: Pseudo CSS-file is not loaded anymore in merged legacy bundle.
   Now optional JS based auto-refresh support is working again.
   [jensens]
 
