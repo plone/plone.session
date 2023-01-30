@@ -8,6 +8,16 @@ Changelog
 
 .. towncrier release notes start
 
+4.0.1 (2023-01-30)
+------------------
+
+Internal:
+
+
+- Update code to current Plone meta standards.
+  [gforcada, maurits] (#1)
+
+
 4.0.0 (2022-12-02)
 ------------------
 
