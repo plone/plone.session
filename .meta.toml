@@ -6,3 +6,8 @@ commit-id = "78307cdf"
 
 [codespell]
 additional-ignores = "bund"
+
+[dependencies]
+mappings = [
+    "Zope = ['App', 'OFS', 'Products.Five', 'Products.PageTemplates']",
+    ]
