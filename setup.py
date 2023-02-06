@@ -40,13 +40,16 @@ setup(
     python_requires=">=3.8",
     extras_require=dict(
         test=[
-            "zope.configuration",
+            "plone.app.testing",
             "zope.publisher",
         ]
     ),
     install_requires=[
+        "AccessControl",
         "plone.keyring",
         "plone.protect",
+        "Products.GenericSetup",
+        "Products.CMFPlone",
         "Products.PluggableAuthService",
         "setuptools",
         "zope.component",

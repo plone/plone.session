@@ -44,3 +44,6 @@ target-version = ["py38"]
 
 [tool.codespell]
 ignore-words-list = "bund"
+
+[tool.dependencychecker]
+Zope = ['App', 'OFS', 'Products.Five', 'Products.PageTemplates']

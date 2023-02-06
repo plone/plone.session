@@ -2,7 +2,12 @@
 # https://github.com/plone/meta/tree/master/config/default
 [meta]
 template = "default"
-commit-id = "26c2ecc2"
+commit-id = "78307cdf"
 
 [codespell]
 additional-ignores = "bund"
+
+[dependencies]
+mappings = [
+    "Zope = ['App', 'OFS', 'Products.Five', 'Products.PageTemplates']",
+    ]
