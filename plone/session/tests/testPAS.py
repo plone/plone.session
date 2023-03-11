@@ -27,7 +27,6 @@ class MockResponse:
 
 
 class TestSessionPlugin(unittest.TestCase):
-
     layer = PLONE_SEESION_FUNCTIONAL_TESTING
     userid = "jbloggs"
 

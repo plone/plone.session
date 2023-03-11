@@ -45,15 +45,11 @@ setup(
         ]
     ),
     install_requires=[
-        "AccessControl",
         "plone.keyring",
         "plone.protect",
         "Products.GenericSetup",
-        "Products.CMFPlone",
         "Products.PluggableAuthService",
         "setuptools",
-        "zope.component",
-        "zope.interface",
         "Zope",
     ],
 )

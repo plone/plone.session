@@ -163,7 +163,7 @@ def safe_text(value, encoding="utf-8"):
     elif isinstance(value, bytes):
         try:
             value = str(value, encoding)
-        except (UnicodeDecodeError):
+        except UnicodeDecodeError:
             value = value.decode("utf-8", "replace")
     return value
 

@@ -6,7 +6,7 @@
   ===============================
   -->
   <records
-      interface="Products.CMFPlone.interfaces.IBundleRegistry"
+      interface="plone.base.interfaces.IBundleRegistry"
       prefix="plone.bundles/plone-session">
     <value key="enabled">True</value>
     <value key="jscompilation">++resource++plone.session.refreshsupport.js</value>
