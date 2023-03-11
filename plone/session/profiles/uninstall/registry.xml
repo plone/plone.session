@@ -2,7 +2,7 @@
 <registry>
 
   <records
-      interface="Products.CMFPlone.interfaces.IBundleRegistry"
+      interface="plone.base.interfaces.IBundleRegistry"
       prefix="plone.bundles/plone-session"
       remove="true">
   </records>

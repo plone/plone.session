@@ -12,7 +12,7 @@
   <include file="resources.zcml" />
   <include
       file="profiles.zcml"
-      zcml:condition="installed Products.CMFPlone"
+      zcml:condition="installed plone.base"
   />
 
 </configure>
