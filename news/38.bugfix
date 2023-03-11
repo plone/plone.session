@@ -1,0 +1,2 @@
+Remove circular dependency on Products.CMFPlone. Use moved imports from plone.base instead.
+[jensens]
