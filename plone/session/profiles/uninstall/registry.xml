@@ -1,10 +1,10 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="utf-8"?>
 <registry>
 
-  <records
-      interface="plone.base.interfaces.IBundleRegistry"
-      prefix="plone.bundles/plone-session"
-      remove="true">
-  </records>
+  <records interface="plone.base.interfaces.IBundleRegistry"
+           prefix="plone.bundles/plone-session"
+           remove="true"
+  >
+</records>
 
 </registry>
