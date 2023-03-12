@@ -1,18 +1,19 @@
 <configure
     xmlns="http://namespaces.zope.org/zope"
     xmlns:five="http://namespaces.zope.org/five"
-    xmlns:zcml="http://namespaces.zope.org/zcml">
+    xmlns:zcml="http://namespaces.zope.org/zcml"
+    >
 
   <five:registerPackage
-      initialize=".initialize"
       package="."
-  />
+      initialize=".initialize"
+      />
 
   <include package="plone.protect" />
   <include file="resources.zcml" />
   <include
       file="profiles.zcml"
       zcml:condition="installed plone.base"
-  />
+      />
 
 </configure>

@@ -1,13 +1,13 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="utf-8"?>
 <registry>
   <!--
   ===============================
   Resource Registry Configuration
   ===============================
   -->
-  <records
-      interface="plone.base.interfaces.IBundleRegistry"
-      prefix="plone.bundles/plone-session">
+  <records interface="plone.base.interfaces.IBundleRegistry"
+           prefix="plone.bundles/plone-session"
+  >
     <value key="enabled">True</value>
     <value key="jscompilation">++resource++plone.session.refreshsupport.js</value>
     <!-- This is a pseudo CSS generating a link in the Head .
