@@ -8,6 +8,23 @@ Changelog
 
 .. towncrier release notes start
 
+4.0.3 (2023-03-21)
+------------------
+
+Bug fixes:
+
+
+- Remove circular dependency on Products.CMFPlone. Use moved imports from plone.base instead.
+  [jensens] (#38)
+
+
+Internal:
+
+
+- Update configuration files.
+  [plone devs] (a533099d)
+
+
 4.0.2 (2023-02-07)
 ------------------
 
