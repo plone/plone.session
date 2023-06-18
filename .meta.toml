@@ -7,3 +7,4 @@ commit-id = "7723aeaf"
 
 [pyproject]
 codespell_ignores = "bund"
+dependencies_ignores = "['plone.base',]"
