@@ -1,8 +1,10 @@
 # Generated from:
 # https://github.com/plone/meta/tree/master/config/default
+# See the inline comments on how to expand/tweak this configuration file
 [meta]
 template = "default"
-commit-id = "a533099d"
+commit-id = "7723aeaf"
 
-[codespell]
-additional-ignores = "bund"
+[pyproject]
+codespell_ignores = "bund"
+dependencies_ignores = "['plone.base',]"
