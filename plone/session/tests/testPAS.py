@@ -117,7 +117,10 @@ class TestSessionPlugin(unittest.TestCase):
         session = self.folder.pas.session
         request = self.makeRequest("test string")
         session.updateCredentials(request, request.response, "our_user", "password")
-        self.assertIsNotNone(
+        # The anonymous user should not get a cookie: resetCredentials should
+        # not do anything when there are no current credentials.
+        # See https://github.com/plone/Products.CMFPlone/issues/3835
+        self.assertIsNone(
             request.response.getCookie(session.cookie_name),
         )
 
@@ -133,7 +136,7 @@ class TestSessionPlugin(unittest.TestCase):
         logout()
         session = self.folder.pas.session
         request = self.makeRequest("test string")
-        session.updateCredentials(request, request.response, "our_user", "password")
+        session._setupSession(self.userid, request.response)
         cookie = request.response.getCookie(session.cookie_name)["value"]
         request2 = self.makeRequest(cookie)
         request2.form["type"] = "gif"
