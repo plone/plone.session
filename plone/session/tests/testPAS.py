@@ -102,7 +102,9 @@ class TestSessionPlugin(unittest.TestCase):
         self.assertEqual(creds, {})
 
     def testCredentialsUpdateUnknownUser(self):
-        # We are logged in as test user, which we do not want.
+        # Check that calling updateCredentials for an *unknown* user does not set a
+        # cookie if there is no cookie with credentials yet (you are anonymous).
+        # So first logout.
         logout()
         session = self.folder.pas.session
         request = self.makeRequest("test string")
@@ -112,12 +114,14 @@ class TestSessionPlugin(unittest.TestCase):
         self.assertIsNone(request.response.getCookie(session.cookie_name))
 
     def testCredentialsUpdateAnonymous(self):
-        # We are logged in as test user, which we do not want.
+        # Check that calling updateCredentials for a *known* user does not set a
+        # cookie if there is no cookie with credentials yet (you are anonymous).
+        # So first logout.
         logout()
         session = self.folder.pas.session
         request = self.makeRequest("test string")
         session.updateCredentials(request, request.response, "our_user", "password")
-        # The anonymous user should not get a cookie: resetCredentials should
+        # The anonymous user should not get a cookie: updateCredentials should
         # not do anything when there are no current credentials.
         # See https://github.com/plone/Products.CMFPlone/issues/3835
         self.assertIsNone(
@@ -125,15 +129,21 @@ class TestSessionPlugin(unittest.TestCase):
         )
 
     def testCredentialsUpdateOtherUser(self):
-        # We are logged in as test user, which we DO want in this test.
-        # The session should not be updated then.
+        # Check that calling updateCredentials for someone other than the logged in
+        # user does not set a cookie.
         session = self.folder.pas.session
         request = self.makeRequest("test string")
         session.updateCredentials(request, request.response, "our_user", "password")
         self.assertIsNone(request.response.getCookie(session.cookie_name))
 
+    def testCredentialsUpdateSameUser(self):
+        # Check that calling updateCredentials for ourselves *does* set a cookie.
+        session = self.folder.pas.session
+        request = self.makeRequest("test string")
+        session.updateCredentials(request, request.response, self.userid, "password")
+        self.assertIsNone(request.response.getCookie(session.cookie_name))
+
     def testRefresh(self):
-        logout()
         session = self.folder.pas.session
         request = self.makeRequest("test string")
         session._setupSession(self.userid, request.response)
@@ -146,14 +156,14 @@ class TestSessionPlugin(unittest.TestCase):
     def testUnicodeUserid(self):
         response = MockResponse()
         session = self.folder.pas.session
-        # This step would fail.
+        # The main thing we test, is that the next call does not give a traceback:
         session._setupSession(self.userid, response)
 
     def testSpecialCharUserid(self):
         unicode_userid = "ãbcdéfghijk"
         response = MockResponse()
         session = self.folder.pas.session
-        # This step would fail.
+        # The main thing we test, is that the next call does not give a traceback:
         session._setupSession(unicode_userid, response)
 
     def testCookieInvalidAfterLogout(self):
