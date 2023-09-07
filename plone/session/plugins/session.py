@@ -281,8 +281,14 @@ class SessionPlugin(BasePlugin):
         authenticated_user = getSecurityManager().getUser()
         if authenticated_user is not None:
             authenticated_id = authenticated_user.getId()
-            # For anonymous, the id is empty
-            if authenticated_id and authenticated_id != user_id:
+            # For anonymous, the id is empty.
+            if not authenticated_id:
+                # We should not update credentials when there are none currently.
+                # Otherwise for example you are logged in after a password reset,
+                # even when autologin after password reset is false.
+                # See https://github.com/plone/Products.CMFPlone/issues/3835
+                return
+            if authenticated_id != user_id:
                 return
         self._setupSession(user_id, response)
 
