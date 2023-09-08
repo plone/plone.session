@@ -1,4 +1,0 @@
-Do not set an auth cookie after password reset, unless the user is authenticated.
-Otherwise anonymous users will be logged in immediately, even when autologin after password reset is false.
-Fixes `issue 3835 <https://github.com/plone/Products.CMFPlone/issues/3835>`_.
-[maurits]

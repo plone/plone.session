@@ -8,6 +8,25 @@ Changelog
 
 .. towncrier release notes start
 
+4.0.4 (2023-09-08)
+------------------
+
+Bug fixes:
+
+
+- Do not set an auth cookie after password reset, unless the user is authenticated.
+  Otherwise anonymous users will be logged in immediately, even when autologin after password reset is false.
+  Fixes `issue 3835 <https://github.com/plone/Products.CMFPlone/issues/3835>`_.
+  [maurits] (#3835)
+
+
+Internal:
+
+
+- Update configuration files.
+  [plone devs] (7723aeaf)
+
+
 4.0.3 (2023-03-21)
 ------------------
 
