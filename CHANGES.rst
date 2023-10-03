@@ -208,7 +208,7 @@ New:
 3.5.6 (2015-07-27)
 ------------------
 
-- Cleanup: Pep8, plone style conventions, better readbility.
+- Cleanup: Pep8, plone style conventions, better readability.
   [jensens]
 
 
