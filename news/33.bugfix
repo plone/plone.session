@@ -1,0 +1,3 @@
+Fix ValueError when processing malformed session tickets.
+Added validation in `_validateTicket` to check ticket format before calling `splitTicket`, preventing crashes when invalid cookies are encountered.
+@rohnsha0
