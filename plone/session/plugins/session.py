@@ -232,14 +232,14 @@ class SessionPlugin(BasePlugin):
         if len(ticket) < 40:
             # This is not a valid session ticket format
             return None
-        
+
         # Basic format validation: check if timestamp portion (bytes 32-40) is hex
         try:
             int(ticket[32:40], 16)
         except (ValueError, TypeError):
             # Invalid timestamp format - not a valid session ticket
             return None
-        
+
         _, userid, _, _, _ = tktauth.splitTicket(ticket)
 
         if now is None:
@@ -416,7 +416,7 @@ class SessionPlugin(BasePlugin):
             ticket = binascii.a2b_base64(request.get(self.cookie_name))
         except binascii.Error:
             return None
-            
+
         if now is None:
             now = time.time()
         ticket_data = self._validateTicket(ticket, now)
