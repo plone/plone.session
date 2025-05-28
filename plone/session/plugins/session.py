@@ -227,7 +227,11 @@ class SessionPlugin(BasePlugin):
         return (info["id"], info["login"])
 
     def _validateTicket(self, ticket, now=None):
-        _, userid, _, _, _ = tktauth.splitTicket(ticket)
+        try:
+            _, userid, _, _, _ = tktauth.splitTicket(ticket)
+        except ValueError:
+            # Badly formatted ticket, probably not ours
+            return None
 
         if now is None:
             now = time.time()
