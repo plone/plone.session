@@ -88,7 +88,7 @@ class TestSessionPlugin(unittest.TestCase):
         )
 
     def testHandleBadToken(self):
-        invalid_ticket = b'61646d696e:61646d696e'  # This is "admin:admin" in hex
+        invalid_ticket = b"61646d696e:61646d696e"  # This is "admin:admin" in hex
         session = self.folder.pas.session
         self.assertIsNone(session._validateTicket(invalid_ticket))
 
