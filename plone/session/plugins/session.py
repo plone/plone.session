@@ -227,19 +227,6 @@ class SessionPlugin(BasePlugin):
         return (info["id"], info["login"])
 
     def _validateTicket(self, ticket, now=None):
-        # Validate that the ticket has the minimum expected format
-        # A valid ticket must be at least 40 bytes: 32 (digest) + 8 (timestamp)
-        if len(ticket) < 40:
-            # This is not a valid session ticket format
-            return None
-
-        # Basic format validation: check if timestamp portion (bytes 32-40) is hex
-        try:
-            int(ticket[32:40], 16)
-        except (ValueError, TypeError):
-            # Invalid timestamp format - not a valid session ticket
-            return None
-
         _, userid, _, _, _ = tktauth.splitTicket(ticket)
 
         if now is None:

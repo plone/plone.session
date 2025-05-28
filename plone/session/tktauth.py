@@ -243,7 +243,7 @@ def splitTicket(ticket, encoding=None):
     val = ticket[32:40]
     remainder = ticket[40:]
     if not val:
-        raise ValueError
+        return None
     timestamp = int(val, 16)  # convert from hexadecimal+
 
     remainder = safe_text(remainder)
