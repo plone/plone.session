@@ -87,6 +87,11 @@ class TestSessionPlugin(unittest.TestCase):
             (DateTime() + 100).strftime("%Y%m%d"),
         )
 
+    def testHandleBadToken(self):
+        invalid_ticket = b'61646d696e:61646d696e'  # This is "admin:admin" in hex
+        session = self.folder.pas.session
+        self.assertIsNone(session._validateTicket(invalid_ticket))
+
     def testExtraction(self):
         session = self.folder.pas.session
         # We will prepare a request that is equal in Py2 and Py3
