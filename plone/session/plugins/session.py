@@ -227,7 +227,11 @@ class SessionPlugin(BasePlugin):
         return (info["id"], info["login"])
 
     def _validateTicket(self, ticket, now=None):
-        _, userid, _, _, _ = tktauth.splitTicket(ticket)
+        try:
+            _, userid, _, _, _ = tktauth.splitTicket(ticket)
+        except ValueError:
+            # Badly formatted ticket, probably not ours
+            return None
 
         if now is None:
             now = time.time()
@@ -403,6 +407,7 @@ class SessionPlugin(BasePlugin):
             ticket = binascii.a2b_base64(request.get(self.cookie_name))
         except binascii.Error:
             return None
+
         if now is None:
             now = time.time()
         ticket_data = self._validateTicket(ticket, now)
