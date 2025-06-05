@@ -8,6 +8,22 @@ Changelog
 
 .. towncrier release notes start
 
+4.0.5 (2025-06-05)
+------------------
+
+Bug fixes:
+
+
+- Fix ValueError when processing malformed session tickets. @rohnsha0 (#33)
+
+
+Internal:
+
+
+- Update configuration files.
+  [plone devs] (6e36bcc4)
+
+
 4.0.4 (2023-09-08)
 ------------------
 
