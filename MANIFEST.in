@@ -3,7 +3,7 @@ include pyproject.toml
 
 graft docs
 graft iis-login
-graft plone
+graft src
 
 global-exclude *pyc
 
