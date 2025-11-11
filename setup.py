@@ -44,7 +44,6 @@ setup(
         "plone.protect",
         "Products.GenericSetup",
         "Products.PluggableAuthService",
-        "setuptools",
         "Zope",
     ],
 )
