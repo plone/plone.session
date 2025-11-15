@@ -1,8 +1,7 @@
-from setuptools import find_packages
 from setuptools import setup
 
 
-version = "4.0.7.dev0"
+version = "5.0.0.dev0"
 longdescription = open("README.rst").read()
 longdescription += "\n"
 longdescription += open("CHANGES.rst").read()
@@ -15,14 +14,12 @@ setup(
     classifiers=[
         "Development Status :: 5 - Production/Stable",
         "Environment :: Web Environment",
-        "Framework :: Plone :: 6.0",
         "Framework :: Plone :: Core",
         "Framework :: Plone",
+        "Framework :: Plone :: 6.2",
         "Framework :: Zope :: 5",
         "License :: OSI Approved :: BSD License",
         "Operating System :: OS Independent",
-        "Programming Language :: Python :: 3.8",
-        "Programming Language :: Python :: 3.9",
         "Programming Language :: Python :: 3.10",
         "Programming Language :: Python :: 3.11",
         "Programming Language :: Python",
@@ -33,12 +30,9 @@ setup(
     author_email="plone-developers@lists.sourceforge.net",
     url="https://github.com/plone/plone.session/",
     license="BSD",
-    packages=find_packages("src"),
-    namespace_packages=["plone"],
-    package_dir={"": "src"},
     include_package_data=True,
     zip_safe=False,
-    python_requires=">=3.8",
+    python_requires=">=3.10",
     extras_require=dict(
         test=[
             "plone.app.testing",
@@ -50,7 +44,6 @@ setup(
         "plone.protect",
         "Products.GenericSetup",
         "Products.PluggableAuthService",
-        "setuptools",
         "Zope",
     ],
 )
