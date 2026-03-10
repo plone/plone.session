@@ -265,7 +265,7 @@ def validateTicket(
     secret, ticket, ip="0.0.0.0", timeout=0, now=None, encoding=None, mod_auth_tkt=False
 ):
     try:
-        (digest, userid, tokens, user_data, timestamp) = data = splitTicket(ticket)
+        digest, userid, tokens, user_data, timestamp = data = splitTicket(ticket)
     except ValueError:
         return None
     new_ticket = createTicket(

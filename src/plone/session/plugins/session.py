@@ -216,7 +216,7 @@ class SessionPlugin(BasePlugin):
         ticket_data = self._validateTicket(ticket)
         if ticket_data is None:
             return None
-        (digest, userid, tokens, user_data, timestamp) = ticket_data
+        digest, userid, tokens, user_data, timestamp = ticket_data
         pas = self._getPAS()
         info = pas._verifyUser(pas.plugins, user_id=userid)
         if info is None:
@@ -412,7 +412,7 @@ class SessionPlugin(BasePlugin):
         ticket_data = self._validateTicket(ticket, now)
         if ticket_data is None:
             return None
-        (digest, userid, tokens, user_data, timestamp) = ticket_data
+        digest, userid, tokens, user_data, timestamp = ticket_data
         self._setupSession(userid, request.response, tokens, user_data)
         return True
 
