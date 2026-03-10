@@ -3,7 +3,6 @@ from plone.session import tktauth
 import doctest
 import unittest
 
-
 optionflags = doctest.ELLIPSIS
 
 

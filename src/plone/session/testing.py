@@ -10,7 +10,6 @@ from plone.session.plugins.session import SessionPlugin
 
 import doctest
 
-
 folder_name = "test_folder_1_"
 user_name = "test_user_1_"
 user_password = "secret"
