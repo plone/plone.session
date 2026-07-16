@@ -155,7 +155,7 @@ class SessionPlugin(BasePlugin):
         if self._shared_secret is not None:
             return self._shared_secret
         manager = getUtility(IKeyManager)
-        if self.per_user_keyring:
+        if self.getProperty("per_user_keyring"):
             # Setup a new keyring for the logged-in user.
             # This will be invalidated on logout.
             secret_key = self._getSecretKey(userid)
@@ -172,7 +172,7 @@ class SessionPlugin(BasePlugin):
             userid=userid,
             tokens=tokens,
             user_data=user_data,
-            mod_auth_tkt=self.mod_auth_tkt,
+            mod_auth_tkt=self.getProperty("mod_auth_tkt"),
         )
         self._setCookie(cookie, response)
 
@@ -182,23 +182,32 @@ class SessionPlugin(BasePlugin):
         if getConfiguration().debug_mode:
             secure = False
         else:
-            secure = self.secure
-        options = dict(path=self.path, secure=secure, http_only=True, same_site="Lax")
-        if self.cookie_domain:
-            options["domain"] = self.cookie_domain
-        if self.cookie_lifetime:
-            options["expires"] = cookie_expiration_date(self.cookie_lifetime)
-        response.setCookie(self.cookie_name, cookie, **options)
+            secure = self.getProperty("secure")
+        options = dict(
+            path=self.getProperty("path"),
+            secure=secure,
+            http_only=True,
+            same_site="Lax",
+        )
+        if self.getProperty("cookie_domain"):
+            options["domain"] = self.getProperty("cookie_domain")
+        if self.getProperty("cookie_lifetime"):
+            options["expires"] = cookie_expiration_date(
+                self.getProperty("cookie_lifetime")
+            )
+        response.setCookie(self.getProperty("cookie_name"), cookie, **options)
 
     # IExtractionPlugin implementation
     def extractCredentials(self, request):
         creds = {}
 
-        if self.cookie_name not in request:
+        if self.getProperty("cookie_name") not in request:
             return creds
 
         try:
-            creds["cookie"] = binascii.a2b_base64(request.get(self.cookie_name))
+            creds["cookie"] = binascii.a2b_base64(
+                request.get(self.getProperty("cookie_name"))
+            )
         except binascii.Error:
             # If we have a cookie which is not properly base64 encoded it
             # can not be ours.
@@ -241,7 +250,7 @@ class SessionPlugin(BasePlugin):
                 ticket,
                 timeout=self.timeout,
                 now=now,
-                mod_auth_tkt=self.mod_auth_tkt,
+                mod_auth_tkt=self.getProperty("mod_auth_tkt"),
             )
         else:
             ticket_data = None
@@ -261,9 +270,9 @@ class SessionPlugin(BasePlugin):
                 ticket_data = tktauth.validateTicket(
                     secret,
                     ticket,
-                    timeout=self.timeout,
+                    timeout=self.getProperty("timeout"),
                     now=now,
-                    mod_auth_tkt=self.mod_auth_tkt,
+                    mod_auth_tkt=self.getProperty("mod_auth_tkt"),
                 )
                 if ticket_data is not None:
                     break
@@ -297,7 +306,7 @@ class SessionPlugin(BasePlugin):
 
     # ICredentialsResetPlugin implementation
     def resetCredentials(self, request, response):
-        if self.per_user_keyring:
+        if self.getProperty("per_user_keyring"):
             # Sometimes (found during testing) the __ac cookie is not
             # set by this plugin, and fails the base64 decode.
             # Using extractCredentials again as it safely gets the decoded
@@ -313,10 +322,14 @@ class SessionPlugin(BasePlugin):
         response = self.REQUEST["RESPONSE"]
         if self.cookie_domain:
             response.expireCookie(
-                self.cookie_name, path=self.path, domain=self.cookie_domain
+                self.getProperty("cookie_name"),
+                path=self.getProperty("path"),
+                domain=self.getProperty("cookie_domain"),
             )
         else:
-            response.expireCookie(self.cookie_name, path=self.path)
+            response.expireCookie(
+                self.getProperty("cookie_name"), path=self.getProperty("path")
+            )
 
     manage_secret = PageTemplateFile("secret.pt", globals())
 
@@ -400,10 +413,10 @@ class SessionPlugin(BasePlugin):
 
     def _refreshSession(self, request, now=None):
         # Refresh a ticket. Does *not* check the user is in the use folder
-        if self.cookie_name not in request:
+        if self.getProperty("cookie_name") not in request:
             return None
         try:
-            ticket = binascii.a2b_base64(request.get(self.cookie_name))
+            ticket = binascii.a2b_base64(request.get(self.getProperty("cookie_name")))
         except binascii.Error:
             return None
 
@@ -435,7 +448,7 @@ class SessionPlugin(BasePlugin):
         setHeader = REQUEST.response.setHeader
         # Disable HTTP 1.0 Caching
         setHeader("Expires", formatdate(0, usegmt=True))
-        if self.refresh_interval < 0:
+        if self.getProperty("refresh_interval") < 0:
             return self._refresh_content(REQUEST)
         now = time.time()
         refreshed = self._refreshSession(REQUEST, now)
@@ -444,14 +457,14 @@ class SessionPlugin(BasePlugin):
             setHeader(
                 "Cache-Control",
                 "public, must-revalidate, max-age=%d, s-max-age=86400"
-                % self.refresh_interval,
+                % self.getProperty("refresh_interval"),
             )
             setHeader("Vary", "Cookie")
         else:
             setHeader(
                 "Cache-Control",
                 "private, must-revalidate, proxy-revalidate, max-age=%d, "
-                "s-max-age=0" % self.refresh_interval,
+                "s-max-age=0" % self.getProperty("refresh_interval"),
             )
         return self._refresh_content(REQUEST)
 
