@@ -189,12 +189,12 @@ class SessionPlugin(BasePlugin):
             http_only=True,
             same_site="Lax",
         )
-        if self.getProperty("cookie_domain"):
-            options["domain"] = self.getProperty("cookie_domain")
-        if self.getProperty("cookie_lifetime"):
-            options["expires"] = cookie_expiration_date(
-                self.getProperty("cookie_lifetime")
-            )
+        cookie_domain = self.getProperty("cookie_domain")
+        if cookie_domain:
+            options["domain"] = cookie_domain
+        cookie_lifetime = self.getProperty("cookie_lifetime")
+        if cookie_lifetime:
+            options["expires"] = cookie_expiration_date(cookie_lifetime)
         response.setCookie(self.getProperty("cookie_name"), cookie, **options)
 
     # IExtractionPlugin implementation
