@@ -8,6 +8,15 @@ Changelog
 
 .. towncrier release notes start
 
+5.1.0 (2026-08-21)
+------------------
+
+New features:
+
+
+- Use getProperty to get the property values @erral
+
+
 5.0.0 (2026-05-18)
 ------------------
 
