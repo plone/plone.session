@@ -1,6 +1,6 @@
 from setuptools import setup
 
-version = "5.1.0"
+version = "5.1.1.dev0"
 longdescription = open("README.rst").read()
 longdescription += "\n"
 longdescription += open("CHANGES.rst").read()
